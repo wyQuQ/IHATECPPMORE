@@ -34,14 +34,24 @@
               "CMAKE_BUILD_TYPE": "Debug",
               "ENABLE_DEBUG": "ON",
               "MCG_DEBUG_LEVEL": "2"
-          }
+            }
         },
         {
             "name": "x64-release",
             "displayName": "x64 Release",
             "inherits": "x64-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+              "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "x64-release",
+            "description": "x64 Release preset",
+            "generator": "Visual Studio 18 2026",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/out/build/x64-release",
+            "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
