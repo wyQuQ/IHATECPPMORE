@@ -1,0 +1,53 @@
+# .editorconfig for MyCuteGame
+# 目的：为仓库中的源代码和工程文件提供统一的编辑器格式化约定。
+# 注释：.editorconfig 的注释行以 '#' 或 ';' 开头。大多数编辑器（如 Visual Studio、VS Code、CLion 等）会识别并优先应用这些规则。
+#
+# 关键规则摘要（中文说明）：
+# - 使用 UTF-8 编码，确保跨平台一致性
+# - 行尾使用 LF（Unix 风格），避免 CRLF 导致的 diff 噪声
+# - 使用空格缩进，缩进宽度为 4（与项目 C++ 风格一致）
+# - 自动在文件末尾插入换行并移除尾随空格
+# - 最大行宽 120，用于保持可读性
+# - 针对 C/C++、构建文件和文档分别明确规则，兼顾可读性与工具兼容性
+#
+# 使用建议：
+# - 保存文件时大多数编辑器会遵循本文件；也可在编辑器中运行 __Format Document__ 来应用样式
+# - 在 CI 中添加格式检查或在提交前运行格式化工具可以保证团队一致性
+root = true
+
+[*]
+# 通用设置
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# 针对常见的 C/C++ 文件明确设置（与上面保持一致，便于某些编辑器识别）
+[*.{c,cpp,h,hpp,cxx,hxx}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+max_line_length = 120
+
+# 针对 Visual Studio / 构建相关文件（若存在）保持一致的缩进风格
+[*.{sln,vcxproj,props,targets}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+
+# CMakeLists 与 cmake 脚本仍使用 4 空格缩进以与项目一致
+[*.{cmake,CMakeLists.txt}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+
+# 文本与文档文件
+[*.{md,markdown,txt}]
+trim_trailing_whitespace = false   # 对于 Markdown 保留尾随空格（可能用于硬换行）
+indent_style = space
+indent_size = 4
+charset = utf-8
+max_line_length = 120

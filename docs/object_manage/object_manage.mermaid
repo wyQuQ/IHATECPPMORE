@@ -1,0 +1,151 @@
+classDiagram
+    class InstanceController {
+        -std::vector~Entry~ objects_
+        -std::vector~uint32_t~ free_indices_
+        -std::unordered_map~BaseObject*, uint32_t~ object_index_map_
+        -std::vector~ObjectToken~ pending_destroys_
+        -std::unordered_set~uint64_t~ pending_destroy_set_
+        -std::vector~PendingCreate~ pending_creates_
+        -size_t alive_count_
+        +Instance() InstanceController
+        +CreateImmediate~T, Args...~(Args&&... args) ObjectToken
+        +CreateDelayed~T, Args...~(Args&&... args) ObjectToken
+        +CreateImmediateFromUniquePtr(std::unique_ptr~BaseObject~ obj) ObjectToken
+        +CreateDelayedFromFactory(std::function~std::unique_ptr~BaseObject~()~ factory) ObjectToken
+        +ReserveSlotForCreate() uint32_t
+        +Get(const ObjectToken& token) BaseObject*
+        +GetAs~T~(const ObjectToken& token) T*
+        +IsValid(const ObjectToken& token) bool
+        +DestroyEntryImmediate(uint32_t index) void
+        +DestroyImmediate(BaseObject* ptr) void
+        +DestroyImmediate(const ObjectToken& token) void
+        +DestroyDelayed(BaseObject* ptr) void
+        +DestroyDelayed(const ObjectToken& token) void
+        +DestroyAll() void
+        +UpdateAll() void
+        +Count() size_t
+    }
+
+    class DrawingSequence {
+        -std::vector~std::unique_ptr~Entry~~ m_entries
+        -DrawCallback m_callback
+        -std::mutex m_mutex
+        -uint64_t m_next_reg_index
+        +Instance() DrawingSequence
+        +Register(BaseObject* obj) void
+        +Unregister(BaseObject* obj) void
+        +SetDrawCallback(DrawCallback cb) void
+        +DrawAll() void
+        +BlitAll() void
+    }
+
+    class BaseObject {
+        -int m_vertical_frame_count
+        -int m_sprite_update_freq
+        -bool m_visible
+        -int m_depth
+        +BaseObject()
+        +FramelyUpdate() void
+        +Start() void
+        +Update() void
+        +GetSpriteFrame() PngFrame
+        +SetSpritePath(const std::string& path) void
+        +ClearSpritePath() void
+        +HasSpritePath() bool
+        +SetVisible(bool v) void
+        +IsVisible() bool
+        +SetDepth(int d) void
+        +GetDepth() int
+        +GetPosition() CF_V2
+        +SetPosition(CF_V2 pos) void
+        +GetVelocity() CF_V2
+        +SetVelocity(CF_V2 vel) void
+        +GetForce() CF_V2
+        +SetForce(CF_V2 force) void
+        +GetShape() CF_Shape
+        +AddVelocity(CF_V2 vel) void
+        +AddForce(CF_V2 force) void
+        +ApplyVelocity() void
+        +ApplyForce() void
+        +DestroyImmediate() void
+        +DestroyDelayed() void
+        +DestroyImmediate(const InstanceController::ObjectToken& token) void
+        +DestroyDelayed(const InstanceController::ObjectToken& token) void
+        +OnDestroy() void
+    }
+
+    class BasePhysics {
+        <<internal>>
+        #CF_V2 m_position
+        #CF_V2 m_velocity
+        #CF_V2 m_force
+        #CF_Shape m_shape
+        +GetPosition() CF_V2
+        +SetPosition(CF_V2 pos) void
+        +GetVelocity() CF_V2
+        +SetVelocity(CF_V2 vel) void
+        +GetForce() CF_V2
+        +SetForce(CF_V2 force) void
+        +GetShape() CF_Shape
+        +AddVelocity(CF_V2 vel) void
+        +AddForce(CF_V2 force) void
+        +ApplyVelocity() void
+        +ApplyForce() void
+    }
+
+    class PngSprite {
+        <<internal>>
+        -std::string m_path
+        -std::vector~PngFrame~ m_frames
+        -int m_current_frame
+        -int m_frame_delay
+        -int m_frame_counter
+        +SetPath(const std::string& path) void
+        +ClearPath() void
+        +HasPath() bool
+        +GetCurrentFrame() PngFrame
+        +GetCurrentFrameWithTotal(int total_frames) PngFrame
+        +SetFrameDelay(int delay) void
+    }
+
+    class ObjectToken {
+        +uint32_t index
+        +uint32_t generation
+    }
+
+    class Entry {
+        +BaseObject* owner
+        +uint64_t reg_index
+    }
+
+    class PendingCreate {
+        +uint32_t index
+        +std::function~std::unique_ptr~BaseObject~()~ factory
+    }
+
+    class DrawCallback {
+        <<typedef>>
+        std::function~void(const CF_Canvas&, const BaseObject*, int, int)~
+    }
+
+    class CanvasCache {
+        +CF_Canvas canvas
+        +int w
+        +int h
+    }
+
+    %% 继承关系
+    BaseObject --|> BasePhysics
+    BaseObject --|> PngSprite
+
+    %% 关联关系
+    InstanceController --> ObjectToken
+    InstanceController --> PendingCreate
+    DrawingSequence --> Entry
+    DrawingSequence --> DrawCallback
+    
+    %% 依赖关系
+    BaseObject ..> InstanceController : 使用
+    BaseObject ..> DrawingSequence : 使用
+    DrawingSequence ..> BaseObject : 注册/注销
+    InstanceController ..> BaseObject : 管理生命周期
