@@ -6,7 +6,6 @@
 // - SpriteSetSource 在设置新路径时会注册/注销 DrawingSequence 以纳入统一的上传与绘制流程。
 // - SpriteClearPath 会卸载资源并从 DrawingSequence 中注销。
 // - TweakColliderWithPivot 用于在用户改变 pivot 时同步调整碰撞形状。
-#include "obj_manager.h"
 
 void BaseObject::SpriteSetSource(const std::string& path, int count, bool set_shape_aabb) noexcept
 {

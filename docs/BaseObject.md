@@ -62,12 +62,12 @@ public:
     void Update() override ; 
 
     // 要使用时声明覆写：碰撞进入回调/持续回调/退出回调
-    void OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) override ; 
-    void OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) override ; 
-    void OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) override ; 
+    void OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override ; 
+    void OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override ; 
+    void OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override ; 
 
     // 要使用时声明覆写：销毁时做出额外动作，通常用于资源释放
-    void OnDestroy() override ; 
+    void OnDestroy() noexcept override ; 
 };
 ```
 ```cpp
@@ -86,20 +86,20 @@ void MyObject::Update() {
     SetPosition(pos);
 }
 
-void MyObject::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) {
+void MyObject::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
     // 碰撞进入时的处理逻辑
     printf("Collided with object token: %u\n", other_token.index);
 }
 
-void MyObject::OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) {
+void MyObject::OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
     // 碰撞持续时的处理逻辑
 }
 
-void MyObject::OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) {
+void MyObject::OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
     // 碰撞退出时的处理逻辑
 }
 
-void MyObject::OnDestroy() {
+void MyObject::OnDestroy() noexcept {
     // 销毁时的逻辑
 }
 ```

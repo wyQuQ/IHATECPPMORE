@@ -7,6 +7,8 @@
 #include <vector> // 用于多边形顶点数据传递
 #include <iostream> // 错误/诊断输出
 #include <cmath> // fabs
+#include <algorithm> // std::remove, std::find
+#include <unordered_set> // 用于 tags
 
 #include "obj_manager.h"
 #include "debug_config.h"
@@ -31,6 +33,7 @@ public:
         set_force(CF_V2{ 0.0f, 0.0f });
         SetFrameDelay(m_sprite_update_freq);
         update_world_shape_flag();
+		tags.reserve(5); // 预留一些空间以减少动态分配
     }
 
     // 每帧引擎调用点：包含 Update()、物理运动与 debug 绘制
@@ -277,6 +280,21 @@ public:
     inline void DebugDraw() const noexcept {}
 #endif
 
+    void AddTag(const std::string& tag) noexcept
+    {
+        tags.insert(tag);
+    }
+
+    bool HasTag(const std::string& tag) const noexcept
+    {
+        return tags.find(tag) != tags.end();
+    }
+
+    void RemoveTag(const std::string& tag) noexcept
+    {
+        tags.erase(tag);
+    }
+
     virtual void OnDestroy() noexcept {}
 
     ~BaseObject() noexcept;
@@ -313,6 +331,8 @@ private:
 
     bool m_isColliderRotate = true;
     bool m_isColliderApplyPivot = true;
+
+	std::unordered_set<std::string> tags; // 对象标签集合（无序，不重复）
 
     void update_world_shape_flag() noexcept
     {
