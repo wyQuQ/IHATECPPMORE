@@ -56,7 +56,9 @@ public:
     // operator[] 重载：通过 ObjToken 直接取得对象的左值引用。
     // 语义：若 token 无效或对象已被销毁，会抛出 std::out_of_range（并写入 std::cerr）。
     BaseObject& operator[](ObjToken& token);
+    BaseObject& operator[](const ObjToken& token);
     const BaseObject& operator[](ObjToken& token) const;
+    const BaseObject& operator[](const ObjToken& token) const;
 
     // 支持以 PendingToken 直接销毁（若已合并则转为销毁真实 ObjToken，否则销毁 pending）
     void Destroy(const ObjToken& p) noexcept;

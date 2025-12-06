@@ -2,16 +2,15 @@
 #include "base_physics.h"
 #include "png_sprite.h"
 #include <string>
-#include <type_traits>
 #include <utility>
 #include <vector> // 用于多边形顶点数据传递
 #include <iostream> // 错误/诊断输出
 #include <cmath> // fabs
-#include <algorithm> // std::remove, std::find
 #include <unordered_set> // 用于 tags
 
 #include "obj_manager.h"
 #include "debug_config.h"
+#include "input.h"
 
 // BaseObject 是面向使用者的游戏对象基类，整合渲染（PngSprite）与物理（BasePhysics）。
 // 使用说明：

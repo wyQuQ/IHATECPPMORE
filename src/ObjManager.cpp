@@ -336,7 +336,7 @@ void ObjManager::UpdateAll() noexcept
     }
 }
 
-// operator[] 实现：若 token 无效或对象不可用，则抛出 std::out_of_range（并写入 std::cerr）
+// operator[] 实现，若 token 为 pending，则尝试转换为真实 token 后再访问对象
 BaseObject& ObjManager::operator[](ObjToken& token)
 {
     if (!token.isRegitsered) {
@@ -350,6 +350,11 @@ BaseObject& ObjManager::operator[](ObjToken& token)
 		std::cerr << "[InstanceController] operator[]: checked pending token, updating token to the registered version\n";
         if (real.isValid()) token = real;
     }
+	return this->operator[](static_cast<const ObjToken&>(token));
+}
+// operator[] 实现：若 token 无效或对象不可用，则抛出 std::out_of_range（并写入 std::cerr）
+BaseObject& ObjManager::operator[](const ObjToken& token)
+{
     if (token.index >= objects_.size()) {
         std::cerr << "[InstanceController] operator[]: invalid index " << token.index << "\n";
         throw std::out_of_range("ObjManager::operator[]: invalid index");
@@ -361,7 +366,7 @@ BaseObject& ObjManager::operator[](ObjToken& token)
     }
     return *e.ptr;
 }
-
+// const 版本的 operator[]，接受 pending token 并尝试转换为真实 token
 const BaseObject& ObjManager::operator[](ObjToken& token) const
 {
     if (!token.isRegitsered) {
@@ -375,6 +380,11 @@ const BaseObject& ObjManager::operator[](ObjToken& token) const
         std::cerr << "[InstanceController] operator[]: checked pending token, updating token to the registered version\n";
         if (real.isValid()) token = real;
     }
+    return this->operator[](static_cast<const ObjToken&>(token));
+}
+// const 版本的 operator[] 实现，抛出 std::out_of_range 异常
+const BaseObject& ObjManager::operator[](const ObjToken& token) const
+{
     if (token.index >= objects_.size()) {
         std::cerr << "[InstanceController] operator[] const: invalid index " << token.index << "\n";
         throw std::out_of_range("ObjManager::operator[] const: invalid index");
@@ -387,6 +397,7 @@ const BaseObject& ObjManager::operator[](ObjToken& token) const
     return *e.ptr;
 }
 
+// 检查 pending token 是否已合并为真实 token，若是则返回真实 token，否则返回 Invalid
 ObjToken ObjManager::check_pending_to_real(const ObjToken& pending_token) const noexcept
 {
 	if (pending_token.isRegitsered) return pending_token;

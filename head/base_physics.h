@@ -3,10 +3,9 @@
 #include <vector>
 #include <unordered_map>
 #include <cstdint>
-#include <cmath>
-#include <algorithm>
 
 #include "obj_manager.h"
+#include "v2math.h"
 
 // CF_ShapeWrapper 封装了不同类型的碰撞形状（AABB, Circle, Capsule, Poly），
 // 并提供静态工厂函数便于创建对应的包装类型。
@@ -33,21 +32,6 @@ enum class ColliderType {
 	LIQUID, // 液体样碰撞（可定制行为）
 	SOLID // 实体碰撞（常规碰撞）
 };
-
-// 2D 向量基础数学工具（面向使用者的简单接口）
-namespace v2math {
-	inline float length(const CF_V2& vect) noexcept { return cf_sqrt(vect.x * vect.x + vect.y * vect.y); }
-	inline CF_V2 normalized(const CF_V2& vect) noexcept
-	{
-		const float len = length(vect);
-		if (len == 0.0f) {
-			return CF_V2{ 0.0f, 0.0f };
-		}
-		return CF_V2{ vect.x / len, vect.y / len };
-	}
-	inline float cross(const CF_V2& v1, const CF_V2& v2) noexcept { return v1.x * v2.y - v1.y * v2.x; }
-	inline float dot(const CF_V2& v1, const CF_V2& v2) noexcept { return v1.x * v2.x + v1.y * v2.y; }
-}
 
 // 前置声明：BasePhysics 提供给上层对象一个统一的物理属性/形状接口
 class BasePhysics;

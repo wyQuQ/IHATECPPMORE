@@ -1,9 +1,9 @@
 #include "player_object.h"
+#include "test_object.h"
 
 // 每帧移动的速度
 static constexpr float speed = 3.0f;
 const float PI = 3.14159265358979f;
-
 void PlayerObject::Start()
 {
 	// 统一设置贴图路径、竖排帧数、动画更新频率和绘制深度，并注册到绘制序列
@@ -22,16 +22,16 @@ void PlayerObject::Update()
 {
 	// 当检测到按键按下时，设置速度方向（不直接 SetPosition，使用速度积分）
     CF_V2 dir(0,0);
-    if (cf_key_down(CF_KEY_A)) {
+    if (Input::IsKeyInState(CF_KEY_A, KeyState::Hold)) {
         dir.x -= 1;
     }
-    if (cf_key_down(CF_KEY_D)) {
+    if (Input::IsKeyInState(CF_KEY_D, KeyState::Hold)) {
 		dir.x += 1;
     }
-    if (cf_key_down(CF_KEY_W)) {
+    if (Input::IsKeyInState(CF_KEY_W, KeyState::Hold)) {
 		dir.y += 1;
     }
-    if (cf_key_down(CF_KEY_S)) {
+    if (Input::IsKeyInState(CF_KEY_S, KeyState::Hold)) {
 		dir.y -= 1;
     }
     if (dir.x != 0) {
@@ -50,10 +50,10 @@ void PlayerObject::Update()
 
 	// 计算朝向角度（弧度制，0 度为正右，逆时针旋转）
     float angle = 0;
-    if (cf_key_down(CF_KEY_Q)) {
+    if (Input::IsKeyInState(CF_KEY_Q, KeyState::Hold)) {
 		angle += PI / 60.0f; // 每帧逆时针旋转 3 度
     }
-    if (cf_key_down(CF_KEY_E)) {
+    if (Input::IsKeyInState(CF_KEY_E, KeyState::Hold)) {
 		angle -= PI / 60.0f; // 每帧顺时针旋转 3 度
     }
 	Rotate(angle);
