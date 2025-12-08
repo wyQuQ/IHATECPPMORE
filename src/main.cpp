@@ -11,7 +11,6 @@
 #include "base_object.h"
 #include "drawing_sequence.h"
 #include "player_object.h"
-#include "test_object.h"
 #include "obj_manager.h"
 
 static void print_debug_flags_once() {
