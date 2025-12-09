@@ -38,6 +38,7 @@ void TestObject::Update()
 		SetVelocity(vel);
 	}
 
+<<<<<<< Updated upstream
 	// 当按住空格时，使该物体不可见
 	if (cf_key_down(CF_KEY_W)) {
 		SetVisible(false);
@@ -45,3 +46,7 @@ void TestObject::Update()
 		SetVisible(true);
 	}
 }
+=======
+
+}
+>>>>>>> Stashed changes

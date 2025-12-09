@@ -45,6 +45,7 @@ endif()
 file(GLOB_RECURSE PROJECT_SOURCES
 	CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/objects/*.cpp"
 )
 
 # 可选：把头文件也加入目标以便 IDE 显示（不会被编译）
@@ -53,6 +54,8 @@ file(GLOB_RECURSE PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/head/*.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/objects/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/objects/*.hpp"
 )
 
 add_executable(${PROJECT_NAME}

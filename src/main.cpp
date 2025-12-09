@@ -11,7 +11,7 @@
 #include "base_object.h"
 #include "drawing_sequence.h"
 #include "player_object.h"
-#include "test_object.h"
+#include "test_block.h"
 #include "obj_manager.h"
 
 static void print_debug_flags_once() {
@@ -48,9 +48,15 @@ int main(int argc, char* argv[])
 		fs_mount(base.c_str(), "");
 	}
 
+<<<<<<< Updated upstream
 	// Ê¹ÓÃ InstanceController ´´½¨¶ÔÏó£ºÏÖÔÚ·µ»Ø token£¨ObjectToken£©
 	auto player_token = ObjManager::Instance().CreateImmediate<PlayerObject>();
 	auto test_token = ObjManager::Instance().CreateImmediate<TestObject>();
+=======
+	// ä½¿ç”¨ InstanceController åˆ›å»ºå¯¹è±¡ï¼šçŽ°åœ¨è¿”å›ž tokenï¼ˆObjectTokenï¼‰
+	auto player_token = ObjManager::Instance().Create<PlayerObject>();
+	auto block_token = ObjManager::Instance().Create<TestBlock>();
+>>>>>>> Stashed changes
 
 	auto update_token = main_thread_on_update.add([]() {
 		ObjManager::Instance().UpdateAll();
