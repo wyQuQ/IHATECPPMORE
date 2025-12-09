@@ -11,6 +11,7 @@
 #include "base_object.h"
 #include "drawing_sequence.h"
 #include "player_object.h"
+#include "test_block.h"
 #include "obj_manager.h"
 #include "backgroud.h"
 #include "block_object.h"
@@ -52,6 +53,7 @@ int main(int argc, char* argv[])
 
 	// 使用 InstanceController 创建对象：现在返回 token（ObjectToken）
 	auto player_token = ObjManager::Instance().Create<PlayerObject>();
+	auto block_token = ObjManager::Instance().Create<TestBlock>();
 
 	// 创建背景对象
 	auto background_token = ObjManager::Instance().Create<Backgroud>();

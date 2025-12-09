@@ -4,7 +4,6 @@
 #include <cmath>
 #include <unordered_map>
 
-
 class PlayerObject : public BaseObject {
 public:
     PlayerObject() noexcept : BaseObject() {}

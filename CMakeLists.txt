@@ -6,23 +6,23 @@ project(
 	LANGUAGES CXX
 )
 
-# 指定默认使用 C++20 标准
+# ָ��Ĭ��ʹ�� C++20 ��׼
 set(CMAKE_CXX_STANDARD 20)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Emscripten")
 	set(EMSCRIPTEN TRUE)
 endif()
 
-# 将运行时输出目录设置为构建目录
+# ������ʱ���Ŀ¼����Ϊ����Ŀ¼
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-# 默认关闭 Cute Framework 示例构建
+# Ĭ�Ϲر� Cute Framework ʾ������
 set(CF_FRAMEWORK_BUILD_SAMPLES OFF)
 
-# 默认关闭 Cute Framework 测试构建
+# Ĭ�Ϲر� Cute Framework ���Թ���
 set(CF_FRAMEWORK_BUILD_TESTS OFF)
 
-# 使用 FetchContent 拉取 Cute Framework（仅在需要时）
+# ʹ�� FetchContent ��ȡ Cute Framework��������Ҫʱ��
 include(FetchContent)
 FetchContent_Declare(
 	cute
@@ -32,7 +32,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cute)
 
-# 可选：启用 MyCuteGame 调试特性
+# ��ѡ������ MyCuteGame ��������
 option(ENABLE_DEBUG "Enable MyCuteGame debug features" OFF)
 if(ENABLE_DEBUG)
 	message(STATUS "MyCuteGame: ENABLE_DEBUG=ON -> compiling with debug macros")
@@ -40,7 +40,7 @@ else()
 	message(STATUS "MyCuteGame: ENABLE_DEBUG=OFF -> compiling without debug macros")
 endif()
 
-# 自动收集源代码文件（CONFIGURE_DEPENDS 在新增/删除文件时会触发重新配置）
+# �Զ��ռ�Դ�����ļ���CONFIGURE_DEPENDS ������/ɾ���ļ�ʱ�ᴥ���������ã�
 file(GLOB_RECURSE PROJECT_SOURCES
 	CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
@@ -49,7 +49,7 @@ file(GLOB_RECURSE PROJECT_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/objects/*.c"
 )
 
-# 可选：收集头文件，以便 IDE 在项目中显示
+# ��ѡ���ռ�ͷ�ļ����Ա� IDE ����Ŀ����ʾ
 file(GLOB_RECURSE PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/head/*.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/head/*.hpp"
@@ -64,23 +64,23 @@ add_executable(${PROJECT_NAME}
 	${PROJECT_HEADERS}
 )
 
-# 将 head 目录添加到目标包含路径
+# �� head Ŀ¼��ӵ�Ŀ�����·��
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/head)
-# 将 src 目录添加为构建接口包含路径（用于引用源内头文件）
+# �� src Ŀ¼���Ϊ�����ӿڰ���·������������Դ��ͷ�ļ���
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
 
-# 添加 objects 目录到包含路径
+# ��� objects Ŀ¼������·��
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/objects>)
 
-# 根据 ENABLE_DEBUG 设置目标编译宏（使用 target_compile_definitions）
-# debug 宏（MCG_DEBUG / MCG_DEBUG_LEVEL）会被 head/debug_config.h 使用
+# ���� ENABLE_DEBUG ����Ŀ�����꣨ʹ�� target_compile_definitions��
+# debug �꣨MCG_DEBUG / MCG_DEBUG_LEVEL���ᱻ head/debug_config.h ʹ��
 if(ENABLE_DEBUG)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE MCG_DEBUG=1 MCG_DEBUG_LEVEL=2)
 else()
 	target_compile_definitions(${PROJECT_NAME} PRIVATE MCG_DEBUG=0 MCG_DEBUG_LEVEL=0)
 endif()
 
-# 为 macOS 应用设置 Info.plist 中的一些属性（如果需要）
+# Ϊ macOS Ӧ������ Info.plist �е�һЩ���ԣ������Ҫ��
 if(APPLE)
 	set_target_properties(
 		${PROJECT_NAME}
@@ -91,23 +91,23 @@ if(APPLE)
 	)
 endif()
 
-# 链接 Cute Framework 到游戏目标
+# ���� Cute Framework ����ϷĿ��
 target_link_libraries(${PROJECT_NAME} cute)
 
-# 为 Windows 调试配置 MSVC 特有的工作目录与启动项目设置
+# Ϊ Windows �������� MSVC ���еĹ���Ŀ¼�������Ŀ����
 if (MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
 
-# 构建后将 content 目录复制到可执行文件目录
+# ������ content Ŀ¼���Ƶ���ִ���ļ�Ŀ¼
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_SOURCE_DIR}/content"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>/content"
 )
 
-# 为 MSVC 设置编译选项以启用 UTF-8 源文件编码支持
+# Ϊ MSVC ���ñ���ѡ�������� UTF-8 Դ�ļ�����֧��
 target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/utf-8>
 )
