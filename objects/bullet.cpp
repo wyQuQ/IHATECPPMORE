@@ -4,14 +4,13 @@
 extern std::atomic<int> g_frame_count;
 extern int g_frame_rate; // 全局帧率（每秒帧数）
 
-// 设置子弹的生存期为 5 秒（以帧为单位）
+// 设置子弹的生存期
 int Bullet::kLifetimeFrames = g_frame_rate * 5; 
 
 void Bullet::Start()
 {
     // 记录生成时的全局帧计数
     m_spawn_frame = static_cast<int>(g_frame_count.load());
-
     // 设置子弹贴图源，其他参数使用默认值
     SpriteSetSource("/sprites/bullet.png", 2);
     SpriteSetUpdateFreq(5); // 设置动画更新频率为每 5 帧更新一次

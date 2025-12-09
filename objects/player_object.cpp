@@ -1,10 +1,16 @@
 #include "player_object.h"
 #include "bullet.h"
 
+extern std::atomic<int> g_frame_count;
+extern int g_frame_rate; // 全局帧率（每秒帧数）
+
+// 当前全局帧计数（用于射击CD）
+int cur_frame = 0;
+
 // 每帧移动的速度
 static constexpr float speed = 3.0f;
 const float PI = 3.14159265358979f;
-ObjToken test[9] = { ObjToken::Invalid() };
+
 // 为每个 PlayerObject 实例保存是否着地
 static std::unordered_map<const PlayerObject*, bool> s_grounded_map;
 
@@ -20,12 +26,6 @@ static constexpr float low_gravity_multiplier = 0.4f; // 按住跳跃时的重�
 static constexpr float fall_gravity_multiplier = 1.6f; // 松开或下落时的加强重力倍率（更快下落）
 static constexpr int coyote_time_frames = 6;         // 离地后仍可跳的帧数（coyote time）
 
-// 每帧移动的速度
-static constexpr float speed = 3.0f;
-const float PI = 3.14159265358979f;
-ObjToken test[3] = { ObjToken::Invalid() };
-int i = 0;
-
 static constexpr float gravity = 3.0f;        // 基础每帧重力加速度（可根据需要调整）
 static constexpr float max_fall_speed = -12.0f; // 终端下落速度（负值）
 
@@ -34,13 +34,12 @@ void PlayerObject::Start()
     // 统一设置贴图路径、竖排帧数、动画更新频率和绘制深度，并注册到绘制序列
     // 如需要默认值，请使用高粒度的 SetSprite*() 和 Set*() 方法逐一设置非默认值参数
     // 资源路径无默认值，必须手动设置
-    SpriteSetStats("/sprites/idle.png", 3, 7, 0);
+    SpriteSetStats("/sprites/idle.png", 3, 6, 0);
 
     // 可选：初始化位置（根据需要调整），例如屏幕中心附近
     SetPosition(cf_v2(0.0f, 0.0f));
 
     Scale(0.6f);
-	SetPivot(1,1);
 
     // 确保 maps 有默认条目（可选）
     s_grounded_map[this] = false;
@@ -51,21 +50,24 @@ void PlayerObject::Start()
 void PlayerObject::Update()
 {
     // 当检测到按键按下时，设置速度方向（不直接 SetPosition，使用速度积分）
-    CF_V2 dir(0,0);
+    int dir = 0;
     if (Input::IsKeyInState(CF_KEY_A, KeyState::Hold)) {
-        dir.x -= 1;
+        dir -= 1;
     }
     if (Input::IsKeyInState(CF_KEY_D, KeyState::Hold)) {
-        dir.x += 1;
-    }
-    if (Input::IsKeyInState(CF_KEY_SPACE, KeyState::Hold)) {
-        dir.y += 1;
-    }
-    if (Input::IsKeyInState(CF_KEY_S, KeyState::Hold)) {
-        dir.y -= 1;
+        dir += 1;
     }
 
-	// 计算朝向角度（弧度制，0 度为正右，逆时针旋转）
+	// 设置贴图翻转（根据移动方向）
+    if (dir != 0) {
+        SpriteSetStats("/sprites/walk.png", 2, 5, 0, false);
+		SpriteFlipX(dir < 0);
+    }
+    else {
+        SpriteSetStats("/sprites/idle.png", 3, 6, 0, false);
+    }
+
+	// 计算朝向角度（弧度制，0 度为正右，逆时针旋转）（测试用）
     float angle = 0;
     if (Input::IsKeyInState(CF_KEY_Q, KeyState::Hold)) {
 		angle += PI / 60.0f; // 每帧逆时针旋转 3 度
@@ -77,20 +79,20 @@ void PlayerObject::Update()
 	Rotate(angle);
 
     // 按 W 键发射 TestObject 实例
-    if (Input::IsKeyInState(CF_KEY_W, KeyState::Down)) {
-        if (objs.TryGetRegisteration(test[i])) {
-            objs.Destroy(test[i]);
-        }
-        auto test_token = objs.Create<Bullet>();
-        if (test_token.isValid()) test[i] = test_token;
-        auto rot = GetRotation();
+    if (Input::IsKeyInState(CF_KEY_W, KeyState::Down) && cur_frame + g_frame_rate * 0.2 <= g_frame_count) {
+		// 更新射击时间
+		cur_frame = g_frame_count;
+
+		// 创建 Bullet 对象并设置初始位置
+        auto token = objs.Create<Bullet>();
         int flip = (SpriteGetFlipX() ? -1 : 1);
-        objs[test[i]].SetRotation(rot);
-        objs[test[i]].SpriteFlipX(SpriteGetFlipX());
-        objs[test[i]].SetPosition(GetPosition());
-        objs[test[i]].SetVisible(true);
-        objs[test[i]].SetVelocity(v2math::angled(CF_V2(30.0f), rot) * flip);
-        i = (i + 1) % 3; // 场上仅存在3个 TestObject 实例，若多出则销毁最早生成的那个
+        CF_V2 dir = v2math::get_dir(GetRotation()) * flip;
+        if(token.isValid()) objs[token].SetPosition(GetPosition() + dir * SpriteWidth() * 0.5f);
+
+		// 设置发射方向与速度（测试用）
+        auto rot = GetRotation();
+        objs[token].SetRotation(rot);
+        objs[token].SetVelocity(v2math::angled(CF_V2(12.0f), rot) * flip);
     }
 
     // 读取当前垂直速度以判断是上升还是下落
@@ -141,7 +143,8 @@ void PlayerObject::Update()
 
 void PlayerObject::OnCollisionEnter(const ObjManager::ObjToken & other_token, const CF_Manifold & manifold) noexcept {
     // 碰撞进入时的处理逻辑
-    printf("Collided with object token: %u\n", other_token.index);
+	// 仅处理与实体物体的碰撞
+    if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
 
     // 将Player对象的位置重置到上一帧位置，避免穿透
     SetPosition(GetPrevPosition());
@@ -161,7 +164,8 @@ void PlayerObject::OnCollisionEnter(const ObjManager::ObjToken & other_token, co
 
 void PlayerObject::OnCollisionStay(const ObjManager::ObjToken & other_token, const CF_Manifold & manifold) noexcept {
     // 碰撞持续时的处理逻辑
-    printf("Still colliding with object token: %u\n", other_token.index);
+    // 仅处理与实体物体的碰撞
+    if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
 
     CF_V2 correction = cf_v2(-manifold.n.x * manifold.depths[0], -manifold.n.y * manifold.depths[0]);
     CF_V2 current_position = GetPosition(); // 使用公开接口
@@ -179,7 +183,8 @@ void PlayerObject::OnCollisionStay(const ObjManager::ObjToken & other_token, con
 
 void PlayerObject::OnCollisionExit(const ObjManager::ObjToken & other_token, const CF_Manifold & manifold) noexcept {
     // 碰撞退出时的处理逻辑
-    printf("No longer colliding with object token: %u\n", other_token.index);
+    // 仅处理与实体物体的碰撞
+    if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
 
     // 离开碰撞时取消着地标记，并启动 coyote 时间（短暂允许再次跳跃）
     s_grounded_map[this] = false;

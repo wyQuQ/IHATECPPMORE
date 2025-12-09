@@ -411,6 +411,13 @@ void PhysicsSystem::Step(float cell_size) noexcept
 			}
 		};
 
+#if COLLISION_DEBUG
+	// 限制每帧的详细打印次数，防止刷屏
+	const int kMaxDetailedPrintsPerFrame = 3;
+	int detailedPrints = 0;
+	static int enterCount = 0;
+#endif
+
 	for (const auto& ev : events_) {
 		if (!ObjManager::Instance().IsValid(ev.a) || !ObjManager::Instance().IsValid(ev.b)) continue;
 
@@ -429,30 +436,49 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		BaseObject& ob = ObjManager::Instance()[ev.b];
 
 #if COLLISION_DEBUG
-		static int enterCount = 0;
+		// 仅在达到限制前打印有限数量的详细 Enter 信息；Stay/Exit 打印简短摘要
 		if (!was_colliding) {
-			std::cerr << "[Physics] Collision Event #" << (++enterCount) << ": a=" << ev.a.index << " b=" << ev.b.index
-				<< (was_colliding ? " (STAY)" : " (ENTER)") << "\n";
+			if (detailedPrints < kMaxDetailedPrintsPerFrame) {
+				std::cerr << "[Physics] Collision Event #" << (++enterCount) << ": a=" << ev.a.index << " b=" << ev.b.index
+					<< " (ENTER)" << "\n";
 
-			std::cerr << "[Physics] Enter collision (detailed): a=" << ev.a.index << " b=" << ev.b.index << "\n";
+				std::cerr << "[Physics] Enter collision (detailed): a=" << ev.a.index << " b=" << ev.b.index << "\n";
 
-			// 既然通过 IsValid() 保证了 token 有效，这里直接访问 world_shapes_
-			const CF_ShapeWrapper& aworld = world_shapes_[ev.a.index];
-			const CF_ShapeWrapper& bworld = world_shapes_[ev.b.index];
+				// 安全地从 token_map_ 找到 entries_ 的索引，再访问 world_shapes_
+				auto itA = token_map_.find(make_key(ev.a));
+				auto itB = token_map_.find(make_key(ev.b));
+				if (itA != token_map_.end() && itB != token_map_.end()) {
+					const CF_ShapeWrapper& aworld = world_shapes_[itA->second];
+					const CF_ShapeWrapper& bworld = world_shapes_[itB->second];
 
-			std::cerr << "  A (world):\n";
-			dump_shape_world(aworld);
-			std::cerr << "  B (world):\n";
-			dump_shape_world(bworld);
+					std::cerr << "  A (world):\n";
+					dump_shape_world(aworld);
+					std::cerr << "  B (world):\n";
+					dump_shape_world(bworld);
+				}
+				else {
+					std::cerr << "  [Debug] world_shapes_ lookup failed for tokens\n";
+				}
 
-			std::cerr << "  manifold.count=" << ev.manifold.count
-				<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")\n";
-			for (int pi = 0; pi < std::min(ev.manifold.count, 2); ++pi) {
-				std::cerr << std::fixed << std::setprecision(6)
-					<< "    contact[" << pi << "] = (" << ev.manifold.contact_points[pi].x << ", "
-					<< ev.manifold.contact_points[pi].y << ") depth=" << ev.manifold.depths[pi] << "\n";
+				// 简洁打印 manifold 概要（避免逐点刷屏）
+				std::cerr << "  manifold.count=" << ev.manifold.count
+					<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")"
+					<< " max_depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
+
+				++detailedPrints;
 			}
-			std::cout << "-----\n";
+			else {
+				// 达到详细打印限制后，只打印简短摘要（可用于统计或快速排查）
+				std::cerr << "[Physics] Collision ENTER summary: a=" << ev.a.index << " b=" << ev.b.index
+					<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")"
+					<< " depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
+			}
+		}
+		else {
+			// Stay 情况仅打印非常简短的统计信息（避免大量输出）
+			// 若需要也可注释掉以下行以完全禁用 Stay 输出
+			// std::cerr << "[Physics] Collision STAY: a=" << ev.a.index << " b=" << ev.b.index
+			// 	<< " depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
 		}
 #endif
 
@@ -485,6 +511,11 @@ void PhysicsSystem::Step(float cell_size) noexcept
 			// 使用 operator[] 获取引用（已校验）
 			BaseObject& oa = ObjManager::Instance()[ta];
 			BaseObject& ob = ObjManager::Instance()[tb];
+
+#if COLLISION_DEBUG
+			// Exit 只打印简短摘要
+			std::cerr << "[Physics] Collision EXIT: a=" << ta.index << " b=" << tb.index << "\n";
+#endif
 
 			oa.OnCollisionState(tb, CF_Manifold{}, BaseObject::CollisionPhase::Exit);
 			ob.OnCollisionState(ta, CF_Manifold{}, BaseObject::CollisionPhase::Exit);

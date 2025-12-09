@@ -96,6 +96,15 @@ public:
     // 查询是否设置了资源路径（可选输出当前路径）
     bool SpriteHasPath(std::string* out_path = nullptr) const noexcept { return HasPath(out_path); }
 
+    int SpriteWidth() const noexcept {
+        auto frame = SpriteGetFrame();
+		return frame.w * GetScaleX();
+	}
+    int SpriteHeight() const noexcept {
+        auto frame = SpriteGetFrame();
+        return frame.h * GetScaleY();
+    }
+
     // 可见性/深度控制（用于统一渲染排序）
     // - 渲染器应使用 IsVisible()/GetDepth() 决定是否绘制与绘制顺序
     void SetVisible(bool v) noexcept { m_visible = v; }
