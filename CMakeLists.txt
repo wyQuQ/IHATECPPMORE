@@ -6,23 +6,23 @@ project(
 	LANGUAGES CXX
 )
 
-# ±ØÐëÖÁÉÙÊ¹ÓÃ C++20¡£
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ C++20ï¿½ï¿½
 set(CMAKE_CXX_STANDARD 20)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Emscripten")
 	set(EMSCRIPTEN TRUE)
 endif()
 
-# È·±£ËùÓÐ¶þ½øÖÆÊä³ö·ÅÔÚÍ¬Ò»¸ö¹¹½¨Ä¿Â¼¡£
+# È·ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-# Ä¬ÈÏ½ûÓÃ¹¹½¨ Cute Framework Ê¾Àý
+# Ä¬ï¿½Ï½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ Cute Framework Ê¾ï¿½ï¿½
 set(CF_FRAMEWORK_BUILD_SAMPLES OFF)
 
-# Ä¬ÈÏ½ûÓÃ¹¹½¨ Cute Framework ²âÊÔ
+# Ä¬ï¿½Ï½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ Cute Framework ï¿½ï¿½ï¿½ï¿½
 set(CF_FRAMEWORK_BUILD_TESTS OFF)
 
-# Õâ½«ÔÚµÚÒ»´Î¹¹½¨ÓÎÏ·Ê±ÏÂÔØ²¢¹¹½¨ Cute Framework£¨Ö»Ö´ÐÐÒ»´Î£©¡£
+# ï¿½â½«ï¿½Úµï¿½Ò»ï¿½Î¹ï¿½ï¿½ï¿½ï¿½ï¿½Ï·Ê±ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ Cute Frameworkï¿½ï¿½Ö»Ö´ï¿½ï¿½Ò»ï¿½Î£ï¿½ï¿½ï¿½
 include(FetchContent)
 FetchContent_Declare(
 	cute
@@ -32,7 +32,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cute)
 
-# ¿ÉÑ¡£º±àÒëÊ±¿ªÆôµ÷ÊÔºê£¨Í¨¹ý CMake Ñ¡Ïî¿ØÖÆ£©
+# ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºê£¨Í¨ï¿½ï¿½ CMake Ñ¡ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
 option(ENABLE_DEBUG "Enable MyCuteGame debug features" OFF)
 if(ENABLE_DEBUG)
 	message(STATUS "MyCuteGame: ENABLE_DEBUG=ON -> compiling with debug macros")
@@ -40,14 +40,14 @@ else()
 	message(STATUS "MyCuteGame: ENABLE_DEBUG=OFF -> compiling without debug macros")
 endif()
 
-# ×Ô¶¯ÊÕ¼¯Ô´ÎÄ¼þ£¨Ö»ÐèÖ¸¶¨Ô´Ä¿Â¼¼´¿É£©
-# Ê¹ÓÃ CONFIGURE_DEPENDS ÒÔ±ãÔÚÌí¼Ó/É¾³ýÎÄ¼þÊ±×Ô¶¯ÖØÐÂÅäÖÃ
+# ï¿½Ô¶ï¿½ï¿½Õ¼ï¿½Ô´ï¿½Ä¼ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ö¸ï¿½ï¿½Ô´Ä¿Â¼ï¿½ï¿½ï¿½É£ï¿½
+# Ê¹ï¿½ï¿½ CONFIGURE_DEPENDS ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/É¾ï¿½ï¿½ï¿½Ä¼ï¿½Ê±ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 file(GLOB_RECURSE PROJECT_SOURCES
 	CONFIGURE_DEPENDS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
-# ¿ÉÑ¡£º°ÑÍ·ÎÄ¼þÒ²¼ÓÈëÄ¿±êÒÔ±ã IDE ÏÔÊ¾£¨²»»á±»±àÒë£©
+# ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ä¼ï¿½Ò²ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ô±ï¿½ IDE ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½á±»ï¿½ï¿½ï¿½ë£©
 file(GLOB_RECURSE PROJECT_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/head/*.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/head/*.hpp"
@@ -58,25 +58,25 @@ file(GLOB_RECURSE PROJECT_HEADERS
 add_executable(${PROJECT_NAME}
 	${PROJECT_SOURCES}
 	${PROJECT_HEADERS}
- "objects/player_object.h" "objects/player_object.cpp" "objects/test_object.h" "objects/test_object.cpp")
+ "objects/player_object.h" "objects/player_object.cpp" "objects/test_object.h" "objects/test_object.cpp" "objects/backgroud.h" "objects/backgroud.cpp" "objects/block_object.h")
  
-# ½« head Ä¿Â¼Ìí¼ÓÎª¸ÃÄ¿±êµÄ°üº¬Â·¾¶£º
+# ï¿½ï¿½ head Ä¿Â¼ï¿½ï¿½ï¿½Îªï¿½ï¿½Ä¿ï¿½ï¿½Ä°ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/head)
-# ÎÒÃÇµÄÔ´´úÂëÎ»ÓÚ `src` ÎÄ¼þ¼Ð¡£
+# ï¿½ï¿½ï¿½Çµï¿½Ô´ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ `src` ï¿½Ä¼ï¿½ï¿½Ð¡ï¿½
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/objects>)
 
-# ½« ENABLE_DEBUG ·­ÒëÎªÄ¿±ê¼¶±ðµÄÔ¤´¦Àíºê£¨ÓÅÏÈÊ¹ÓÃ target_compile_definitions£©
-# debug ÅäÖÃ£ºMCG_DEBUG Óë MCG_DEBUG_LEVEL »á±»Í·ÎÄ¼þ head/debug_config.h Ê¹ÓÃ
+# ï¿½ï¿½ ENABLE_DEBUG ï¿½ï¿½ï¿½ï¿½ÎªÄ¿ï¿½ê¼¶ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ê£¨ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ target_compile_definitionsï¿½ï¿½
+# debug ï¿½ï¿½ï¿½Ã£ï¿½MCG_DEBUG ï¿½ï¿½ MCG_DEBUG_LEVEL ï¿½á±»Í·ï¿½Ä¼ï¿½ head/debug_config.h Ê¹ï¿½ï¿½
 if(ENABLE_DEBUG)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE MCG_DEBUG=1 MCG_DEBUG_LEVEL=2)
 else()
 	target_compile_definitions(${PROJECT_NAME} PRIVATE MCG_DEBUG=0 MCG_DEBUG_LEVEL=0)
 endif()
 
-# CMake Éú³É Info.plist ÎÄ¼þËùÐèµÄÒ»Ð©»ù±¾ÐÅÏ¢¡£
-# ÀýÈç£ºiOS ¹¹½¨ÐèÒªÕâÐ©ÐÅÏ¢¡£
+# CMake ï¿½ï¿½ï¿½ï¿½ Info.plist ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+# ï¿½ï¿½ï¿½ç£ºiOS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ð©ï¿½ï¿½Ï¢ï¿½ï¿½
 if(APPLE)
 	set_target_properties(
 		${PROJECT_NAME}
@@ -87,24 +87,24 @@ if(APPLE)
 	)
 endif()
 
-# ½«ÓÎÏ·Á´½Óµ½ Cute Framework¡£
+# ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½Óµï¿½ Cute Frameworkï¿½ï¿½
 target_link_libraries(${PROJECT_NAME} cute)
 
-# ÎªÁËÔÚ Windows ÉÏ·½±ã£¬ÉèÖÃ MSVC µ÷ÊÔÆ÷µÄ¹¤×÷Ä¿Â¼Îª¹¹½¨ÎÄ¼þ¼Ð¡£
-# ²¢ÇëÇó MSVC ½«¸ÃÓÎÏ·ÉèÖÃÎªÆô¶¯ÏîÄ¿¡£
+# Îªï¿½ï¿½ï¿½ï¿½ Windows ï¿½Ï·ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ MSVC ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½Ä¿Â¼Îªï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ð¡ï¿½
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MSVC ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
 if (MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
 
-# °Ñ content Ä¿Â¼¸´ÖÆµ½¿ÉÖ´ÐÐÎÄ¼þµÄÔËÐÐÄ¿Â¼£¨¹¹½¨ºó¶¯×÷£©
+# ï¿½ï¿½ content Ä¿Â¼ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_SOURCE_DIR}/content"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>/content"
 )
 
-# ÔÚ CMakeLists.txt ÖÐ£¨target ÒÑ´´½¨Ö®ºó£©
+# ï¿½ï¿½ CMakeLists.txt ï¿½Ð£ï¿½target ï¿½Ñ´ï¿½ï¿½ï¿½Ö®ï¿½ï¿½
 target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/utf-8>
 )
