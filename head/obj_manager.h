@@ -2,29 +2,27 @@
 
 #include <memory>
 #include <vector>
-#include <algorithm>
 #include <type_traits>
-#include <functional>
 #include <unordered_set>
 #include <unordered_map>
-#include <tuple>
-#include <utility>
 #include <cstdint>
-#include <limits>
 
 #include "object_token.h"
 
-// Ç°ÖÃÉùÃ÷£¬±ÜÃâÍ·ÎÄ¼şÑ­»·ÒÀÀµ
+// å‰ç½®å£°æ˜ï¼Œé¿å…å¤´æ–‡ä»¶å¾ªç¯ä¾èµ–
 class BaseObject;
 
-// ObjManager ÎªÓ¦ÓÃÌá¹©¶ÔÏóÉúÃüÖÜÆÚ¹ÜÀíÓë¾ä±ú£¨token£©ÏµÍ³£¬ÃæÏòÊ¹ÓÃÕßËµÃ÷£º
-// - Ìá¹©»ùÓÚ `ObjToken` µÄ¶ÔÏóÒıÓÃÓëÑéÖ¤»úÖÆ£¬±ÜÃâÂãÖ¸ÕëĞü¹ÒÎÊÌâ¡£
-// - Ö§³ÖÁ¢¼´´´½¨£¨CreateImmediate/CreateInit£©ÓëÑÓ³Ù´´½¨£¨CreateDelayed£©£¬
-//   ÑÓ³Ù´´½¨»áÔÚÏÂÒ»´Î UpdateAll Ê±Êµ¼Ê¹¹Ôì¶ÔÏó²¢µ÷ÓÃ Start()¡£
-// - Ö§³ÖÁ¢¼´Ïú»Ù£¨DestroyImmediate£©ÓëÑÓ³ÙÏú»Ù£¨DestroyDelayed£©£¬ÑÓ³ÙÏú»Ù»áÔÚ UpdateAll ÖĞÖ´ĞĞ£¬
-//   ±£Ö¤ÔÚ±éÀú/»Øµ÷¹ı³ÌÖĞ°²È«ÒÆ³ı¶ÔÏó¡£
-// - Ìá¹© UpdateAll() ×÷ÎªÍ³Ò»Ö¡¸üĞÂÈë¿Ú£º¸ºÔğÖğ¶ÔÏóµÄ FramelyUpdate¡¢´¦ÀíÎïÀíÏµÍ³ Step¡¢Ö´ĞĞÑÓ³Ù´´½¨/Ïú»Ù¡£
-// - ÎªÍâ²¿ÏµÍ³£¨ÀıÈç PhysicsSystem£©Ìá¹©×¢²á/·´×¢²áµÄ token ÉúÃüÖÜÆÚ¹ÜÀí°ïÖú¡£
+// ObjManager ä¸ºåº”ç”¨æä¾›å¯¹è±¡ç”Ÿå‘½å‘¨æœŸç®¡ç†ä¸å¥æŸ„ï¼ˆtokenï¼‰ç³»ç»Ÿï¼Œé¢å‘ä½¿ç”¨è€…è¯´æ˜ï¼š
+// - æä¾›åŸºäº `ObjToken` çš„å¯¹è±¡å¼•ç”¨ä¸éªŒè¯æœºåˆ¶ï¼Œé¿å…è£¸æŒ‡é’ˆæ‚¬æŒ‚é—®é¢˜ã€‚ä¸»æµç”¨æ³•ï¼š
+//     auto tok = objs.Create<MyObject>(...); // è¿”å› pending tokenï¼ˆpending id å­˜æ”¾åœ¨ token.indexï¼‰
+//     // ä¸‹ä¸€å¸§ UpdateAll æäº¤åï¼Œtoken å¯èƒ½è¢«æ˜ å°„ä¸ºçœŸå® tokenï¼ˆindex -> objects_ æ§½ç´¢å¼•ï¼‰ï¼Œå¯ä½¿ç”¨ TryGetRegisteration / operator[] è®¿é—®
+// - æ”¯æŒå»¶è¿Ÿåˆ›å»ºï¼ˆCreateEntry å°†å¯¹è±¡æ”¾å…¥ pending_creates_ å¹¶ç«‹å³è°ƒç”¨ Start()ï¼Œä½†ç›´åˆ°ä¸‹ä¸€å¸§ UpdateAll æ‰åˆå¹¶åˆ° objects_ï¼‰
+//   è¿™æ ·åšå¯ä»¥é¿å…åœ¨æ›´æ–°å¾ªç¯ä¸­åŠ¨æ€åˆ†é…å¯¼è‡´è¿­ä»£å™¨/å¼•ç”¨å¤±æ•ˆçš„é—®é¢˜ã€‚
+// - æ”¯æŒå»¶è¿Ÿé”€æ¯ï¼ˆDestroyExisting ä¼šå°†çœŸå® token å…¥é˜Ÿï¼Œå®é™…é”€æ¯åœ¨ä¸‹ä¸€æ¬¡ UpdateAll çš„å®‰å…¨ç‚¹æ‰§è¡Œï¼‰
+// - UpdateAll() æ˜¯ç»Ÿä¸€çš„å¸§æ›´æ–°å…¥å£ï¼ŒèŒè´£åŒ…æ‹¬ï¼šè°ƒç”¨æ¯ä¸ªå¯¹è±¡çš„ FramelyApplyã€æ¨è¿› PhysicsSystemã€æ‰§è¡Œå¯¹è±¡ Updateã€å¤„ç† pending create/destroyã€‚
+// è¯­ä¹‰å¥‘çº¦ï¼š
+// - ObjManager çš„å¤§éƒ¨åˆ†æ¥å£ä¸æ˜¯çº¿ç¨‹å®‰å…¨çš„ï¼Œåº”åœ¨ä¸»çº¿ç¨‹çš„æ¸¸æˆå¾ªç¯ä¸­ä½¿ç”¨ã€‚
+// - operator[] åœ¨ token æ— æ•ˆæ—¶å°†æŠ›å‡º std::out_of_rangeï¼ˆå¹¶å†™å…¥ std::cerrï¼‰ï¼Œè°ƒç”¨æ–¹åº”æ•è·æˆ–å…ˆä½¿ç”¨ IsValid/TryGetRegisteration æ£€æŸ¥ã€‚
 class ObjManager {
 public:
     static ObjManager& Instance() noexcept;
@@ -34,20 +32,19 @@ public:
 
     using ObjToken = ::ObjToken;
 
-    // CreateImmediate: Á¢¼´´´½¨¶ÔÏó²¢µ÷ÓÃ Start()£¬·µ»ØÎ¨Ò»µÄ ObjToken ¹©Íâ²¿³ÖÓĞ¡£
-    // Ä£°å T ±ØĞë¼Ì³Ğ×Ô BaseObject¡£initializer£¨¿ÉÑ¡£©»áÔÚ¶ÔÏó¹¹ÔìÍê³Éºó¡¢Start() Ç°±»µ÷ÓÃÓÃÓÚ³õÊ¼»¯¡£
+    // Create: ç«‹å³æ„é€ å¯¹è±¡å¹¶è°ƒç”¨ Start()ï¼Œä½†å¯¹è±¡åˆå¹¶åˆ°å†…éƒ¨å®¹å™¨å¹¶ç”ŸæˆçœŸå® ObjToken ä¼šåœ¨ä¸‹ä¸€å¸§ UpdateAll çš„æäº¤é˜¶æ®µå®Œæˆã€‚
+    // è¿”å› PendingToken ä»¥ä¾¿è°ƒç”¨æ–¹è¿½è¸ª pending å¯¹è±¡ï¼Œå¹¶åœ¨åˆå¹¶åé€šè¿‡ ResolvePending/ TryGetRegisteration è·å–çœŸå® ObjTokenã€‚
     template <typename T, typename... Args>
-    ObjToken CreateImmediate(Args&&... args)
+    ObjToken Create(Args&&... args)
     {
         static_assert(std::is_base_of<BaseObject, T>::value, "T must derive from BaseObject");
-        // ½«¿Éµ÷ÓÃµÄ³õÊ¼»¯Æ÷´«µİ¸ø CreateInit£¬ÒÔÍ³Ò»´¦Àí³õÊ¼»¯Âß¼­
-        return CreateInit<T>([](T*) {}, std::forward<Args>(args)...);
+        return Create<T>([](T*) {}, std::forward<Args>(args)...);
     }
 
-    // CreateInit: Óë CreateImmediate ÏàËÆ£¬µ«ÔÊĞí´«Èë initializer ¶ÔÏó£¨ÔÚ¶ÔÏó´´½¨ºó¡¢Start() Ç°±»µ÷ÓÃ£©¡£
-    // initializer ±ØĞë¿É±»µ÷ÓÃ²¢½ÓÊÜ T*¡£
+    // Create: å…è®¸åœ¨æ„é€ åã€Start() å‰å¯¹å¯¹è±¡è¿›è¡Œåˆå§‹åŒ–çš„ç‰ˆæœ¬ï¼Œè¿”å› PendingTokenã€‚
+    // - initializer ä¼šåœ¨å¯¹è±¡æ„é€ åã€Start() è°ƒç”¨å‰è¢«è°ƒç”¨ï¼Œé€‚åˆåšä¸€äº›åˆå§‹çŠ¶æ€ç»‘å®š
     template <typename T, typename Init, typename... Args>
-    ObjToken CreateInit(Init&& initializer, Args&&... args)
+    ObjToken Create(Init&& initializer, Args&&... args)
     {
         static_assert(std::is_base_of<BaseObject, T>::value, "T must derive from BaseObject");
         static_assert(std::is_invocable_v<Init, T*>, "initializer must be callable with T*");
@@ -55,45 +52,39 @@ public:
         if (initializer) {
             std::forward<Init>(initializer)(static_cast<T*>(obj.get()));
         }
-        return CreateImmediateFromUniquePtr(std::move(obj));
+        return CreateEntry(std::move(obj));
     }
 
-    // CreateDelayed: ÔÚÄÚ²¿¶ÓÁĞÖĞ±£ÁôÒ»¸ö¹¤³§º¯Êı£¬Êµ¼Ê¶ÔÏó»áÔÚÏÂÒ»´Î UpdateAll() Ê±¹¹Ôì²¢ Start()¡£
-    template <typename T, typename... Args>
-    ObjToken CreateDelayed(Args&&... args)
-    {
-        static_assert(std::is_base_of<BaseObject, T>::value, "T must derive from BaseObject");
-        auto factory = [args_tuple = std::make_tuple(std::forward<Args>(args)...)]() mutable -> std::unique_ptr<BaseObject> {
-            return std::apply([](auto&&... unpacked) {
-                return std::make_unique<T>(std::forward<decltype(unpacked)>(unpacked)...);
-            }, std::move(args_tuple));
-        };
-        return CreateDelayedFromFactory(std::move(factory));
-    }
-
-    // Í¨¹ı token »ñÈ¡¶ÔÏóÖ¸Õë£¨¿ÉÄÜ·µ»Ø nullptr£¬Èç¹û token ÎŞĞ§»ò¶ÔÏóÒÑ±»Ïú»Ù£©
-    BaseObject* Get(const ObjToken& token) noexcept;
-    template <typename T>
-    T* GetAs(const ObjToken& token) noexcept { return static_cast<T*>(Get(token)); }
-
+    // éªŒè¯ token æ˜¯å¦ä¸ºå½“å‰æœ‰æ•ˆçš„å·²åˆå¹¶å¯¹è±¡ï¼ˆä¸è€ƒè™‘ pending æƒ…å†µï¼‰
     bool IsValid(const ObjToken& token) const noexcept;
 
-    // DestroyImmediate: Á¢¼´Ïú»ÙÖ¸¶¨¶ÔÏó£¨°´Ö¸Õë»ò token£©£¬»áµ÷ÓÃ OnDestroy ²¢ÊÍ·Å×ÊÔ´¡£
-    void DestroyImmediate(BaseObject* ptr) noexcept;
-    void DestroyImmediate(const ObjToken& token) noexcept;
+    // operator[] é‡è½½ï¼šé€šè¿‡ ObjToken ç›´æ¥å–å¾—å¯¹è±¡çš„å·¦å€¼å¼•ç”¨ã€‚
+    // è¯­ä¹‰ï¼šè‹¥ token æ— æ•ˆæˆ–å¯¹è±¡å·²è¢«é”€æ¯ï¼Œä¼šæŠ›å‡º std::out_of_rangeï¼ˆå¹¶å†™å…¥ std::cerrï¼‰ã€‚
+    // æ³¨æ„ï¼šå¦‚æœä¼ å…¥çš„æ˜¯ pending tokenï¼ˆisRegitsered==falseï¼‰ï¼Œconst/non-const non-const ç‰ˆæœ¬ä¼šå°è¯•è§£æä¸º pendingï¼ˆè®¿é—® pending_creates_ï¼‰æˆ–ä½¿ç”¨ TryGetRegisteration å‡çº§ä¸ºçœŸå® tokenã€‚
+    BaseObject& operator[](ObjToken& token);
+    BaseObject& operator[](const ObjToken& token);
+    const BaseObject& operator[](ObjToken& token) const;
+    const BaseObject& operator[](const ObjToken& token) const;
 
-    // DestroyDelayed: ½«Ïú»ÙÇëÇóÈë¶Ó£¬Êµ¼ÊÉ¾³ıÔÚÏÂÒ»´Î UpdateAll Ê±Ö´ĞĞ£¬±ÜÃâÔÚ±éÀúÊ±ÆÆ»µÈİÆ÷¡£
-    void DestroyDelayed(BaseObject* ptr) noexcept;
-    void DestroyDelayed(const ObjToken& token) noexcept;
+	// å°è¯•æŠŠ tokenï¼ˆå¯èƒ½æ˜¯ pendingï¼‰è§£æä¸ºå·²æ³¨å†Œçš„çœŸå® tokenï¼š
+	// - é const ç‰ˆæœ¬ä¼šåœ¨æˆåŠŸæ—¶ç”¨çœŸå® token è¦†ç›–è¾“å…¥ token å¹¶è¿”å› trueï¼ˆcaller å¯ç»§ç»­ç”¨è¯¥ token è®¿é—®å¯¹è±¡ï¼‰
+    bool TryGetRegisteration(ObjToken& token) const noexcept;
+    bool TryGetRegisteration(const ObjToken& token) const noexcept;
 
-    // DestroyAll: Á¢¼´Ïú»ÙËùÓĞ¶ÔÏó²¢ÇåÀíËùÓĞ¹ÒÆğ¶ÓÁĞ£¬Í¨³£ÔÚ³ÌĞòÍË³ö»òÖØÖÃÊ±µ÷ÓÃ¡£
+    // æ”¯æŒä»¥ PendingToken ç›´æ¥é”€æ¯ï¼ˆè‹¥å·²åˆå¹¶åˆ™è½¬ä¸ºé”€æ¯çœŸå® ObjTokenï¼Œå¦åˆ™é”€æ¯ pendingï¼‰
+    // - Destroy ä¼šæ™ºèƒ½åˆ¤æ–­ä¼ å…¥ token æ˜¯ pending è¿˜æ˜¯å·²æ³¨å†Œ tokenï¼Œå¹¶é‡‡å–ç›¸åº”è·¯å¾„
+    void Destroy(const ObjToken& p) noexcept;
+
+    // DestroyAll: ç«‹å³é”€æ¯æ‰€æœ‰å¯¹è±¡å¹¶æ¸…ç†æ‰€æœ‰æŒ‚èµ·é˜Ÿåˆ—ï¼Œé€šå¸¸åœ¨ç¨‹åºé€€å‡ºæˆ–é‡ç½®æ—¶è°ƒç”¨ã€‚
+    // - ä¼šè°ƒç”¨æ¯ä¸ªå¯¹è±¡çš„ OnDestroy å¹¶åæ³¨å†Œç‰©ç†ç³»ç»Ÿï¼Œç¡®ä¿ä¸ä¼šç•™ä¸‹æ‚¬æŒ‚èµ„æºã€‚
     void DestroyAll() noexcept;
 
-    // UpdateAll: Ã¿Ö¡Ö÷¸üĞÂÈë¿Ú£¬Ë³Ğò£º
-    // 1) ÎªÃ¿¸ö»îÔ¾¶ÔÏóµ÷ÓÃ FramelyUpdate()
-    // 2) µ÷ÓÃ PhysicsSystem::Step()
-    // 3) Ö´ĞĞËùÓĞÑÓ³ÙÏú»Ù
-    // 4) Ö´ĞĞËùÓĞÑÓ³Ù´´½¨²¢µ÷ÓÃ Start()
+    // UpdateAll: æ¯å¸§ä¸»æ›´æ–°å…¥å£ï¼Œé¡ºåºï¼š
+    // 1) ä¸ºæ¯ä¸ªæ´»è·ƒå¯¹è±¡è°ƒç”¨ FramelyApply()ï¼ˆç‰©ç†ç§¯åˆ†/è°ƒè¯•ç»˜åˆ¶/è®°å½• prev posï¼‰
+    // 2) è°ƒç”¨ PhysicsSystem::Step()ï¼ˆç¢°æ’æ£€æµ‹ä¸å›è°ƒï¼‰
+    // 3) ä¸ºæ¯ä¸ªæ´»è·ƒå¯¹è±¡è°ƒç”¨ Update()
+    // 4) æ‰§è¡Œæ‰€æœ‰å»¶è¿Ÿé”€æ¯ï¼ˆåœ¨å®‰å…¨ç‚¹å¤„ç†ï¼Œé¿å…åœ¨éå†ä¸­åˆ é™¤ï¼‰
+    // 5) æäº¤æœ¬å¸§ pending åˆ›å»ºï¼ˆå°† pending_creates_ åˆå¹¶åˆ° objects_ å¹¶æ³¨å†Œåˆ°ç‰©ç†ç³»ç»Ÿï¼‰
     void UpdateAll() noexcept;
 
     size_t Count() const noexcept { return alive_count_; }
@@ -106,39 +97,54 @@ private:
         std::unique_ptr<BaseObject> ptr;
         uint32_t generation = 0;
         bool alive = false;
+        // æ–°å¢ï¼šåˆ›å»ºå½“å¸§è·³è¿‡ FramelyUpdate çš„æ ‡å¿—ï¼ˆç”¨äºåˆå¹¶æ—¶å¯èƒ½éœ€è¦è·³è¿‡æœ¬å¸§æ›´æ–°ï¼‰
+        bool skip_update_this_frame = false;
     };
 
+    // pending create çš„ä¸­é—´ç»“æ„ï¼šåœ¨ CreateEntry æ—¶åªæŠŠå¯¹è±¡æ”¾åˆ°è¿™é‡Œï¼ˆä¸ç›´æ¥æ‰©å±• objects_ï¼‰ï¼Œ
+    // åœ¨ UpdateAll çš„æäº¤é˜¶æ®µå†æŠŠå®ƒä»¬åˆå¹¶åˆ° objects_ï¼ˆå®‰å…¨ç‚¹ï¼Œé¿å…åœ¨æ›´æ–°å¾ªç¯ä¸­é‡åˆ†é…ï¼‰
     struct PendingCreate {
-        uint32_t index;
-        std::function<std::unique_ptr<BaseObject>()> factory;
+        std::unique_ptr<BaseObject> ptr;
     };
 
-    // ÎªÑÓ³Ù´´½¨±£Áô slot£¬²¢·µ»Ø¿ÉÓÃË÷Òı¡£
+    // ä¸ºå»¶è¿Ÿåˆ›å»ºä¿ç•™ slotï¼Œå¹¶è¿”å›å¯ç”¨ç´¢å¼•ï¼ˆå¤ç”¨ free_indices_ æˆ–åœ¨å°¾éƒ¨è¿½åŠ ï¼‰
     uint32_t ReserveSlotForCreate() noexcept;
 
-    // ÄÚ²¿Á¢¼´Ïú»ÙÊµÏÖ£¨°´ index£©¡£
-    void DestroyEntryImmediate(uint32_t index) noexcept;
+    // å†…éƒ¨ç«‹å³é”€æ¯å®ç°ï¼ˆæŒ‰ indexï¼‰ã€‚
+    // - DestroyEntry è°ƒç”¨å¯¹è±¡ OnDestroyã€åæ³¨å†Œ PhysicsSystemã€æ¸…ç†æ˜ å°„å¹¶ä½¿ token å¤±æ•ˆ
+    void DestroyEntry(uint32_t index) noexcept;
+    // DestroyPending: å¦‚æœ pending å°šæœªåˆå¹¶ï¼Œå¯ç›´æ¥é”€æ¯ pending å¯¹è±¡ï¼ˆç”¨äº Destroy(pendingToken) æƒ…å½¢ï¼‰
+    void DestroyPending(const ObjToken& p) noexcept;
+    // DestroyExisting: å°†é”€æ¯è¯·æ±‚å…¥é˜Ÿï¼ˆå¯¹äºå·²åˆå¹¶å¯¹è±¡ï¼‰ï¼Œå®é™…åˆ é™¤åœ¨ä¸‹ä¸€æ¬¡ UpdateAll æ—¶æ‰§è¡Œï¼›å¯¹äº pending å¯¹è±¡è¯·ä½¿ç”¨ DestroyPendingã€‚
+    void DestroyExisting(const ObjToken& token) noexcept;
 
-    // ½« unique_ptr<BaseObject> µÄ¶ÔÏóÄÉÈë¹ÜÀí²¢ÔÚ±ØÒªÊ±µ÷ÓÃ Start()£¬·µ»Ø¶ÔÓ¦µÄ ObjToken¡£
-    ObjToken CreateImmediateFromUniquePtr(std::unique_ptr<BaseObject> obj);
-    ObjToken CreateDelayedFromFactory(std::function<std::unique_ptr<BaseObject>()> factory);
+    // å°† unique_ptr<BaseObject> çš„å¯¹è±¡çº³å…¥ç®¡ç†å¹¶åœ¨å¿…è¦æ—¶è°ƒç”¨ Start()ï¼Œè¿”å› PendingToken è¡¨ç¤ºåˆ›å»ºè¯·æ±‚ã€‚
+    // å¯¹è±¡ä¼šè¢«æ”¾å…¥ pending_creates_ï¼ˆå¸¦ idï¼‰ï¼Œåœ¨ UpdateAll çš„æäº¤é˜¶æ®µåˆå¹¶åˆ° objects_ å¹¶å®Œæˆç‰©ç†æ³¨å†Œã€‚
+    ObjToken CreateEntry(std::unique_ptr<BaseObject> obj);
 
-    // ´æ´¢¶ÔÏóÌõÄ¿
+    // å­˜å‚¨å¯¹è±¡æ¡ç›®
     std::vector<Entry> objects_;
 
-    // ¿ÕÏĞË÷Òı³Ø£¬ÓÃÓÚÖØÓÃ slots
+    // ç©ºé—²ç´¢å¼•æ± ï¼Œç”¨äºé‡ç”¨ slots
     std::vector<uint32_t> free_indices_;
 
-    // BaseObject* -> index µÄÓ³Éä£¬ÓÃÓÚ¿ìËÙ²éÕÒ
+    // BaseObject* -> index çš„æ˜ å°„ï¼Œç”¨äºå¿«é€ŸæŸ¥æ‰¾ï¼ˆä»…åŒ…å«å·²ç»åˆå¹¶åˆ° objects_ çš„å¯¹è±¡ï¼‰
     std::unordered_map<BaseObject*, uint32_t> object_index_map_;
 
-    // ÑÓ³ÙÏú»Ù¶ÓÁĞÓëÈ¥ÖØ¼¯ºÏ£¨·ÀÖ¹ÖØ¸´Èë¶Ó£©
+    // å»¶è¿Ÿé”€æ¯é˜Ÿåˆ—ä¸å»é‡é›†åˆï¼ˆé˜²æ­¢é‡å¤å…¥é˜Ÿï¼‰
     std::vector<ObjToken> pending_destroys_;
     std::unordered_set<uint64_t> pending_destroy_set_; // compact key: ((uint64_t)index<<32)|generation
 
-    // ÑÓ³Ù´´½¨¶ÓÁĞ
-    std::vector<PendingCreate> pending_creates_;
+    // æœ¬å¸§åˆšåˆ›å»ºä½†å°šæœªåˆå¹¶åˆ° objects_ çš„å¯¹è±¡å­˜å‚¨ï¼ˆpending åˆ›å»ºåŒºï¼‰
+    std::unordered_map<uint32_t, PendingCreate> pending_creates_; // key = pending id
+    std::unordered_map<BaseObject*, uint32_t> pending_ptr_to_id_; // ptr -> pending id å¿«é€ŸæŸ¥æ‰¾
 
-    // µ±Ç°´æ»î¶ÔÏó¼ÆÊı
+    // pending id -> å·²åˆå¹¶åçš„çœŸå® ObjTokenï¼ˆåˆå¹¶å®Œæˆåå†™å…¥ï¼Œä¾¿äº ResolvePendingï¼‰
+    std::unordered_map<uint32_t, ObjToken> pending_to_real_map_;
+
+    // ä¸‹ä¸€ä¸ª pending idï¼ˆå•è°ƒé€’å¢ï¼‰
+    uint32_t next_pending_id_ = 1;
+
+    // å½“å‰å­˜æ´»å¯¹è±¡è®¡æ•°ï¼ˆåŒ…å« pending åˆ›å»ºï¼‰
     size_t alive_count_ = 0;
 };

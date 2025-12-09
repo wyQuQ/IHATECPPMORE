@@ -1,25 +1,32 @@
-﻿# BasePhysics
+# BasePhysics
 
-说明
-- `BasePhysics` 提供通用的物理状态/形状与变换管理，供 `BaseObject` 或其他可碰撞实体继承使用。
-- 负责 local-space ↔ world-space 的形状转换（支持旋转、枢轴、缩放），并缓存 world-shape 以提升性能。
+## 概述  
+`BasePhysics` 提供基础的物理状态与形状管理功能，供可碰撞实体（例如 `BaseObject`）继承使用。重点逻辑是 local-space ↔ world-space 的形状处理（包含旋转、枢轴、缩放），并以惰性缓存方式保存 world-space 形状以降低每帧计算开销。
 
-主要职责
-- 管理基础物理状态：位置（position）、速度（velocity）、力（force）并提供更新辅助（apply_velocity/apply_force）。
-- 管理物理形状（`CF_ShapeWrapper`）的本地表示与 world-space 的缓存转换（`get_shape()` 返回 world-space）。
-- 提供旋转、枢轴与缩放接口，并在需要时触发 world-shape 的重新计算或直接启用外部提供的 world-shape（`enable_world_shape`）。
+## 主要职责
+- 管理基础物理量：位置（position）、速度（velocity）、力（force），并提供积分辅助 `apply_velocity(dt)` / `apply_force(dt)`。
+- 存储本地形状（`CF_ShapeWrapper`），提供 `get_shape()` 返回 world-space 形状（由 cache 驱动，必要时调用内部转换函数 `tweak_shape_with_rotation()`）。
+- 提供变换控制：`set_rotation(float)`、`set_pivot(CF_V2)`、`scale_x/scale_y`。
+- 提供 world-shape 优化开关：`enable_world_shape(bool)`。开启时表示上层已经提供 world-space 形状，可以跳过重复转换。
 
-关键接口
-- 状态：
-  - `set_position`, `get_position`, `set_velocity`, `get_velocity`, `apply_velocity(dt)`, `set_force`, `add_force` 等。
-- 形状/变换：
-  - `set_shape(const CF_ShapeWrapper&)`, `const CF_ShapeWrapper& get_shape() const`（自动计算/缓存）。
-  - `set_rotation(float)`, `set_pivot(CF_V2)`, `scale_x/scale_y`。
-  - `enable_world_shape(bool)`：如果 true，`get_shape()` 将认为存储的 `shape` 已经是 world-space（可跳过重复计算）。
-  - `force_update_world_shape()`：强制立即更新缓存的 world-shape。
-  - `world_shape_version()`：用于检测 shape 的版本变化以便上层缓存同步。
+## 关键接口
+- 状态控制：
+  - `void set_position(const CF_V2&)`, `const CF_V2& get_position() const`
+  - `void set_velocity(const CF_V2&)`, `const CF_V2& get_velocity() const`
+  - `void set_force(const CF_V2&)`, `const CF_V2& get_force() const`
+  - `void apply_velocity(float dt)`, `void apply_force(float dt)`
+- 形状与变换：
+  - `void set_shape(const CF_ShapeWrapper&)`（设置本地 shape，并标记脏）
+  - `const CF_ShapeWrapper& get_shape() const`（返回 world-space shape，必要时做转换并更新缓存）
+  - `void set_rotation(float)`, `float get_rotation() const`
+  - `void set_pivot(const CF_V2&)`, `CF_V2 get_pivot() const`
+  - `void scale_x(float)`, `void scale_y(float)`
+  - `void enable_world_shape(bool)`、`bool is_world_shape_enabled() const`
+  - `void force_update_world_shape()`（立即更新缓存）
+  - `uint64_t world_shape_version() const`（版本号，用于上层缓存一致性检测）
 
-实现与语义说明
-- `get_shape()` 在 `world_shape_dirty_` 为 true 时会触发 `tweak_shape_with_rotation()`（在 cpp 中实现）来生成 `cached_world_shape_`。
-- `rotation` 与 `pivot` 会影响 `cached_world_shape_` 的计算，缩放同样会标记脏。
-- `enable_world_shape(true)` 常用于当上层对象（如 `BaseObject`）已经在外部处理好 world-space 数据时，避免冗余计算。
+## 实现与语义说明
+- 惰性缓存：`get_shape()` 只有在 `world_shape_dirty_` 为 true 时才触发 `tweak_shape_with_rotation()` 更新 `cached_world_shape_` 与 `world_shape_version_`。
+- 旋转/枢轴/缩放 的任何修改都会标记 world-shape 脏，从而保证下一次访问时得到正确的 world-space 形状。
+- `enable_world_shape(true)` 可由上层在性能关键路径中使用，表示该层已直接维护 world-space 形状，物理系统将直接使用此 shape 而不做额外变换。
+- 线程与异常：类设计为无锁且面向单线程游戏主循环使用；成员函数不抛异常以保证主循环稳定。

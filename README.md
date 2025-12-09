@@ -3,14 +3,17 @@ A C++ game program using C lib and try to add OOP API for programing.Will go in 
 
 ---
 
-## ÎÄµµ
+## æ–‡æ¡£
 
-- ×ÜÀÀ£¨Overview£©£º[docs/Overview.md](docs/Overview.md)
+- æ€»è§ˆï¼ˆOverviewï¼‰ï¼š[docs/Overview.md](docs/Overview.md)
 
-### ºËĞÄÄ£¿é£¨¿ìËÙÁ´½Ó£©
-- `ObjManager`£º¶ÔÏó¹ÜÀíÓëÉúÃüÖÜÆÚ ¡ª [docs/ObjManager.md](docs/ObjManager.md)
-- `BaseObject`£ºÓÎÏ·¶ÔÏó»ùÀà£¨äÖÈ¾ + ÎïÀí£© ¡ª [docs/BaseObject.md](docs/BaseObject.md)
-- `PngSprite`£ºPNG ×ÊÔ´ÓëÖ¡ÌáÈ¡ ¡ª [docs/PngSprite.md](docs/PngSprite.md)
-- `BasePhysics`£ºÎïÀí×´Ì¬ÓëĞÎ×´¹ÜÀí ¡ª [docs/BasePhysics.md](docs/BasePhysics.md)
-- `PhysicsSystem`£ºÅö×²¼ì²âÓëÊÂ¼ş·Ö·¢ ¡ª [docs/PhysicsSystem.md](docs/PhysicsSystem.md)
-- `DrawingSequence`£ºÏñËØÉÏ´«ÓëÍ³Ò»»æÖÆÁ÷Ë®Ïß ¡ª [docs/DrawingSequence.md](docs/DrawingSequence.md)
+### æ ¸å¿ƒæ¨¡å—ï¼ˆå¿«é€Ÿé“¾æ¥ï¼‰
+#### å¯¹æ´¾ç”Ÿç±»ä½¿ç”¨
+- `ObjManager`ï¼šå¯¹è±¡ç®¡ç†ä¸ç”Ÿå‘½å‘¨æœŸ â€” [docs/ObjManager.md](docs/ObjManager.md)
+- `ObjToken`ï¼šå¯¹è±¡å¥æŸ„ä¸ç”Ÿå‘½å‘¨æœŸè¯­ä¹‰ â€” [docs/ObjToken.md](docs/ObjToken.md)
+- `BaseObject`ï¼šæ¸¸æˆå¯¹è±¡åŸºç±»ï¼ˆæ¸²æŸ“ + ç‰©ç†ï¼‰ â€” [docs/BaseObject.md](docs/BaseObject.md)
+#### å†…éƒ¨ä½¿ç”¨
+- `PngSprite`ï¼šPNG èµ„æºä¸å¸§æå– â€” [docs/PngSprite.md](docs/PngSprite.md)
+- `BasePhysics`ï¼šç‰©ç†çŠ¶æ€ä¸å½¢çŠ¶ç®¡ç† â€” [docs/BasePhysics.md](docs/BasePhysics.md)
+- `PhysicsSystem`ï¼šç¢°æ’æ£€æµ‹ä¸äº‹ä»¶åˆ†å‘ â€” [docs/PhysicsSystem.md](docs/PhysicsSystem.md)
+- `DrawingSequence`ï¼šåƒç´ ä¸Šä¼ ä¸ç»Ÿä¸€ç»˜åˆ¶æµæ°´çº¿ â€” [docs/DrawingSequence.md](docs/DrawingSequence.md)

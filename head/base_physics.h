@@ -3,13 +3,15 @@
 #include <vector>
 #include <unordered_map>
 #include <cstdint>
-#include <cmath>
-#include <algorithm>
 
 #include "obj_manager.h"
+#include "v2math.h"
 
-// CF_ShapeWrapper ·â×°ÁË²»Í¬ÀàĞÍµÄÅö×²ĞÎ×´£¨AABB, Circle, Capsule, Poly£©£¬
-// ²¢Ìá¹©¾²Ì¬¹¤³§º¯Êı±ãÓÚ´´½¨¶ÔÓ¦µÄ°ü×°ÀàĞÍ¡£
+// CF_ShapeWrapper å°è£…äº†ä¸åŒç±»å‹çš„ç¢°æ’å½¢çŠ¶ï¼ˆAABB, Circle, Capsule, Polyï¼‰ï¼Œ
+// å¹¶æä¾›é™æ€å·¥å‚å‡½æ•°ä¾¿äºåˆ›å»ºå¯¹åº”çš„åŒ…è£…ç±»å‹ã€‚
+	// ç›®çš„ï¼š
+	// - ä¸ºç‰©ç†ç³»ç»Ÿä¸ç¢°æ’æµç¨‹æä¾›ç»Ÿä¸€çš„ç±»å‹ï¼Œä»¥ä¾¿åœ¨ runtime ä¸­é€šè¿‡ type å­—æ®µåˆ†å‘åˆ°ä¸åŒçš„å¤„ç†é€»è¾‘ã€‚
+	// - åŒ…å«æœ¬åœ°ç©ºé—´ï¼ˆlocalï¼‰å½¢çŠ¶æ•°æ®ï¼ŒBasePhysics å¯å°†å…¶è½¬æ¢ä¸º world-space ä»¥å‚ä¸ç¢°æ’æ£€æµ‹ã€‚
 struct CF_ShapeWrapper
 {
 	CF_ShapeType type;
@@ -21,7 +23,7 @@ struct CF_ShapeWrapper
 		CF_Poly poly;
 	} u;
 
-	// ¹¤³§º¯Êı£º´Ó¾ßÌåµÄ CF_* ½á¹¹´´½¨°ü×°ÀàĞÍ
+	// å·¥å‚å‡½æ•°ï¼šä»å…·ä½“çš„ CF_* ç»“æ„åˆ›å»ºåŒ…è£…ç±»å‹
 	static CF_ShapeWrapper FromAabb(const CF_Aabb& a) { CF_ShapeWrapper s{}; s.type = CF_SHAPE_TYPE_AABB; s.u.aabb = a; return s; }
 	static CF_ShapeWrapper FromCircle(const CF_Circle& c) { CF_ShapeWrapper s{}; s.type = CF_SHAPE_TYPE_CIRCLE; s.u.circle = c; return s; }
 	static CF_ShapeWrapper FromCapsule(const CF_Capsule& c) { CF_ShapeWrapper s{}; s.type = CF_SHAPE_TYPE_CAPSULE; s.u.capsule = c; return s; }
@@ -29,33 +31,18 @@ struct CF_ShapeWrapper
 };
 
 enum class ColliderType {
-	VOID, // ²»²ÎÓëÅö×²
-	LIQUID, // ÒºÌåÑùÅö×²£¨¿É¶¨ÖÆĞĞÎª£©
-	SOLID // ÊµÌåÅö×²£¨³£¹æÅö×²£©
+	VOID, // ä¸å‚ä¸ç¢°æ’ï¼ˆä¾‹å¦‚è§¦å‘å™¨è¢«å…³é—­æˆ–ä»…ç”¨äºæ ‡è®°ï¼‰
+	LIQUID, // æ¶²ä½“æ ·ç¢°æ’ï¼ˆå¯å®šåˆ¶è¡Œä¸ºï¼šå¯ç©¿é€æˆ–å¸¦æœ‰æµä½“äº¤äº’ï¼‰
+	SOLID // å®ä½“ç¢°æ’ï¼ˆå¸¸è§„ç¢°æ’ï¼šé˜»æŒ¡ã€åå¼¹ç­‰ï¼‰
 };
 
-// 2D ÏòÁ¿»ù´¡ÊıÑ§¹¤¾ß£¨ÃæÏòÊ¹ÓÃÕßµÄ¼òµ¥½Ó¿Ú£©
-namespace v2math {
-	inline float length(const CF_V2& vect) noexcept { return cf_sqrt(vect.x * vect.x + vect.y * vect.y); }
-	inline CF_V2 normalized(const CF_V2& vect) noexcept
-	{
-		const float len = length(vect);
-		if (len == 0.0f) {
-			return CF_V2{ 0.0f, 0.0f };
-		}
-		return CF_V2{ vect.x / len, vect.y / len };
-	}
-	inline float cross(const CF_V2& v1, const CF_V2& v2) noexcept { return v1.x * v2.y - v1.y * v2.x; }
-	inline float dot(const CF_V2& v1, const CF_V2& v2) noexcept { return v1.x * v2.x + v1.y * v2.y; }
-}
-
-// Ç°ÖÃÉùÃ÷£ºBasePhysics Ìá¹©¸øÉÏ²ã¶ÔÏóÒ»¸öÍ³Ò»µÄÎïÀíÊôĞÔ/ĞÎ×´½Ó¿Ú
+// å‰ç½®å£°æ˜ï¼šBasePhysics æä¾›ç»™ä¸Šå±‚å¯¹è±¡ä¸€ä¸ªç»Ÿä¸€çš„ç‰©ç†å±æ€§/å½¢çŠ¶æ¥å£
 class BasePhysics;
 
-// PhysicsSystem Ìá¹©ÃæÏòÊ¹ÓÃÕßµÄÎïÀí×ÓÏµÍ³Èë¿Ú£º
-// - ×¢²á/·´×¢²á BasePhysics ÊµÀı£¨Í¨¹ı ObjToken ¹ØÁª¶ÔÏóÉúÃüÖÜÆÚ£©
-// - Step() ÔÚÃ¿Ö¡Ö´ĞĞ broadphase -> narrowphase -> ÊÂ¼şºÏ²¢ -> Enter/Stay/Exit »Øµ÷½×¶Î
-// Ê¹ÓÃ½¨Òé£ºÔÚÖ÷Ñ­»·ÖĞµ÷ÓÃ ObjManager::UpdateAll()£¬ÆäÄÚ²¿»áµ÷ÓÃ PhysicsSystem::Step()
+// PhysicsSystem æä¾›é¢å‘ä½¿ç”¨è€…çš„ç‰©ç†å­ç³»ç»Ÿå…¥å£ï¼š
+// - æ³¨å†Œ/åæ³¨å†Œ BasePhysics å®ä¾‹ï¼ˆé€šè¿‡ ObjToken å…³è”å¯¹è±¡ç”Ÿå‘½å‘¨æœŸï¼‰
+// - Step() åœ¨æ¯å¸§æ‰§è¡Œ broadphase -> narrowphase -> äº‹ä»¶åˆå¹¶ -> Enter/Stay/Exit å›è°ƒé˜¶æ®µ
+// ä½¿ç”¨å»ºè®®ï¼šåœ¨ä¸»å¾ªç¯ä¸­è°ƒç”¨ ObjManager::UpdateAll()ï¼Œå…¶å†…éƒ¨ä¼šè°ƒç”¨ PhysicsSystem::Step()ï¼Œå¹¶ç”± ObjManager è´Ÿè´£å¯¹è±¡æ³¨å†Œ/åæ³¨å†Œã€‚
 class PhysicsSystem {
 public:
 	struct CollisionEvent {
@@ -70,13 +57,16 @@ public:
 		return inst;
 	}
 
-	// ½« BasePhysics ÊµÀı¼ÓÈëÎïÀíÏµÍ³ÒÔ²ÎÓëÅö×²¼ì²â£¨Í¨³£ÔÚ¶ÔÏó Start() Ê±µ÷ÓÃ£©
+	// å°† BasePhysics å®ä¾‹åŠ å…¥ç‰©ç†ç³»ç»Ÿä»¥å‚ä¸ç¢°æ’æ£€æµ‹ï¼ˆé€šå¸¸åœ¨å¯¹è±¡ Start() æ—¶è°ƒç”¨ï¼‰
+	// - token å¿…é¡»ç”± ObjManager å‘æ”¾ä¸”åœ¨å¯¹è±¡å®é™…åˆå¹¶åˆ°ç®¡ç†å™¨åæ‰åº”è¯¥è¢«æ³¨å†Œ
+	// - phys æŒ‡é’ˆç”± ObjManager ç®¡ç†çš„å¯¹è±¡æä¾›ï¼ˆä¸è¦ä¼ å…¥æ ˆå¯¹è±¡æŒ‡é’ˆï¼‰
 	void Register(const ObjManager::ObjToken& token, BasePhysics* phys) noexcept;
 
-	// ´ÓÏµÍ³ÖĞÒÆ³ıÖ¸¶¨ token µÄÎïÀíÌõÄ¿£¨Í¨³£ÔÚ¶ÔÏóÏú»ÙÇ°µ÷ÓÃ£©
+	// ä»ç³»ç»Ÿä¸­ç§»é™¤æŒ‡å®š token çš„ç‰©ç†æ¡ç›®ï¼ˆé€šå¸¸åœ¨å¯¹è±¡é”€æ¯å‰è°ƒç”¨ï¼‰
 	void Unregister(const ObjManager::ObjToken& token) noexcept;
 
-	// Ã¿Ö¡ÍÆ½øÎïÀíÏµÍ³£¨cell_size ¿Éµ÷Õû broadphase Íø¸ñ¹æÄ££¬Ä¬ÈÏ 64.0f£©
+	// æ¯å¸§æ¨è¿›ç‰©ç†ç³»ç»Ÿï¼ˆcell_size å¯è°ƒæ•´ broadphase ç½‘æ ¼è§„æ¨¡ï¼Œé»˜è®¤ 64.0fï¼‰
+	// - Step åŒ…å« broadphase ç½‘æ ¼åˆ’åˆ†ã€narrowphase ç¢°æ’æµ‹è¯•ã€åˆå¹¶å¤šä¸ª contact ä¸ºå•å¯¹äº‹ä»¶ã€ä»¥åŠç”Ÿæˆ Enter/Stay/Exit å›è°ƒ
 	void Step(float cell_size = 64.0f) noexcept;
 
 private:
@@ -90,66 +80,69 @@ private:
 		int32_t grid_y = 0;
 	};
 
-	// ½« (index,generation) ±àÂëÎª uint64_t£¬ÒÔ±ãÓë ObjManager µÄ token Æ¥Åä
+	// å°† (index,generation) ç¼–ç ä¸º uint64_tï¼Œä»¥ä¾¿ä¸ ObjManager çš„ token åŒ¹é…
 	static uint64_t make_key(const ObjManager::ObjToken& t) noexcept
 	{
 		return (static_cast<uint64_t>(t.index) << 32) | static_cast<uint64_t>(t.generation);
 	}
 
+	// å°† grid åæ ‡ç¼–ç ä¸º uint64_t ç”¨ä½œ unordered_map çš„é”®
 	static uint64_t grid_key(int32_t x, int32_t y) noexcept
 	{
 		return (static_cast<uint64_t>(static_cast<uint32_t>(x)) << 32) | static_cast<uint64_t>(static_cast<uint32_t>(y));
 	}
 
 	std::vector<Entry> entries_;
-	std::unordered_map<uint64_t, size_t> token_map_; // token_key -> entries_ Ë÷Òı
+	std::unordered_map<uint64_t, size_t> token_map_; // token_key -> entries_ ç´¢å¼•
 
-	std::unordered_map<uint64_t, std::vector<size_t>> grid_; // broadphase Íø¸ñÓ³Éä
+	std::unordered_map<uint64_t, std::vector<size_t>> grid_; // broadphase ç½‘æ ¼æ˜ å°„
 
 	std::vector<CollisionEvent> events_;
 
-	// ±£´æÉÏÒ»Ö¡µÄÅö×²¶Ô£¬ÓÃÓÚÉú³É Enter / Exit ÊÂ¼ş
+	// ä¿å­˜ä¸Šä¸€å¸§çš„ç¢°æ’å¯¹ï¼Œç”¨äºç”Ÿæˆ Enter / Exit äº‹ä»¶ï¼ˆpair key -> ordered token pairï¼‰
 	std::unordered_map<uint64_t, std::pair<ObjManager::ObjToken, ObjManager::ObjToken>> prev_collision_pairs_;
 
-	// Ã¿Ö¡Ê¹ÓÃµÄ world-shape »º´æÓëÁÙÊ±ÈİÆ÷
+	// æ¯å¸§ä½¿ç”¨çš„ world-shape ç¼“å­˜ä¸ä¸´æ—¶å®¹å™¨ï¼ˆé¿å…é¢‘ç¹åˆ†é…ï¼‰
 	std::vector<CF_ShapeWrapper> world_shapes_;
-	std::vector<uint64_t> grid_keys_used_; // ¼ÇÂ¼ÒÑ·ÖÅäµÄ grid ¼üÒÔ±ã¸´ÓÃÈİÆ÷
+	std::vector<uint64_t> grid_keys_used_; // è®°å½•å·²åˆ†é…çš„ grid é”®ä»¥ä¾¿å¤ç”¨å®¹å™¨
 
-	// ºÏ²¢ÓëÁÙÊ±´æ´¢½á¹¹
+	// åˆå¹¶ä¸ä¸´æ—¶å­˜å‚¨ç»“æ„ï¼ˆç”¨äºåˆå¹¶ä¸€å¯¹çš„å¤šä¸ª contactï¼‰
 	std::unordered_map<uint64_t, CollisionEvent> merged_map_;
 	std::vector<uint64_t> merged_order_;
 	std::unordered_map<uint64_t, std::pair<ObjManager::ObjToken, ObjManager::ObjToken>> current_pairs_;
 };
 
-// BasePhysics Îª¿ÉÅö×²¶ÔÏóÌá¹©Í¨ÓÃµÄÎïÀíÊôĞÔÓëĞÎ×´¹ÜÀí½Ó¿Ú£º
-// - ¹ÜÀí position/velocity/force µÈ»ù´¡×´Ì¬£¬²¢Ìá¹©±ã½İµÄ set/get ½Ó¿Ú¡£
-// - ±£´æ¾Ö²¿ shape£¨local-space£©£¬²¢ÄÜ¸ù¾İĞı×ª/ÊàÖá×ª»»Îª world-space£¨get_shape£©¡£
-// - Ö§³Ö enable_world_shape À´Ö¸Ê¾ shape ÊÇ·ñÒÑ¾­ÊÇ world-space£¬´Ó¶øÌø¹ıÖØ¸´¼ÆËãÒÔÌá¸ßĞÔÄÜ¡£
-// - Ìá¹© world_shape_version() Óë mark_world_shape_dirty() ÒÔ±ãÉÏ²ã¸ßĞ§¼ì²âĞÎ×´±ä»¯¡£
+// BasePhysics ä¸ºå¯ç¢°æ’å¯¹è±¡æä¾›é€šç”¨çš„ç‰©ç†å±æ€§ä¸å½¢çŠ¶ç®¡ç†æ¥å£ï¼š
+// - ç®¡ç† position/velocity/force ç­‰åŸºç¡€çŠ¶æ€ï¼Œå¹¶æä¾›ä¾¿æ·çš„ set/get æ¥å£ã€‚
+// - ä¿å­˜å±€éƒ¨ shapeï¼ˆlocal-spaceï¼‰ï¼Œå¹¶èƒ½æ ¹æ®æ—‹è½¬/æ¢è½´è½¬æ¢ä¸º world-spaceï¼ˆget_shapeï¼‰ã€‚
+// - æ”¯æŒ enable_world_shape æ¥æŒ‡ç¤º shape æ˜¯å¦å·²ç»æ˜¯ world-spaceï¼Œä»è€Œè·³è¿‡é‡å¤è®¡ç®—ä»¥æé«˜æ€§èƒ½ã€‚
+// - æä¾› world_shape_version() ä¸ mark_world_shape_dirty() ä»¥ä¾¿ä¸Šå±‚é«˜æ•ˆæ£€æµ‹å½¢çŠ¶å˜åŒ–ã€‚
+// çº¿ç¨‹ä¸å¼‚å¸¸ç­–ç•¥ï¼šè¯¥ç±»æ— é”ä¸”éçº¿ç¨‹å®‰å…¨ï¼Œæ‰€æœ‰ä½¿ç”¨åº”åœ¨å•çº¿ç¨‹çš„æ¸¸æˆä¸»å¾ªç¯å†…æ‰§è¡Œï¼›æˆå‘˜å‡½æ•°ä¸æŠ›å¼‚å¸¸ï¼ˆå°½é‡ä¿è¯ noexceptï¼‰ã€‚
 class BasePhysics {
 private:
 	CF_V2 _position;
 	CF_V2 _velocity;
 	CF_V2 _force;
 
-	CF_ShapeWrapper shape; // ±¾µØ¿Õ¼äĞÎ×´
-	ColliderType collider_type = ColliderType::LIQUID; // Ä¬ÈÏÅö×²ÀàĞÍ
+	CF_ShapeWrapper shape; // æœ¬åœ°ç©ºé—´å½¢çŠ¶ï¼ˆç”± set_shape è®¾ç½®ï¼‰
+	ColliderType collider_type = ColliderType::LIQUID; // é»˜è®¤ç¢°æ’ç±»å‹ï¼ˆå¯ç”±ä¸Šå±‚æ›´æ”¹ï¼‰
 
-	// Ğı×ªÓëÊàÖá²ÎÊı£¨ÓÃÓÚ¼ÆËã world-space ĞÎ×´£©
+	// æ—‹è½¬ä¸æ¢è½´å‚æ•°ï¼ˆç”¨äºè®¡ç®— world-space å½¢çŠ¶ï¼‰
 	float rotation_ = 0.0f;
 	CF_V2 pivot_{ 0.0f, 0.0f };
 	float scale_x_ = 1.0f;
 	float scale_y_ = 1.0f;
 
-	// ÊÇ·ñÆôÓÃ world-space ĞÎ×´£¨ÈôÆôÓÃ£¬get_shape Ö±½Ó·µ»ØÒÑ´¦ÀíµÄ world shape£©
+	// æ˜¯å¦å¯ç”¨ world-space å½¢çŠ¶ï¼ˆè‹¥å¯ç”¨ï¼Œget_shape ç›´æ¥è¿”å›å·²å¤„ç†çš„ world shapeï¼›å¦åˆ™ get_shape ä¼šæ ¹æ® position/pivot/rotation åšè½¬æ¢ï¼‰
 	bool use_world_shape_ = false;
 
-	// world-shape »º´æÓë°æ±¾¿ØÖÆ£¨mutable ÒÔÖ§³Ö const get_shape£©
+	// world-shape ç¼“å­˜ä¸ç‰ˆæœ¬æ§åˆ¶ï¼ˆmutable ä»¥æ”¯æŒ const get_shapeï¼‰
+	// - cached_world_shape_ ä¸ºæƒ°æ€§ç¼“å­˜ï¼Œä»…åœ¨ world_shape_dirty_ ä¸º true æ—¶æ›´æ–°
 	mutable CF_ShapeWrapper cached_world_shape_;
 	mutable bool world_shape_dirty_ = true;
 	mutable uint64_t world_shape_version_ = 0;
 
-	// ¸ºÔğ°Ñ local shape ×ª»»Îª world-space µÄ¾ßÌåÊµÏÖ£¨ÔÚ cpp ÖĞ¶¨Òå£©
+	// è´Ÿè´£æŠŠ local shape è½¬æ¢ä¸º world-space çš„å…·ä½“å®ç°ï¼ˆåœ¨ cpp ä¸­å®šä¹‰ï¼‰
 	void tweak_shape_with_rotation() const noexcept;
 
 public:
@@ -164,7 +157,8 @@ public:
 
 	virtual ~BasePhysics() noexcept = default;
 
-	// Î»ÖÃ/ËÙ¶È/Á¦ µÄ»ù±¾²Ù×÷½Ó¿Ú
+	// ä½ç½®/é€Ÿåº¦/åŠ› çš„åŸºæœ¬æ“ä½œæ¥å£
+	// - set_* å’Œ add_* ä¼šæ ‡è®° world_shape_dirty_ï¼ˆå¦‚æœ shape ä¾èµ–äº position/pivot/rotationï¼‰
 	void set_position(const CF_V2& p) { _position = p; world_shape_dirty_ = true; }
 	const CF_V2& get_position() const { return _position; }
 	void apply_velocity(float dt)
@@ -195,11 +189,12 @@ public:
 		_force.y += df.y;
 	}
 
-	// Åö×²ÀàĞÍ½ÓÈë
+	// ç¢°æ’ç±»å‹æ¥å…¥ï¼ˆä¸Šå±‚å†³å®šå¦‚ä½•ä½¿ç”¨ä¸åŒç±»å‹çš„ ColliderTypeï¼‰
 	void set_collider_type(ColliderType t) { collider_type = t; }
 	ColliderType get_collider_type() const { return collider_type; }
 
-	// ÉèÖÃ/»ñÈ¡±¾µØĞÎ×´£»get_shape »á·µ»Ø world-space µÄÒÑ´¦ÀíĞÎ×´£¨¿ÉÄÜ´¥·¢¼ÆËã£©
+	// è®¾ç½®/è·å–æœ¬åœ°å½¢çŠ¶ï¼›get_shape ä¼šè¿”å› world-space çš„å·²å¤„ç†å½¢çŠ¶ï¼ˆå¯èƒ½è§¦å‘è®¡ç®—ï¼‰
+	// - set_shape æ ‡è®° world_shape_dirty_ï¼Œç›´åˆ°ä¸‹æ¬¡éœ€è¦æ—¶æ‰ä¼šè½¬æ¢ä¸º world-space
 	void set_shape(const CF_ShapeWrapper& s) { shape = s; world_shape_dirty_ = true; }
 	const CF_ShapeWrapper& get_shape() const
 	{
@@ -207,27 +202,38 @@ public:
 		return cached_world_shape_;
 	}
 
-	// rotation / pivot ½Ó¿Ú
-	void set_rotation(float r) noexcept { rotation_ = r; world_shape_dirty_ = true; }
+	// rotation / pivot æ¥å£ï¼ˆå•ä½ï¼šå¼§åº¦ / åƒç´ ï¼‰
+	// - set_rotation è§„èŒƒåŒ–è§’åº¦åˆ° [-pi,pi] å¹¶æ ‡è®° dirty
+	void set_rotation(float r) noexcept { 
+		if(r > pi) r -= 2 * pi;
+		else if (r < -pi) r += 2 * pi;
+		rotation_ = r; world_shape_dirty_ = true; 
+	}
 	float get_rotation() const noexcept { return rotation_; }
 
 	void set_pivot(const CF_V2& p) noexcept { pivot_ = p; world_shape_dirty_ = true; }
 	CF_V2 get_pivot() const noexcept { return pivot_; }
 
+	// ç¼©æ”¾æ¥å£ï¼ˆæ°´å¹³ / å‚ç›´ï¼‰ï¼Œä¼šå½±å“å½¢çŠ¶çš„ world-space è½¬æ¢
 	void scale_x(float sx) noexcept { scale_x_ = sx; world_shape_dirty_ = true; }
 	float get_scale_x() const noexcept { return scale_x_; }
 	void scale_y(float sy) noexcept { scale_y_ = sy; world_shape_dirty_ = true; }
 	float get_scale_y() const noexcept { return scale_y_; }
 
+	// æ˜¯å¦å¼ºåˆ¶å°† shape è§†ä¸º world-spaceï¼šå¯ç”¨å get_shape å°†ç›´æ¥è¿”å› shapeï¼ˆå‡è®¾ä¸Šå±‚å·²ç»æŠŠå®ƒè®¾ç½®ä¸º world-spaceï¼‰
 	void enable_world_shape(bool enable) noexcept { use_world_shape_ = enable; world_shape_dirty_ = true; }
 	bool is_world_shape_enabled() const noexcept { return use_world_shape_; }
 
+	// å¼ºåˆ¶ç«‹å³æ›´æ–° world shapeï¼ˆä¼šè°ƒç”¨ tweak_shape_with_rotationï¼‰
 	void force_update_world_shape() const noexcept { tweak_shape_with_rotation(); }
 
+	// world shape ç‰ˆæœ¬å·ï¼šæ¯æ¬¡ world shape æ›´æ–°åé€’å¢ï¼Œå¯ç”¨äºä¸Šå±‚ç¼“å­˜ä¸€è‡´æ€§æ£€æµ‹
 	uint64_t world_shape_version() const noexcept { return world_shape_version_; }
 
+	// æ ‡è®° world shape è„ï¼ˆå»¶è¿Ÿæ›´æ–°ï¼‰ï¼Œå…è®¸ä¸Šå±‚åœ¨ä¿®æ”¹å¤šä¸ªå±æ€§åæ‰‹åŠ¨è°ƒç”¨ force_update_world_shape æ¥ä¸€æ¬¡æ€§æ›´æ–°
 	void mark_world_shape_dirty() noexcept { world_shape_dirty_ = true; }
 
+	// è®¿é—®æœ¬åœ° shapeï¼ˆä¸è§¦å‘ä¸–ç•Œè½¬æ¢ï¼‰
 	const CF_ShapeWrapper& get_local_shape() const noexcept { return shape; }
 
 };

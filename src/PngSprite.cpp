@@ -2,24 +2,24 @@
 
 #include <cstring>
 #include <algorithm>
-#include <iostream>   // ´íÎóÓëÕï¶ÏÊä³ö
+#include <iostream>   // é”™è¯¯ä¸è¯Šæ–­è¾“å‡º
 #include <string>
 
 #include "debug_config.h"
 #include "cute_png_cache.h"      // CF_Png + png_cache API
 #include "cute_file_system.h"    // CF_Path + fs_get_backend_specific_error_message
-#include "cute_result.h" // ¸¨ÖúµÄ CF_Result / ´íÎó¼ì²é
+#include "cute_result.h" // è¾…åŠ©çš„ CF_Result / é”™è¯¯æ£€æŸ¥
 
-// PNG ¼ÓÔØµ÷ÊÔÈÕÖ¾¿ª¹Ø£¨ÓÉ debug_config.h ÖĞµÄ PNG_LOAD_DEBUG ¿ØÖÆ£©
+// PNG åŠ è½½è°ƒè¯•æ—¥å¿—å¼€å…³ï¼ˆç”± debug_config.h ä¸­çš„ PNG_LOAD_DEBUG æ§åˆ¶ï¼‰
 #if PNG_LOAD_DEBUG
 #define PNG_LOAD_LOG(x) do { std::cerr << x; } while(0)
 #else
 #define PNG_LOAD_LOG(x) do {} while(0)
 #endif
 
-extern std::atomic<int> g_frame_count; // È«¾ÖÖ¡¼ÆÊı£¨ÓÃÓÚ¶¯»­Ê±¼ä£©
+extern std::atomic<int> g_frame_count; // å…¨å±€å¸§è®¡æ•°ï¼ˆç”¨äºåŠ¨ç”»æ—¶é—´ï¼‰
 
-// ¹¹Ôì£º½ö¼ÇÂ¼Â·¾¶ºÍÖ¡ÅäÖÃ£¬²»×öºÄÊ± IO ²Ù×÷£¨ÀÁ¼ÓÔØÉè¼Æ£©
+// æ„é€ ï¼šä»…è®°å½•è·¯å¾„å’Œå¸§é…ç½®ï¼Œä¸åšè€—æ—¶ IO æ“ä½œï¼ˆæ‡’åŠ è½½è®¾è®¡ï¼‰
 PngSprite::PngSprite(const std::string& path, int frameCount, int frameDelay) noexcept
     : m_path(path)
     , m_frameCount(frameCount > 0 ? frameCount : 1)
@@ -27,17 +27,17 @@ PngSprite::PngSprite(const std::string& path, int frameCount, int frameDelay) no
     , m_image{ 0 }
     , m_loaded(false)
 {
-    // ×ÊÔ´¼ÓÔØ²ÉÓÃÀÁ¶è²ßÂÔ£º¹¹ÔìÊ±²»Ö´ĞĞ´ÅÅÌ IO
+    // èµ„æºåŠ è½½é‡‡ç”¨æ‡’æƒ°ç­–ç•¥ï¼šæ„é€ æ—¶ä¸æ‰§è¡Œç£ç›˜ IO
 }
 
 PngSprite::~PngSprite()
 {
-    // Îö¹¹Ê±È·±£×ÊÔ´ÒÑ±»ÊÍ·Å
+    // ææ„æ—¶ç¡®ä¿èµ„æºå·²è¢«é‡Šæ”¾
     Unload();
 }
 
-// Load£º³¢ÊÔÊ¹ÓÃ¶àÖÖÂ·¾¶²ßÂÔ¼ÓÔØ PNG ×ÊÔ´£¬Ê¹ÓÃ png_cache ×ö»º´æ¹ÜÀí¡£
-// ³É¹¦Ê±ÉèÖÃ m_loaded ²¢±£Áô CF_Png ¾ä±ú¹©ºóĞøÖ¡ÌáÈ¡Ê¹ÓÃ¡£
+// Loadï¼šå°è¯•ä½¿ç”¨å¤šç§è·¯å¾„ç­–ç•¥åŠ è½½ PNG èµ„æºï¼Œä½¿ç”¨ png_cache åšç¼“å­˜ç®¡ç†ã€‚
+// æˆåŠŸæ—¶è®¾ç½® m_loaded å¹¶ä¿ç•™ CF_Png å¥æŸ„ä¾›åç»­å¸§æå–ä½¿ç”¨ã€‚
 bool PngSprite::Load()
 {
     if (m_loaded) return true;
@@ -63,8 +63,8 @@ bool PngSprite::Load()
         }
     }
 
-    // Ê§°ÜÊ±³¢ÊÔÒÔÏÂ»ØÍËÂ·¾¶²ßÂÔÒÔÌáÉı×ÊÔ´¼ÓÔØµÄÈİ´íĞÔ£º
-    // 1) È¥µô¿ªÍ·µÄ '/' Ö®ºóÖØÊÔ
+    // å¤±è´¥æ—¶å°è¯•ä»¥ä¸‹å›é€€è·¯å¾„ç­–ç•¥ä»¥æå‡èµ„æºåŠ è½½çš„å®¹é”™æ€§ï¼š
+    // 1) å»æ‰å¼€å¤´çš„ '/' ä¹‹åé‡è¯•
     if (!m_path.empty() && m_path.front() == '/') {
         std::string p = m_path.substr(1);
         PNG_LOAD_LOG("[PngSprite] Primary load failed, trying without leading slash: '" << p << "'\n");
@@ -89,7 +89,7 @@ bool PngSprite::Load()
         }
     }
 
-    // 2) ÒÔ³ÌĞò»ùÄ¿Â¼Æ´½Ó¾ø¶ÔÂ·¾¶ÖØÊÔ
+    // 2) ä»¥ç¨‹åºåŸºç›®å½•æ‹¼æ¥ç»å¯¹è·¯å¾„é‡è¯•
     Cute::CF_Path base = Cute::fs_get_base_directory();
     base.normalize();
     std::string base_s = base.c_str();
@@ -117,7 +117,7 @@ bool PngSprite::Load()
         }
     }
 
-    // 3) ³¢ÊÔ base/content/... Â·¾¶ÒÔ¼æÈİÇáÁ¿×ÊÔ´×éÖ¯Ô¼¶¨
+    // 3) å°è¯• base/content/... è·¯å¾„ä»¥å…¼å®¹è½»é‡èµ„æºç»„ç»‡çº¦å®š
     std::string full_content = base_s + "/content" + (m_path.empty() || m_path.front() != '/' ? std::string("/") + m_path : m_path);
     PNG_LOAD_LOG("[PngSprite] Trying base/content path: '" << full_content << "'\n");
     {
@@ -142,7 +142,7 @@ bool PngSprite::Load()
         }
     }
 
-    // ËùÓĞ²ßÂÔ¾ùÊ§°ÜÔò·µ»Ø false
+    // æ‰€æœ‰ç­–ç•¥å‡å¤±è´¥åˆ™è¿”å› false
     PNG_LOAD_LOG("[PngSprite] Failed to load PNG. Tried paths:\n"
         << "  1) " << m_path << "\n"
         << "  2) " << (m_path.size() && m_path.front() == '/' ? m_path.substr(1) : std::string("(n/a)")) << "\n"
@@ -151,7 +151,7 @@ bool PngSprite::Load()
     return false;
 }
 
-// Unload£ºÊÍ·ÅÒÑ¼ÓÔØµÄ png_cache ×ÊÔ´£¬±£Ö¤¿ÉÒÔ¶à´Î Load/Unload
+// Unloadï¼šé‡Šæ”¾å·²åŠ è½½çš„ png_cache èµ„æºï¼Œä¿è¯å¯ä»¥å¤šæ¬¡ Load/Unload
 void PngSprite::Unload() noexcept
 {
     if (m_loaded)
@@ -168,7 +168,7 @@ int PngSprite::FrameCount() const noexcept { return m_frameCount; }
 int PngSprite::FrameDelay() const noexcept { return m_frameDelay; }
 void PngSprite::SetFrameDelay(int delay) noexcept { m_frameDelay = (delay > 0 ? delay : 1); }
 
-// SetPath£ºÉèÖÃ×ÊÔ´Â·¾¶²¢ÔÚÂ·¾¶¸Ä±äÊ±Ğ¶ÔØ¾É×ÊÔ´ÒÔ±ãÏÂ´Î·ÃÎÊÖØÔØĞÂ×ÊÔ´
+// SetPathï¼šè®¾ç½®èµ„æºè·¯å¾„å¹¶åœ¨è·¯å¾„æ”¹å˜æ—¶å¸è½½æ—§èµ„æºä»¥ä¾¿ä¸‹æ¬¡è®¿é—®é‡è½½æ–°èµ„æº
 void PngSprite::SetPath(const std::string& path) noexcept
 {
     if (m_path == path) return;
@@ -189,12 +189,12 @@ bool PngSprite::HasPath(std::string* out_path) const noexcept
     return has;
 }
 
-// ÌáÈ¡Ö¸¶¨Ö¡£ºÈôÉĞÎ´¼ÓÔØ»á´¥·¢ÀÁ¼ÓÔØ
+// æå–æŒ‡å®šå¸§ï¼šè‹¥å°šæœªåŠ è½½ä¼šè§¦å‘æ‡’åŠ è½½
 PngFrame PngSprite::ExtractFrame(int index) const
 {
     if (!m_loaded)
     {
-        // ÀÁ¼ÓÔØÒÔ±ÜÃâÔÚ¹¹ÔìÆÚ¼ä½øĞĞ IO
+        // æ‡’åŠ è½½ä»¥é¿å…åœ¨æ„é€ æœŸé—´è¿›è¡Œ IO
         const_cast<PngSprite*>(this)->Load();
     }
 
@@ -205,7 +205,7 @@ PngFrame PngSprite::ExtractFrame(int index) const
     return ExtractFrameFromImage(m_image, idx, m_frameCount);
 }
 
-// »ñÈ¡µ±Ç°Ö¡£¨»ùÓÚÈ«¾ÖÖ¡¼ÆÊı£©£¬ÊÊÓÃÓÚ³£¹æ¶¯»­²¥·Å
+// è·å–å½“å‰å¸§ï¼ˆåŸºäºå…¨å±€å¸§è®¡æ•°ï¼‰ï¼Œé€‚ç”¨äºå¸¸è§„åŠ¨ç”»æ’­æ”¾
 PngFrame PngSprite::GetCurrentFrame() const
 {
     if (!m_loaded)
@@ -221,7 +221,7 @@ PngFrame PngSprite::GetCurrentFrame() const
     return ExtractFrameFromImage(m_image, idx, m_frameCount);
 }
 
-// Ö§³Ö×Ô¶¨Òå×ÜÖ¡ÊıµÄµ±Ç°Ö¡»ñÈ¡£¨ÊÊÓÃÓÚ¶àĞĞ/·ÖÆ¬Í¼¼¯£©
+// æ”¯æŒè‡ªå®šä¹‰æ€»å¸§æ•°çš„å½“å‰å¸§è·å–ï¼ˆé€‚ç”¨äºå¤šè¡Œ/åˆ†ç‰‡å›¾é›†ï¼‰
 PngFrame PngSprite::GetCurrentFrameWithTotal(int totalFrames) const
 {
     if (!m_loaded) const_cast<PngSprite*>(this)->Load();
@@ -243,7 +243,7 @@ PngFrame PngSprite::ExtractFrameWithTotal(int index, int totalFrames) const
     return ExtractFrameFromImage(m_image, idx, totalFrames);
 }
 
-// ´Ó CF_Png Í¼ÏñÖĞ°´´¹Ö±Ö¡Êı²ğ·Ö²¢¸´ÖÆ³öµ¥Ö¡ÏñËØÊı¾İ£¨·µ»Ø PngFrame£©
+// ä» CF_Png å›¾åƒä¸­æŒ‰å‚ç›´å¸§æ•°æ‹†åˆ†å¹¶å¤åˆ¶å‡ºå•å¸§åƒç´ æ•°æ®ï¼ˆè¿”å› PngFrameï¼‰
 PngFrame PngSprite::ExtractFrameFromImage(const CF_Png& src, int index, int totalFrames) const
 {
     PngFrame out;

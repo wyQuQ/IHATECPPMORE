@@ -1,15 +1,15 @@
 #include "base_object.h"
-#include "base_physics.h" // Ìá¹© CF_ShapeWrapper / v2math µÈ
+#include "base_physics.h" // æä¾› CF_ShapeWrapper / v2math ç­‰
 #include <cmath>
 
-// ÊµÏÖ£º¸ù¾İ BaseObject ÖĞµÄ CF_ShapeWrapper »æÖÆºìÉ«ÂÖÀª£¨noexcept£©
+// å®ç°ï¼šæ ¹æ® BaseObject ä¸­çš„ CF_ShapeWrapper ç»˜åˆ¶çº¢è‰²è½®å»“ï¼ˆnoexceptï¼‰
 void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept
 {
     if (!obj) return;
 
     const CF_ShapeWrapper& s = obj->GetShape();
 
-    // Ê¹ÓÃºìÉ«²¢±£´æ»æÖÆ×´Ì¬
+    // ä½¿ç”¨çº¢è‰²å¹¶ä¿å­˜ç»˜åˆ¶çŠ¶æ€
     cf_draw_push();
     cf_draw_push_color(cf_color_red());
 
@@ -42,17 +42,17 @@ void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept
         CF_V2 b = cap.b;
         float r = cap.r;
 
-        // »æÖÆÖĞÖáÏß
+        // ç»˜åˆ¶ä¸­è½´çº¿
         cf_draw_line(a, b, 0.0f);
 
-        // »æÖÆ¶ËµãÔ²
+        // ç»˜åˆ¶ç«¯ç‚¹åœ†
         cf_draw_circle2(a, r, 0.0f);
         cf_draw_circle2(b, r, 0.0f);
 
-        // »æÖÆÁ¬½Ó¾ØĞÎ£¨ÓÃËÄÌõÏß½üËÆ£©
+        // ç»˜åˆ¶è¿æ¥çŸ©å½¢ï¼ˆç”¨å››æ¡çº¿è¿‘ä¼¼ï¼‰
         CF_V2 dir = CF_V2{ b.x - a.x, b.y - a.y };
         CF_V2 ndir = v2math::normalized(dir);
-        CF_V2 perp = CF_V2{ -ndir.y * r, ndir.x * r }; // ´¹Ö±ÏòÁ¿ * r
+        CF_V2 perp = CF_V2{ -ndir.y * r, ndir.x * r }; // å‚ç›´å‘é‡ * r
 
         CF_V2 p1{ a.x + perp.x, a.y + perp.y };
         CF_V2 p2{ b.x + perp.x, b.y + perp.y };
@@ -79,7 +79,7 @@ void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept
         break;
     }
     default:
-        // Î´ÖªÀàĞÍ£ºÎŞ¶¯×÷
+        // æœªçŸ¥ç±»å‹ï¼šæ— åŠ¨ä½œ
         break;
     }
 

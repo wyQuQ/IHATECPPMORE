@@ -1,22 +1,11 @@
-# .editorconfig for MyCuteGame
-# Ä¿µÄ£ºÎª²Ö¿âÖĞµÄÔ´´úÂëºÍ¹¤³ÌÎÄ¼şÌá¹©Í³Ò»µÄ±à¼­Æ÷¸ñÊ½»¯Ô¼¶¨¡£
-# ×¢ÊÍ£º.editorconfig µÄ×¢ÊÍĞĞÒÔ '#' »ò ';' ¿ªÍ·¡£´ó¶àÊı±à¼­Æ÷£¨Èç Visual Studio¡¢VS Code¡¢CLion µÈ£©»áÊ¶±ğ²¢ÓÅÏÈÓ¦ÓÃÕâĞ©¹æÔò¡£
-#
-# ¹Ø¼ü¹æÔòÕªÒª£¨ÖĞÎÄËµÃ÷£©£º
-# - Ê¹ÓÃ UTF-8 ±àÂë£¬È·±£¿çÆ½Ì¨Ò»ÖÂĞÔ
-# - ĞĞÎ²Ê¹ÓÃ LF£¨Unix ·ç¸ñ£©£¬±ÜÃâ CRLF µ¼ÖÂµÄ diff ÔëÉù
-# - Ê¹ÓÃ¿Õ¸ñËõ½ø£¬Ëõ½ø¿í¶ÈÎª 4£¨ÓëÏîÄ¿ C++ ·ç¸ñÒ»ÖÂ£©
-# - ×Ô¶¯ÔÚÎÄ¼şÄ©Î²²åÈë»»ĞĞ²¢ÒÆ³ıÎ²Ëæ¿Õ¸ñ
-# - ×î´óĞĞ¿í 120£¬ÓÃÓÚ±£³Ö¿É¶ÁĞÔ
-# - Õë¶Ô C/C++¡¢¹¹½¨ÎÄ¼şºÍÎÄµµ·Ö±ğÃ÷È·¹æÔò£¬¼æ¹Ë¿É¶ÁĞÔÓë¹¤¾ß¼æÈİĞÔ
-#
-# Ê¹ÓÃ½¨Òé£º
-# - ±£´æÎÄ¼şÊ±´ó¶àÊı±à¼­Æ÷»á×ñÑ­±¾ÎÄ¼ş£»Ò²¿ÉÔÚ±à¼­Æ÷ÖĞÔËĞĞ __Format Document__ À´Ó¦ÓÃÑùÊ½
-# - ÔÚ CI ÖĞÌí¼Ó¸ñÊ½¼ì²é»òÔÚÌá½»Ç°ÔËĞĞ¸ñÊ½»¯¹¤¾ß¿ÉÒÔ±£Ö¤ÍÅ¶ÓÒ»ÖÂĞÔ
+# Repository .editorconfig: cross-platform default (UTF-8 without BOM, LF) with Windows-specific exceptions
+# - å…¨å±€ä½¿ç”¨ UTF-8 (no BOM) ä¸ LFï¼Œæé«˜åœ¨ Linux/macOS/CI ä¸Šçš„å…¼å®¹æ€§
+# - å¯¹ Windows/Visual Studio ç‰¹å®šæ–‡ä»¶ï¼ˆ.sln/.vcxproj/.batï¼‰å…è®¸ä½¿ç”¨ UTF-8 with BOM + CRLF
+# - C/C++/CMake ä½¿ç”¨ 4 ç©ºæ ¼ç¼©è¿›ï¼›Markdown ä¿ç•™å°¾éšç©ºæ ¼ä»¥æ”¯æŒç¡¬æ¢è¡Œ
+
 root = true
 
 [*]
-# Í¨ÓÃÉèÖÃ
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
@@ -25,29 +14,62 @@ indent_style = space
 indent_size = 4
 max_line_length = 120
 
-# Õë¶Ô³£¼ûµÄ C/C++ ÎÄ¼şÃ÷È·ÉèÖÃ£¨ÓëÉÏÃæ±£³ÖÒ»ÖÂ£¬±ãÓÚÄ³Ğ©±à¼­Æ÷Ê¶±ğ£©
-[*.{c,cpp,h,hpp,cxx,hxx}]
+# C / C++ source and headers
+[*.{c,cpp,cc,cxx,h,hpp,hh,inl}]
 indent_style = space
 indent_size = 4
 charset = utf-8
+trim_trailing_whitespace = true
 max_line_length = 120
 
-# Õë¶Ô Visual Studio / ¹¹½¨Ïà¹ØÎÄ¼ş£¨Èô´æÔÚ£©±£³ÖÒ»ÖÂµÄËõ½ø·ç¸ñ
-[*.{sln,vcxproj,props,targets}]
+# CMake files (keep 4-space to match project style)
+[**/CMakeLists.txt]
 indent_style = space
 indent_size = 4
 charset = utf-8
 
-# CMakeLists Óë cmake ½Å±¾ÈÔÊ¹ÓÃ 4 ¿Õ¸ñËõ½øÒÔÓëÏîÄ¿Ò»ÖÂ
-[*.{cmake,CMakeLists.txt}]
+[*.{cmake}]
 indent_style = space
 indent_size = 4
 charset = utf-8
 
-# ÎÄ±¾ÓëÎÄµµÎÄ¼ş
-[*.{md,markdown,txt}]
-trim_trailing_whitespace = false   # ¶ÔÓÚ Markdown ±£ÁôÎ²Ëæ¿Õ¸ñ£¨¿ÉÄÜÓÃÓÚÓ²»»ĞĞ£©
-indent_style = space
-indent_size = 4
+# Markdown and plain text: preserve trailing whitespace (useful for hard line breaks)
+[*.md]
 charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
 max_line_length = 120
+
+[*.{markdown,txt}]
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
+max_line_length = 120
+
+# Shell scripts: LF, no BOM
+[*.sh]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+
+# Windows specific project files and batch scripts: allow BOM and CRLF for Visual Studio friendliness
+[*.{sln,vcxproj,vcxproj.filters}]
+charset = utf-8-bom
+end_of_line = crlf
+trim_trailing_whitespace = false
+
+[*.bat]
+charset = utf-8-bom
+end_of_line = crlf
+trim_trailing_whitespace = false
+
+# JSON/YAML/XML config files: keep utf-8 and preserve trailing whitespace
+[*.{json,yml,yaml,xml}]
+charset = utf-8
+trim_trailing_whitespace = false
+
+# Binary assets - avoid applying trim rules
+[*.{png,jpg,jpeg,exe,dll,pdb,lib,zip,7z}]
+trim_trailing_whitespace = false
+
+# End of file

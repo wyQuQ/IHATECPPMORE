@@ -1,38 +1,38 @@
 # ObjManager
 
-ËµÃ÷
-- `ObjManager` Ìá¹©¶ÔÏóµÄ¼¯ÖĞ¹ÜÀíÓë¾ä±ú£¨`ObjToken`£©ÏµÍ³£¬±£Ö¤¶ÔÏó´´½¨/Ïú»ÙÔÚÖ¡±ß½ç´¦°²È«Ö´ĞĞ¡£
-- Í¨¹ı `ObjToken{ index, generation }` Ìá¹©¶Ô¶ÔÏóµÄÈõÒıÓÃÑéÖ¤£¬±ÜÃâÂãÖ¸ÕëĞü¹Ò¡£
+## æ¦‚è¿°  
+`ObjManager` æä¾›å¯¹è±¡é›†ä¸­ç®¡ç†ã€ç”Ÿå‘½å‘¨æœŸæ§åˆ¶ä¸å¥æŸ„ï¼ˆ`ObjToken`ï¼‰ç³»ç»Ÿï¼Œä¿è¯åœ¨åˆ›å»ºã€é”€æ¯ä¸æ¯å¸§æ›´æ–°è¿‡ç¨‹ä¸­å¯¹å¯¹è±¡é›†åˆçš„å®‰å…¨æ“ä½œï¼ˆé¿å…è¿­ä»£æ—¶ä¿®æ”¹å¯¼è‡´çš„ä¸ä¸€è‡´ï¼‰ã€‚è®¾è®¡é‡‡ç”¨å»¶è¿Ÿåˆ›å»º/å»¶è¿Ÿé”€æ¯é˜Ÿåˆ—ä¸ (index, generation) token æœºåˆ¶ä»¥é˜²æ­¢æ‚¬æŒ‚å¼•ç”¨ã€‚
 
-Ö÷ÒªÖ°Ôğ
-- ´´½¨¶ÔÏó£ºÁ¢¼´´´½¨£¨CreateImmediate / CreateInit£©»òÑÓ³Ù´´½¨£¨CreateDelayed£¬Êµ¼Ê¹¹ÔìÔÚÏÂÒ»´Î `UpdateAll()`£©¡£
-- Ïú»Ù¶ÔÏó£ºÁ¢¼´£¨DestroyImmediate£©»òÑÓ³Ù£¨DestroyDelayed£¬Êµ¼ÊÔÚ `UpdateAll()` ÖĞÖ´ĞĞ£©¡£
-- Ã¿Ö¡Í³Ò»µ÷ÓÃ `UpdateAll()`£ºÖ´ĞĞ `FramelyUpdate()`¡¢`PhysicsSystem::Step()`¡¢´¦ÀíÑÓ³ÙÏú»ÙºÍÑÓ³Ù´´½¨¡£
-- Ìá¹© `Get()` / `GetAs<T>()` / `IsValid()` ¹©Íâ²¿°²È«·ÃÎÊ¶ÔÏó¡£
+## è®¾è®¡è¦ç‚¹ä¸å¥‘çº¦
+- token è¯­ä¹‰ï¼š`ObjToken` ä½¿ç”¨ `(index, generation)`ï¼Œå½“ä¸€ä¸ª slot è¢«å›æ”¶å¹¶å¤ç”¨æ—¶ä¼šå¢åŠ  generationï¼Œä»è€Œä½¿æ—§ token å¤±æ•ˆã€‚
+- å»¶è¿Ÿæ“ä½œï¼š
+  - åˆ›å»ºï¼ˆCreateEntryï¼‰ä¼šæŠŠå¯¹è±¡æ”¾å…¥ `pending_creates_` å¹¶ç«‹å³è°ƒç”¨å¯¹è±¡çš„ `Start()`ï¼ˆå¤„äº pending çŠ¶æ€ï¼‰ï¼›çœŸå®æ§½ä½ä¸ `ObjToken` ä¼šåœ¨ä¸‹ä¸€æ¬¡ `UpdateAll()` çš„æäº¤é˜¶æ®µäº§ç”Ÿå¹¶å†™å› `pending_to_real_map_`ã€‚
+  - é”€æ¯åˆ†ä¸º pending ä¸ existingï¼š`DestroyPending` ç›´æ¥é”€æ¯å°šæœªåˆå¹¶çš„ pending å¯¹è±¡ï¼›`DestroyExisting` ä¼šæŠŠå·²æ³¨å†Œçš„ token å…¥é˜Ÿ `pending_destroys_`ï¼Œå®é™…é”€æ¯åœ¨ `UpdateAll()` çš„å®‰å…¨ç‚¹æ‰§è¡Œã€‚
+- UpdateAll é¡ºåºï¼š`FramelyApply()` â†’ `PhysicsSystem::Step()` â†’ `Update()` â†’ å¤„ç† pending é”€æ¯ â†’ æäº¤ pending åˆ›å»ºï¼ˆåˆå¹¶å¹¶æ³¨å†Œç‰©ç†ç³»ç»Ÿï¼‰ã€‚
 
-¹Ø¼ü API£¨ÕªÒª£©
-- ´´½¨£º
-  - `template<typename T, ...> ObjToken CreateImmediate(...)`£ºÁ¢¼´´´½¨²¢µ÷ÓÃ `Start()`¡£
-  - `CreateInit<T>(initializer, args...)`£ºÔÊĞíÔÚ Start Ç°ÔËĞĞ³õÊ¼»¯Æ÷¡£
-  - `CreateDelayed<T>(args...)`£º·µ»Ø token ²¢ÔÚ `UpdateAll()` ÖĞÊµ¼Ê¹¹ÔìÓë Start¡£
+## ä¸»è¦ APIï¼ˆæ¦‚è§ˆï¼‰
+- Createï¼š
+  - `template <typename T, ...> ObjToken Create(Args&&... args)`ï¼šæ„é€ å¯¹è±¡å¹¶è¿”å› pending tokenã€‚
+  - `template <typename T, typename Init, ...> ObjToken Create(Init&& initializer, Args&&... args)`ï¼šå…è®¸åœ¨ `Start()` å‰åšåˆå§‹åŒ–ã€‚
+- è®¿é—®ä¸éªŒè¯ï¼š
+  - `bool IsValid(const ObjToken& token) const noexcept`
+  - `BaseObject& operator[](ObjToken& token)`ï¼ˆè‹¥ token ä¸º pending ä¼šå°è¯•è§£ææˆ–ç›´æ¥è¿”å› pending å¯¹è±¡ï¼›æ— æ•ˆæ—¶æŠ›å‡º `std::out_of_range`ï¼‰
+  - `bool TryGetRegisteration(ObjToken& token) const noexcept`ï¼šå°è¯•æŠŠ pending token å‡çº§ä¸ºå·²æ³¨å†Œçš„çœŸå® tokenï¼ˆé const ç‰ˆæœ¬ä¼šè¦†ç›–è¾“å…¥ tokenï¼‰ã€‚
+- é”€æ¯ï¼š
+  - `void Destroy(const ObjToken& p) noexcept`ï¼šè‡ªåŠ¨åˆ†è¾¨ pending / existingã€‚
+  - `void DestroyAll() noexcept`ï¼šç«‹å³é”€æ¯å…¨éƒ¨å¯¹è±¡å¹¶æ¸…ç† pending é˜Ÿåˆ—ã€‚
+- å…¶å®ƒï¼š
+  - `void UpdateAll() noexcept`ï¼šæ¯å¸§ä¸»å…¥å£ï¼Œè´Ÿè´£æ‰€æœ‰å¯¹è±¡çš„ FramelyApply/Updateã€ç‰©ç† Stepã€pending åˆå¹¶/é”€æ¯ã€‚
 
-- ²éÑ¯£º
-  - `BaseObject* Get(const ObjToken& token) noexcept`£ºÈç¹û token ÓĞĞ§·µ»Ø¶ÔÏóÖ¸Õë£¬·ñÔò·µ»Ø `nullptr`¡£
-  - `bool IsValid(const ObjToken& token) const noexcept`¡£
-
-- Ïú»Ù£º
-  - `DestroyImmediate(BaseObject* ptr)` / `DestroyImmediate(const ObjToken& token)`£ºÁ¢¼´Ïú»Ù¡£
-  - `DestroyDelayed(...)`£ºÈë¶ÓÏú»ÙÇëÇó£¬`UpdateAll()` ÖĞÖ´ĞĞ¡£
-  - `DestroyAll()`£ºÁ¢¼´Ïú»Ù²¢ÇåÀíËùÓĞ¹ÒÆğ¶ÓÁĞ¡£
-
-- Ã¿Ö¡¸üĞÂ£º
-  - `void UpdateAll() noexcept`£ººËĞÄÖ¡Ñ­»·Âß¼­£º
-    1. ±éÀú¶ÔÏó²¢µ÷ÓÃ `FramelyUpdate()`
-    2. `PhysicsSystem::Instance().Step()`
-    3. Ö´ĞĞ `pending_destroys_`
-    4. Ö´ĞĞ `pending_creates_`£¨¹¹½¨¡¢Start¡¢×¢²áÎïÀíÏµÍ³£©
-
-ÊµÏÖÒªµã£¨ÃæÏòÊ¹ÓÃÕßµÄÀí½â£©
-- `ObjToken` µÄ `generation` ×Ö¶Î±£Ö¤ÁË slot ÖØÓÃºó¾É token Ê§Ğ§¡£
-- ÑÓ³Ù´´½¨/Ïú»Ù»úÖÆÓÃÓÚÔÚÖ¡ÄÚ°²È«µØ±ä¸ü¶ÔÏó¼¯ºÏ£¬±ÜÃâÔÚµü´úÊ±ÆÆ»µÈİÆ÷¡£
-- `ObjManager` »áÔÚ `CreateImmediateFromUniquePtr` ÓëÑÓ³Ù´´½¨Íê³ÉÊ±£¬×Ô¶¯Ïò `PhysicsSystem` ×¢²áÎïÀí¶ÔÏó¡£
+## å®ç°ç»†èŠ‚ä¸æ³¨æ„äº‹é¡¹
+- æ•°æ®ç»“æ„ï¼š
+  - `objects_`ï¼šå·²åˆå¹¶å¯¹è±¡æ§½ï¼Œå…ƒç´ åŒ…å« `unique_ptr<BaseObject>`ã€generationã€alive æ ‡å¿—ã€‚
+  - `pending_creates_`ï¼špending id -> PendingCreateï¼ˆunique_ptrï¼‰æ˜ å°„ã€‚
+  - `pending_to_real_map_`ï¼špending id -> çœŸæ­£çš„ ObjTokenï¼ˆåˆå¹¶åå¡«å……ï¼‰ã€‚
+  - `pending_destroys_` / `pending_destroy_set_`ï¼šå»¶è¿Ÿé”€æ¯é˜Ÿåˆ—ä¸å»é‡é›†åˆã€‚
+  - `object_index_map_`ï¼šä» `BaseObject*` åˆ° objects_ ç´¢å¼•çš„å¿«é€Ÿæ˜ å°„ï¼ˆä»…å·²åˆå¹¶å¯¹è±¡ï¼‰ã€‚
+- ç”Ÿå‘½å‘¨æœŸï¼š
+  - `CreateEntry` ä¼šç«‹åˆ»è°ƒç”¨å¯¹è±¡çš„ `Start()`ï¼Œä½†å¯¹è±¡ä¸ä¼šç«‹åˆ»è¢«åŠ å…¥ `objects_`ï¼ˆé¿å…åœ¨éå†æœŸé—´é‡åˆ†é…ï¼‰ã€‚
+  - åˆå¹¶æ—¶ä¼šæ³¨å†Œåˆ° `PhysicsSystem` å¹¶æŠŠçœŸå® token å†™å…¥å¯¹è±¡ï¼ˆé€šè¿‡ `SetObjToken`ï¼ŒObjManager ä¸º friendï¼‰ã€‚
+- å¹¶å‘ï¼š
+  - `ObjManager` è®¾è®¡ä¸ºå•çº¿ç¨‹ä½¿ç”¨ï¼ˆæ¸¸æˆä¸»å¾ªç¯çº¿ç¨‹ï¼‰ã€‚è‹¥è·¨çº¿ç¨‹è®¿é—®éœ€è‡ªè¡ŒåŠ é”å¹¶ç¡®ä¿ä¸ `UpdateAll()` çš„è°ƒç”¨åºåˆ—ä¸€è‡´ã€‚

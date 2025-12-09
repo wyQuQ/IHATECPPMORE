@@ -1,33 +1,33 @@
 # PngSprite
 
-ËµÃ÷
-- `PngSprite` Ìá¹© PNG Í¼Ïñ×ÊÔ´µÄ¼ÓÔØ/»º´æ/Ö¡²ğ·ÖÓë¶¯»­Ê±ĞòÖ§³Ö£¬·â×°ÁË¶Ô Cute Framework png_cache µÄµ÷ÓÃ¡£
-- ÌØµã£ºÀÁ¼ÓÔØ¡¢Ö§³ÖÊúÖ±ÅÅÁĞµÄ¶àÖ¡Í¼¼¯¡¢¶àÖ¡ÑÓ³Ù£¨frameDelay£©ÓëÈ«¾ÖÖ¡¼ÆÊıÍ¬²½£¨`g_frame_count`£©¡£
+## è¯´æ˜
+- `PngSprite` æä¾› PNG å›¾åƒèµ„æºçš„åŠ è½½/ç¼“å­˜/å¸§æ‹†åˆ†ä¸åŠ¨ç”»æ—¶åºæ”¯æŒï¼Œå°è£…äº†å¯¹ Cute Framework png_cache çš„è°ƒç”¨ã€‚
+- ç‰¹ç‚¹ï¼šæ‡’åŠ è½½ã€æ”¯æŒç«–ç›´æ’åˆ—çš„å¤šå¸§å›¾é›†ã€å¤šå¸§å»¶è¿Ÿï¼ˆframeDelayï¼‰ä¸å…¨å±€å¸§è®¡æ•°åŒæ­¥ï¼ˆ`g_frame_count`ï¼‰ã€‚
 
-Ö÷ÒªÖ°Ôğ
-- ¼ÓÔØÓëĞ¶ÔØ PNG£¨`Load()` / `Unload()`£¬`Load()` Ö§³Ö¶àÖÖ»ØÍËÂ·¾¶£©¡£
-- ÌáÈ¡µ¥Ö¡ÏñËØÊı¾İ£¨`ExtractFrame`¡¢`ExtractFrameFromImage`£©¡£
-- ¸øÉÏ²ãÌá¹©µ±Ç°Ö¡µÄ±ã½İ½Ó¿Ú£¨`GetCurrentFrame()`¡¢`GetCurrentFrameWithTotal(totalFrames)`£©¡£
-- Ìá¹©Ğı×ª/·­×ª/Ëõ·Å/ÊàÖá×´Ì¬ÒÔ±ãäÖÈ¾×ÓÏµÍ³Ê¹ÓÃ¡£
+## ä¸»è¦èŒè´£
+- åŠ è½½ä¸å¸è½½ PNGï¼ˆ`Load()` / `Unload()`ï¼Œ`Load()` æ”¯æŒå¤šç§å›é€€è·¯å¾„ï¼‰ã€‚
+- æå–å•å¸§åƒç´ æ•°æ®ï¼ˆ`ExtractFrame`ã€`ExtractFrameFromImage`ï¼‰ã€‚
+- ç»™ä¸Šå±‚æä¾›å½“å‰å¸§çš„ä¾¿æ·æ¥å£ï¼ˆ`GetCurrentFrame()`ã€`GetCurrentFrameWithTotal(totalFrames)`ï¼‰ã€‚
+- æä¾›æ—‹è½¬/ç¿»è½¬/ç¼©æ”¾/æ¢è½´çŠ¶æ€ä»¥ä¾¿æ¸²æŸ“å­ç³»ç»Ÿä½¿ç”¨ã€‚
 
-¹Ø¼ü½Ó¿Ú
-- ×ÊÔ´¹ÜÀí£º
-  - `bool Load()`£º³¢ÊÔ¼ÓÔØ£¬³É¹¦·µ»Ø true£¨¿ÉÄÜĞŞ¸Ä `m_path` ÎªÊµ¼ÊÆ¥ÅäÂ·¾¶£©¡£
-  - `void Unload()`£ºÊÍ·Å¼ÓÔØ×ÊÔ´£¨noexcept£©¡£
-  - `void SetPath(const std::string&)` / `void ClearPath()` / `bool HasPath(std::string* out_path)`¡£
+## å…³é”®æ¥å£
+- èµ„æºç®¡ç†ï¼š
+  - `bool Load()`ï¼šå°è¯•åŠ è½½ï¼ŒæˆåŠŸè¿”å› trueï¼ˆå¯èƒ½ä¿®æ”¹ `m_path` ä¸ºå®é™…åŒ¹é…è·¯å¾„ï¼‰ã€‚
+  - `void Unload()`ï¼šé‡Šæ”¾åŠ è½½èµ„æºï¼ˆnoexceptï¼‰ã€‚
+  - `void SetPath(const std::string&)` / `void ClearPath()` / `bool HasPath(std::string* out_path)`ã€‚
 
-- Ö¡Óë¶¯»­£º
-  - `PngFrame ExtractFrame(int index)`£º°´ `m_frameCount` ²ğ·Ö²¢·µ»ØÖ¸¶¨Ö¡ÏñËØ¡£
-  - `PngFrame GetCurrentFrame()`£º»ùÓÚÈ«¾Ö `g_frame_count` Óë `m_frameDelay` ·µ»Øµ±Ç°Ö¡£¨ÀÁ¼ÓÔØ£©¡£
-  - `void SetFrameDelay(int delay)`£ºÉèÖÃ¶¯»­ËÙ¶È£¨ÒÔÓÎÏ·Ö¡Îªµ¥Î»£©¡£
+- å¸§ä¸åŠ¨ç”»ï¼š
+  - `PngFrame ExtractFrame(int index)`ï¼šæŒ‰ `m_frameCount` æ‹†åˆ†å¹¶è¿”å›æŒ‡å®šå¸§åƒç´ ã€‚
+  - `PngFrame GetCurrentFrame()`ï¼šåŸºäºå…¨å±€ `g_frame_count` ä¸ `m_frameDelay` è¿”å›å½“å‰å¸§ï¼ˆæ‡’åŠ è½½ï¼‰ã€‚
+  - `void SetFrameDelay(int delay)`ï¼šè®¾ç½®åŠ¨ç”»é€Ÿåº¦ï¼ˆä»¥æ¸¸æˆå¸§ä¸ºå•ä½ï¼‰ã€‚
 
-- ±ä»»ÊôĞÔ£º
-  - `float GetSpriteRotation()` / `SetSpriteRotation()` / `RotateSprite()`¡£
-  - `bool m_flip_x/m_flip_y`¡£
-  - `float get_scale_x()/set_scale_x()`¡¢`get_scale_y()/set_scale_y()`¡£
-  - `CF_V2 get_pivot()/set_pivot()`£ºÊàÖá£¬µ¥Î»ÏñËØ£¬Ïà¶ÔÓÚÌùÍ¼ÖĞĞÄ¡£
+- å˜æ¢å±æ€§ï¼š
+  - `float GetSpriteRotation()` / `SetSpriteRotation()` / `RotateSprite()`ã€‚
+  - `bool m_flip_x/m_flip_y`ã€‚
+  - `float get_scale_x()/set_scale_x()`ã€`get_scale_y()/set_scale_y()`ã€‚
+  - `CF_V2 get_pivot()/set_pivot()`ï¼šæ¢è½´ï¼Œå•ä½åƒç´ ï¼Œç›¸å¯¹äºè´´å›¾ä¸­å¿ƒã€‚
 
-ÊµÏÖÒªµã
-- `Load()` Ê×ÏÈ³¢ÊÔÖ±½ÓÂ·¾¶£¬ÈôÊ§°Ü»á³¢ÊÔÈ¥µô leading '/'¡¢Æ´½Ó base Ä¿Â¼¡¢»ò base+"/content" µÈ²ßÂÔÒÔÌá¸ßÈİ´íÂÊ¡£
-- Êı¾İ×éÖ¯£º`CF_Png m_image` ³ÖÓĞÏñËØ£¬`ExtractFrameFromImage` Í¨¹ı¸´ÖÆĞĞÊı¾İ·µ»Ø `PngFrame`£¨°üº¬¿í¸ßÓë RGBA ×Ö½Ú»º´æ£©¡£
-- `GetCurrentFrame()` ÔÚÎ´¼ÓÔØÊ±»á´¥·¢ÀÁ¼ÓÔØ£¨`Load()`£©¡£
+## å®ç°è¦ç‚¹
+- `Load()` é¦–å…ˆå°è¯•ç›´æ¥è·¯å¾„ï¼Œè‹¥å¤±è´¥ä¼šå°è¯•å»æ‰ leading '/'ã€æ‹¼æ¥ base ç›®å½•ã€æˆ– base+"/content" ç­‰ç­–ç•¥ä»¥æé«˜å®¹é”™ç‡ã€‚
+- æ•°æ®ç»„ç»‡ï¼š`CF_Png m_image` æŒæœ‰åƒç´ ï¼Œ`ExtractFrameFromImage` é€šè¿‡å¤åˆ¶è¡Œæ•°æ®è¿”å› `PngFrame`ï¼ˆåŒ…å«å®½é«˜ä¸ RGBA å­—èŠ‚ç¼“å­˜ï¼‰ã€‚
+- `GetCurrentFrame()` åœ¨æœªåŠ è½½æ—¶ä¼šè§¦å‘æ‡’åŠ è½½ï¼ˆ`Load()`ï¼‰ã€‚

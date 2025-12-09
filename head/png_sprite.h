@@ -4,9 +4,12 @@
 #include <vector>
 #include <cstdint>
 #include <atomic>
-#include "cute_png_cache.h" // Ê¹ÓÃ CF_Png / png_cache API
+#include "cute_png_cache.h" // ä½¿ç”¨ CF_Png / png_cache API
+#include "v2math.h"
 
-// PngFrame ±íÊ¾µ¥Ö¡µÄ RGBA ÏñËØÊı¾İºÍ³ß´çĞÅÏ¢£¬¹©äÖÈ¾»òÉÏ´«Ê¹ÓÃ¡£
+// PngFrame è¡¨ç¤ºå•å¸§çš„ RGBA åƒç´ æ•°æ®å’Œå°ºå¯¸ä¿¡æ¯ï¼Œä¾›æ¸²æŸ“æˆ–ä¸Šä¼ ä½¿ç”¨ã€‚
+// - pixels æŒ‰ r,g,b,a é¡ºåºå¹³é“ºï¼ˆå®½åº¦ * é«˜åº¦ * 4 bytesï¼‰
+// - w/h ä¸ºåƒç´ å°ºå¯¸ï¼Œè‹¥ empty() è¿”å› true åˆ™è¡¨ç¤ºå¸§ä¸å¯ç”¨
 struct PngFrame {
     std::vector<uint8_t> pixels; // r,g,b,a, r,g,b,a, ...
     int w = 0;
@@ -15,19 +18,20 @@ struct PngFrame {
     bool empty() const noexcept { return pixels.empty() || w <= 0 || h <= 0; }
 };
 
-// PngSprite Ìá¹©ÃæÏòÊ¹ÓÃÕßµÄ PNG ¾«Áé×ÊÔ´¹ÜÀí£º
-// - ¼ÓÔØ/Ğ¶ÔØ PNG ×ÊÔ´£¨Ö§³ÖÖ¡²ğ·ÖÓëÑ­»·²¥·Å¿ØÖÆ£©
-// - ÌáÈ¡µ¥Ö¡»ò»ùÓÚÈ«¾ÖÖ¡¼ÆÊıµÄµ±Ç°Ö¡£¨±ãÓÚÍ³Ò»µÄ¶¯»­Ê±Ğò£©
-// - Ö§³ÖÉèÖÃÖ¡ÂÊ¡¢Â·¾¶ÓëĞı×ª/·­×ª/ÊàÖá£¨pivot£©µÈÊôĞÔ
-// Ê¹ÓÃËµÃ÷£º¹¹Ôìºóµ÷ÓÃ Load() ÒÔÊµ¼Ê¼ÓÔØ×ÊÔ´£»GetCurrentFrame() ÔÚ±ØÒªÊ±»á×Ô¶¯´¥·¢ÀÁ¼ÓÔØ¡£
+// PngSprite æä¾›é¢å‘ä½¿ç”¨è€…çš„ PNG ç²¾çµèµ„æºç®¡ç†ï¼š
+// - åŠ è½½/å¸è½½ PNG èµ„æºï¼ˆæ”¯æŒå¸§æ‹†åˆ†ä¸å¾ªç¯æ’­æ”¾æ§åˆ¶ï¼‰
+// - æå–å•å¸§æˆ–åŸºäºå…¨å±€å¸§è®¡æ•°çš„å½“å‰å¸§ï¼ˆä¾¿äºç»Ÿä¸€çš„åŠ¨ç”»æ—¶åºï¼‰
+// - æ”¯æŒè®¾ç½®å¸§ç‡ã€è·¯å¾„ä¸æ—‹è½¬/ç¿»è½¬/æ¢è½´ï¼ˆpivotï¼‰ç­‰å±æ€§
+// ä½¿ç”¨è¯´æ˜ï¼šæ„é€ åè°ƒç”¨ Load() ä»¥å®é™…åŠ è½½èµ„æºï¼›GetCurrentFrame() åœ¨å¿…è¦æ—¶ä¼šè‡ªåŠ¨è§¦å‘æ‡’åŠ è½½ã€‚
 class PngSprite {
 public:
     PngSprite(const std::string& path = "", int frameCount = 1, int frameDelay = 1) noexcept;
     ~PngSprite();
 
-    // ÔØÈë×ÊÔ´¡£ÈôÒÑÔØÈëÔò·µ»Ø true£»Ê§°Ü·µ»Ø false¡£
+    // è½½å…¥èµ„æºã€‚è‹¥å·²è½½å…¥åˆ™è¿”å› trueï¼›å¤±è´¥è¿”å› falseã€‚
+    // - è°ƒç”¨è€…å¯åœ¨ Start() ä¸­æˆ–æ¸²æŸ“çº¿ç¨‹ä¸­è°ƒç”¨ Load()ï¼ˆå–å†³äºèµ„æºç®¡ç†ç­–ç•¥ï¼‰
     bool Load();
-    // Ğ¶ÔØ²¢ÊÍ·Å×ÊÔ´£¬±£Ö¤ noexcept
+    // å¸è½½å¹¶é‡Šæ”¾èµ„æºï¼Œä¿è¯ noexcept
     void Unload() noexcept;
 
     const std::string& Path() const noexcept;
@@ -35,57 +39,69 @@ public:
     int FrameDelay() const noexcept;
     void SetFrameDelay(int delay) noexcept;
 
-    // ĞŞ¸Ä×ÊÔ´Â·¾¶Ê±»á×Ô¶¯Ğ¶ÔØ¾É×ÊÔ´
+    // ä¿®æ”¹èµ„æºè·¯å¾„æ—¶ä¼šè‡ªåŠ¨å¸è½½æ—§èµ„æº
     void SetPath(const std::string& path) noexcept;
-    // Çå³ıÂ·¾¶²¢Ğ¶ÔØ×ÊÔ´
+    // æ¸…é™¤è·¯å¾„å¹¶å¸è½½èµ„æº
     void ClearPath() noexcept;
-    // ²éÑ¯ÊÇ·ñ´æÔÚÂ·¾¶£¨¿ÉÑ¡Êä³öµ±Ç°Â·¾¶£©
+    // æŸ¥è¯¢æ˜¯å¦å­˜åœ¨è·¯å¾„ï¼ˆå¯é€‰è¾“å‡ºå½“å‰è·¯å¾„ï¼‰
     bool HasPath(std::string* out_path = nullptr) const noexcept;
 
-    // ÌáÈ¡Ö¸¶¨Ë÷ÒıµÄÖ¡£¨»áÔÚĞèÒªÊ±´¥·¢ÀÁ¼ÓÔØ£©
+    // æå–æŒ‡å®šç´¢å¼•çš„å¸§ï¼ˆä¼šåœ¨éœ€è¦æ—¶è§¦å‘æ‡’åŠ è½½ï¼‰
+    // - index èŒƒå›´åº”åœ¨ [0, FrameCount()-1] å†…
     PngFrame ExtractFrame(int index) const;
-    // Ê¹ÓÃÄÚ²¿ frameCount ·µ»Øµ±Ç°Ö¡£¨ÊÜÈ«¾Ö g_frame_count ¿ØÖÆ£©
+    // ä½¿ç”¨å†…éƒ¨ frameCount è¿”å›å½“å‰å¸§ï¼ˆå—å…¨å±€ g_frame_count æ§åˆ¶ï¼‰
+    // - è¯¥æ–¹æ³•åŸºäº g_frame_count å’Œ m_frameDelay è®¡ç®—å½“å‰å¸§ç´¢å¼•ä»¥å®ç°å…¨å±€åŒæ­¥åŠ¨ç”»
     PngFrame GetCurrentFrame() const;
 
-    // Ö§³ÖÍâ²¿´«Èë×ÜÖ¡ÊıÒÔ»ñÈ¡µ±Ç°Ö¡£¨ÓÃÓÚ´¹Ö±ÅÅÁĞ¶àÖ¡Í¼¼¯£©
+    // æ”¯æŒå¤–éƒ¨ä¼ å…¥æ€»å¸§æ•°ä»¥è·å–å½“å‰å¸§ï¼ˆç”¨äºå‚ç›´æ’åˆ—å¤šå¸§å›¾é›†ï¼‰
     PngFrame GetCurrentFrameWithTotal(int totalFrames) const;
-    // ÔÚ¸ø¶¨ totalFrames µÄÇé¿öÏÂÌáÈ¡Ö¸¶¨Ö¡
+    // åœ¨ç»™å®š totalFrames çš„æƒ…å†µä¸‹æå–æŒ‡å®šå¸§
     PngFrame ExtractFrameWithTotal(int index, int totalFrames) const;
 
-    // Ğı×ªÊôĞÔ½Ó¿Ú£¨ÒÔ»¡¶ÈÎªµ¥Î»£©
+    // æ—‹è½¬å±æ€§æ¥å£ï¼ˆä»¥å¼§åº¦ä¸ºå•ä½ï¼‰
+    // - æ—‹è½¬å€¼è§„èŒƒåŒ–åˆ° [-pi, pi] ä»¥å‡å°‘ç´¯ç§¯è¯¯å·®
     float GetSpriteRotation() const noexcept { return m_rotation; }
-    void SetSpriteRotation(float rot) noexcept { m_rotation = rot; }
-    void RotateSprite(float drot) noexcept { m_rotation += drot; }
+    void SetSpriteRotation(float rot) noexcept { 
+        if (rot > pi) rot -= 2 * pi;
+        else if (rot < -pi) rot += 2 * pi;
+        m_rotation = rot; 
+    }
+    void RotateSprite(float drot) noexcept { 
+        m_rotation += drot; 
+        if (m_rotation > pi) m_rotation -= 2 * pi;
+        else if (m_rotation < -pi) m_rotation += 2 * pi;
+    }
 
-    // ·­×ª±êÖ¾£¨¹©äÖÈ¾Ê¹ÓÃ£©
-    bool m_flip_x = false;  // Ë®Æ½·­×ª
-    bool m_flip_y = false;  // ´¹Ö±·­×ª
+    // ç¿»è½¬æ ‡å¿—ï¼ˆä¾›æ¸²æŸ“ä½¿ç”¨ï¼‰
+    bool m_flip_x = false;  // æ°´å¹³ç¿»è½¬
+    bool m_flip_y = false;  // å‚ç›´ç¿»è½¬
 
-	// Ëõ·ÅÊôĞÔ½Ó¿Ú
+	// ç¼©æ”¾å±æ€§æ¥å£ï¼ˆä»…å­˜å‚¨ï¼Œå®é™…æ¸²æŸ“/ç¢°æ’è½¬æ¢ç”±è°ƒç”¨è€…ä½¿ç”¨ï¼‰
 	float get_scale_x() const noexcept { return m_scale_x; }
 	void set_scale_x(float sx) noexcept { m_scale_x = sx; }
 	float get_scale_y() const noexcept { return m_scale_y; }
 	void set_scale_y(float sy) noexcept { m_scale_y = sy; }
 
-    // ÊàÖá£¨pivot£©ÓÃÓÚĞı×ª/¶ÔÆë£¬µ¥Î»ÎªÏñËØ£¬Ïà¶ÔÓÚÌùÍ¼ÖĞĞÄ
+    // æ¢è½´ï¼ˆpivotï¼‰ç”¨äºæ—‹è½¬/å¯¹é½ï¼Œå•ä½ä¸ºåƒç´ ï¼Œç›¸å¯¹äºè´´å›¾ä¸­å¿ƒ
     CF_V2 get_pivot() const noexcept { return pivot; }
     void set_pivot(CF_V2 p) noexcept { pivot = p; }
 
 private:
-    // ´Óµ¥ÕÅ CF_Png Í¼ÏñÖĞ°´ totalFrames ²ğ·Ö²¢ÌáÈ¡Ö¸¶¨µÄÖ¡ÏñËØ
+    // ä»å•å¼  CF_Png å›¾åƒä¸­æŒ‰ totalFrames æ‹†åˆ†å¹¶æå–æŒ‡å®šçš„å¸§åƒç´ 
+    // - å®ç°è´Ÿè´£æ ¹æ® totalFrames åˆ‡åˆ†å‚ç›´æ’åˆ—å›¾é›†å¹¶è¿”å›åƒç´ ç¼“å†²ï¼ˆå¤åˆ¶ï¼‰
     PngFrame ExtractFrameFromImage(const CF_Png& src, int index, int totalFrames) const;
 
     std::string m_path;
-    int m_frameCount = 1; // ´¹Ö±Ö¡Êı£¨Ä¬ÈÏ 1£©
-    int m_frameDelay = 1; // Ö¡ÑÓ³Ù£¨ÓÃÓÚ¶¯»­ËÙ¶È¿ØÖÆ£©
-    CF_Png m_image{};     // Cute Framework µÄ CF_Png ×ÊÔ´¾ä±ú
+    int m_frameCount = 1; // å‚ç›´å¸§æ•°ï¼ˆé»˜è®¤ 1ï¼‰
+    int m_frameDelay = 1; // å¸§å»¶è¿Ÿï¼ˆç”¨äºåŠ¨ç”»é€Ÿåº¦æ§åˆ¶ï¼‰
+    CF_Png m_image{};     // Cute Framework çš„ CF_Png èµ„æºå¥æŸ„
     bool m_loaded = false;
 
-    float m_rotation = 0.0f; // Ğı×ª½Ç¶È£¨»¡¶È£©
-	float m_scale_x = 1.0f; // Ë®Æ½Ëõ·Å
-	float m_scale_y = 1.0f; // ´¹Ö±Ëõ·Å
+    float m_rotation = 0.0f; // æ—‹è½¬è§’åº¦ï¼ˆå¼§åº¦ï¼‰
+	float m_scale_x = 1.0f; // æ°´å¹³ç¼©æ”¾
+	float m_scale_y = 1.0f; // å‚ç›´ç¼©æ”¾
 
-    CF_V2 pivot{ 0.0f, 0.0f }; // Ğı×ª/·­×ªÊàÖáµã£¨ÒÔÏñËØÎªµ¥Î»£©
+    CF_V2 pivot{ 0.0f, 0.0f }; // æ—‹è½¬/ç¿»è½¬æ¢è½´ç‚¹ï¼ˆä»¥åƒç´ ä¸ºå•ä½ï¼‰
 };
 
-extern std::atomic<int> g_frame_count; // È«¾ÖÖ¡¼ÆÊı£¬ÓÃÓÚÍ¬²½¶¯»­Ê±¼ä
+extern std::atomic<int> g_frame_count; // å…¨å±€å¸§è®¡æ•°ï¼Œç”¨äºåŒæ­¥åŠ¨ç”»æ—¶é—´

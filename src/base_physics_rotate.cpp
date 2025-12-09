@@ -2,25 +2,25 @@
 #include <cmath>
 #include <algorithm>
 
-// ÎÄ¼şÖ°ÔğËµÃ÷£¨ÃæÏòÊ¹ÓÃÕß£©£º
-// - Ìá¹© BasePhysics ÖĞÓëĞı×ª/ÊàÖáÏà¹ØµÄ world-shape ¼ÆËãÂß¼­¡£
-// - µ±ÎïÀíĞÎ×´ĞèÒª»ùÓÚĞı×ªºÍÊàÖá×ª»»Îª world-space Ê±£¬±¾ÎÄ¼şÄÚµÄº¯Êı»áÉú³É»º´æµÄ world shape ÒÔ¹©Åö×²ÏµÍ³Ê¹ÓÃ¡£
-// - ±£Ö¤²»Í¬ĞÎ×´ÀàĞÍ£¨AABB / Circle / Capsule / Poly£©ÔÚĞı×ªÓëÊàÖá×÷ÓÃÏÂ×ª»»ÎªºÏÀíµÄ world-space ±íÊ¾¡£
+// æ–‡ä»¶èŒè´£è¯´æ˜ï¼ˆé¢å‘ä½¿ç”¨è€…ï¼‰ï¼š
+// - æä¾› BasePhysics ä¸­ä¸æ—‹è½¬/æ¢è½´ç›¸å…³çš„ world-shape è®¡ç®—é€»è¾‘ã€‚
+// - å½“ç‰©ç†å½¢çŠ¶éœ€è¦åŸºäºæ—‹è½¬å’Œæ¢è½´è½¬æ¢ä¸º world-space æ—¶ï¼Œæœ¬æ–‡ä»¶å†…çš„å‡½æ•°ä¼šç”Ÿæˆç¼“å­˜çš„ world shape ä»¥ä¾›ç¢°æ’ç³»ç»Ÿä½¿ç”¨ã€‚
+// - ä¿è¯ä¸åŒå½¢çŠ¶ç±»å‹ï¼ˆAABB / Circle / Capsule / Polyï¼‰åœ¨æ—‹è½¬ä¸æ¢è½´ä½œç”¨ä¸‹è½¬æ¢ä¸ºåˆç†çš„ world-space è¡¨ç¤ºã€‚
 
-// file-local helper: ½«µãÈÆÔ­µãĞı×ª£¨Ê¹ÓÃ sin/cos Ìá¹©¼ÓËÙ£©
+// file-local helper: å°†ç‚¹ç»•åŸç‚¹æ—‹è½¬ï¼ˆä½¿ç”¨ sin/cos æä¾›åŠ é€Ÿï¼‰
 static inline CF_V2 rotate_about_origin_local(const CF_V2& p, float sinr, float cosr) noexcept
 {
 	return CF_V2{ p.x * cosr - p.y * sinr, p.x * sinr + p.y * cosr };
 }
 
-// file-local helper: ¶Ôµã°´ x/y ·ÖÁ¿Ëõ·Å
+// file-local helper: å¯¹ç‚¹æŒ‰ x/y åˆ†é‡ç¼©æ”¾
 static inline CF_V2 scale_point_local(const CF_V2& p, float sx, float sy) noexcept
 {
 	return CF_V2{ p.x * sx, p.y * sy };
 }
 
-// ½«¾Ö²¿ĞÎ×´Æ½ÒÆµ½ world-space£¨½öÆ½ÒÆ²»Ğı×ª£©£¬ÓÃÓÚ use_world_shape_ == false µÄ¿ì½İÂ·¾¶
-// ×¢Òâ£º¸Ãº¯Êı±£³Ö¼òµ¥Æ½ÒÆĞĞÎª£¬scale µÄ´¦ÀíÔÚ tweak_shape_with_rotation ÖĞÍê³É£¨ÒÔ±ãÊ¹ÓÃ BasePhysics µÄ scale_x_/scale_y_£©
+// å°†å±€éƒ¨å½¢çŠ¶å¹³ç§»åˆ° world-spaceï¼ˆä»…å¹³ç§»ä¸æ—‹è½¬ï¼‰ï¼Œç”¨äº use_world_shape_ == false çš„å¿«æ·è·¯å¾„
+// æ³¨æ„ï¼šè¯¥å‡½æ•°ä¿æŒç®€å•å¹³ç§»è¡Œä¸ºï¼Œscale çš„å¤„ç†åœ¨ tweak_shape_with_rotation ä¸­å®Œæˆï¼ˆä»¥ä¾¿ä½¿ç”¨ BasePhysics çš„ scale_x_/scale_y_ï¼‰
 static inline CF_ShapeWrapper translate_local_to_world(const CF_ShapeWrapper& s, const CF_V2& pos) noexcept
 {
 	CF_ShapeWrapper out = s;
@@ -48,29 +48,29 @@ static inline CF_ShapeWrapper translate_local_to_world(const CF_ShapeWrapper& s,
 	return out;
 }
 
-// ½«¾Ö²¿ĞÎ×´¸ù¾İ rotation_/pivot_/position ×ª»»Îª world-space ²¢»º´æ¡£
-// ËµÃ÷£º
-// - Èç¹û use_world_shape_ == false£¬Ôò½ö×öÆ½ÒÆÒÔ»ñµÃ world-space£¨¸ü¸ßĞ§£©¡£
-// - ·ñÔò¸ù¾İĞÎ×´ÀàĞÍÖ´ĞĞÈÆ origin£¨½áºÏ pivot£©Ğı×ª£¬ÔÙÆ½ÒÆµ½ position¡£
-// - ½á¹ûĞ´Èë cached_world_shape_ ²¢µİÔö°æ±¾ºÅ£¬¹©ÎïÀíÏµÍ³ÎÈ¶¨¶ÁÈ¡¡£
-// ±ä¸ü£ºÏÖÔÚÎŞÂÛ use_world_shape_ Óë·ñ£¬¶¼»áÏÈ¶Ô¾Ö²¿ĞÎ×´Ó¦ÓÃ scale_x_/scale_y_£¨¶Ô circle µÄ°ë¾¶²ÉÓÃ max(|sx|,|sy|)£©
+// å°†å±€éƒ¨å½¢çŠ¶æ ¹æ® rotation_/pivot_/position è½¬æ¢ä¸º world-space å¹¶ç¼“å­˜ã€‚
+// è¯´æ˜ï¼š
+// - å¦‚æœ use_world_shape_ == falseï¼Œåˆ™ä»…åšå¹³ç§»ä»¥è·å¾— world-spaceï¼ˆæ›´é«˜æ•ˆï¼‰ã€‚
+// - å¦åˆ™æ ¹æ®å½¢çŠ¶ç±»å‹æ‰§è¡Œç»• originï¼ˆç»“åˆ pivotï¼‰æ—‹è½¬ï¼Œå†å¹³ç§»åˆ° positionã€‚
+// - ç»“æœå†™å…¥ cached_world_shape_ å¹¶é€’å¢ç‰ˆæœ¬å·ï¼Œä¾›ç‰©ç†ç³»ç»Ÿç¨³å®šè¯»å–ã€‚
+// å˜æ›´ï¼šç°åœ¨æ— è®º use_world_shape_ ä¸å¦ï¼Œéƒ½ä¼šå…ˆå¯¹å±€éƒ¨å½¢çŠ¶åº”ç”¨ scale_x_/scale_y_ï¼ˆå¯¹ circle çš„åŠå¾„é‡‡ç”¨ max(|sx|,|sy|)ï¼‰
 void BasePhysics::tweak_shape_with_rotation() const noexcept
 {
-	// ¶ÁÈ¡Ëõ·Å·ÖÁ¿£¨¿ÉÄÜÎª¸º£»¶Ô°ë¾¶Ê¹ÓÃ¾ø¶ÔÖµÖĞµÄ½Ï´óÕß£©
+	// è¯»å–ç¼©æ”¾åˆ†é‡ï¼ˆå¯èƒ½ä¸ºè´Ÿï¼›å¯¹åŠå¾„ä½¿ç”¨ç»å¯¹å€¼ä¸­çš„è¾ƒå¤§è€…ï¼‰
 	const float sx = scale_x_;
 	const float sy = scale_y_;
 	const float abs_sx = std::fabs(sx);
 	const float abs_sy = std::fabs(sy);
 	const float max_abs_s = (abs_sx > abs_sy) ? abs_sx : abs_sy;
 
-	// Èç¹û²»ÆôÓÃ world-shape£¬ÔòÏÈ¶Ô local shape ×öËõ·Å£¬ÔÙÆ½ÒÆ local -> world
+	// å¦‚æœä¸å¯ç”¨ world-shapeï¼Œåˆ™å…ˆå¯¹ local shape åšç¼©æ”¾ï¼Œå†å¹³ç§» local -> world
 	if (!use_world_shape_) {
-		// ¸´ÖÆ²¢¶Ô¾Ö²¿×ø±ê½øĞĞËõ·Å£¬È»ºóÆ½ÒÆ
+		// å¤åˆ¶å¹¶å¯¹å±€éƒ¨åæ ‡è¿›è¡Œç¼©æ”¾ï¼Œç„¶åå¹³ç§»
 		CF_ShapeWrapper scaled = shape;
 		switch (shape.type) {
 		case CF_SHAPE_TYPE_AABB:
 		{
-			// Ëõ·Åºó¿ÉÄÜµ¼ÖÂ min/max ½»»»£¬ĞŞÕıÖ®
+			// ç¼©æ”¾åå¯èƒ½å¯¼è‡´ min/max äº¤æ¢ï¼Œä¿®æ­£ä¹‹
 			CF_Aabb a = shape.u.aabb;
 			CF_V2 smin = scale_point_local(a.min, sx, sy);
 			CF_V2 smax = scale_point_local(a.max, sx, sy);
@@ -93,7 +93,7 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 			CF_Capsule cap = shape.u.capsule;
 			CF_V2 a = scale_point_local(cap.a, sx, sy);
 			CF_V2 b = scale_point_local(cap.b, sx, sy);
-			// °ë¾¶°´×î´óËõ·Å·ÖÁ¿Ëõ·Å£¨±£³Ö²»»á±»Ñ¹±âÎªÍÖÔ²£©
+			// åŠå¾„æŒ‰æœ€å¤§ç¼©æ”¾åˆ†é‡ç¼©æ”¾ï¼ˆä¿æŒä¸ä¼šè¢«å‹æ‰ä¸ºæ¤­åœ†ï¼‰
 			CF_Capsule nc = cf_make_capsule(a, b, cap.r * max_abs_s);
 			scaled = CF_ShapeWrapper::FromCapsule(nc);
 			break;
@@ -114,14 +114,14 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 			break;
 		}
 
-		// Æ½ÒÆµ½ world-space
+		// å¹³ç§»åˆ° world-space
 		cached_world_shape_ = translate_local_to_world(scaled, _position);
 		world_shape_dirty_ = false;
 		++world_shape_version_;
 		return;
 	}
 
-	// ¼ÆËã sin/cos£¨ÓÃÓÚĞı×ª£©
+	// è®¡ç®— sin/cosï¼ˆç”¨äºæ—‹è½¬ï¼‰
 	const float ang = rotation_;
 	const float sinr = cf_sin(ang);
 	const float cosr = cf_cos(ang);
@@ -129,7 +129,7 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 	switch (shape.type) {
 	case CF_SHAPE_TYPE_AABB:
 	{
-		// ½« AABB µÄËÄ¸ö¶¥µã°´Ëõ·Å -> Ğı×ª -> Æ½ÒÆµ½ world-space£¬²¢ÒÔ¶à±ßĞÎ±íÊ¾»º´æ
+		// å°† AABB çš„å››ä¸ªé¡¶ç‚¹æŒ‰ç¼©æ”¾ -> æ—‹è½¬ -> å¹³ç§»åˆ° world-spaceï¼Œå¹¶ä»¥å¤šè¾¹å½¢è¡¨ç¤ºç¼“å­˜
 		CF_Aabb a = shape.u.aabb;
 		CF_V2 corners[4];
 		corners[0] = CF_V2{ a.min.x, a.min.y };
@@ -140,11 +140,11 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 		CF_Poly p{};
 		p.count = 4;
 		for (int i = 0; i < 4; ++i) {
-			// ÏÈËõ·Å
+			// å…ˆç¼©æ”¾
 			CF_V2 local_scaled = scale_point_local(corners[i], sx, sy);
-			// ÔÙĞı×ª
+			// å†æ—‹è½¬
 			CF_V2 rotated = rotate_about_origin_local(local_scaled, sinr, cosr);
-			// ×îºóÆ½ÒÆµ½ world
+			// æœ€åå¹³ç§»åˆ° world
 			CF_V2 world_pt = CF_V2{ rotated.x + _position.x, rotated.y + _position.y };
 			p.verts[i] = world_pt;
 		}
@@ -154,7 +154,7 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 	}
 	case CF_SHAPE_TYPE_CIRCLE:
 	{
-		// Ô²ĞÎ£ºÖĞĞÄ°´ x/y ·ÖÁ¿Ëõ·Å£¬°ë¾¶°´ max(|sx|,|sy|) Ëõ·Å£¬ËæºóĞı×ªºÍÆ½ÒÆÖĞĞÄ
+		// åœ†å½¢ï¼šä¸­å¿ƒæŒ‰ x/y åˆ†é‡ç¼©æ”¾ï¼ŒåŠå¾„æŒ‰ max(|sx|,|sy|) ç¼©æ”¾ï¼Œéšåæ—‹è½¬å’Œå¹³ç§»ä¸­å¿ƒ
 		CF_Circle c = shape.u.circle;
 		CF_V2 center_scaled = scale_point_local(c.p, sx, sy);
 		CF_V2 rotated = rotate_about_origin_local(center_scaled, sinr, cosr);
@@ -165,7 +165,7 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 	}
 	case CF_SHAPE_TYPE_CAPSULE:
 	{
-		// ¶Ô capsule µÄ¶ËµãÏÈËõ·ÅÔÙĞı×ª²¢Æ½ÒÆ£¬È»ºó¸ù¾İ¶ËµãË³ĞòÉú³ÉÊÀ½ç¿Õ¼äµÄ capsule
+		// å¯¹ capsule çš„ç«¯ç‚¹å…ˆç¼©æ”¾å†æ—‹è½¬å¹¶å¹³ç§»ï¼Œç„¶åæ ¹æ®ç«¯ç‚¹é¡ºåºç”Ÿæˆä¸–ç•Œç©ºé—´çš„ capsule
 		CF_Capsule cap = shape.u.capsule;
 		CF_V2 a_local = scale_point_local(CF_V2{ cap.a.x, cap.a.y }, sx, sy);
 		CF_V2 b_local = scale_point_local(CF_V2{ cap.b.x, cap.b.y }, sx, sy);
@@ -174,7 +174,7 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 		CF_V2 a_world = CF_V2{ a_rot.x + _position.x, a_rot.y + _position.y };
 		CF_V2 b_world = CF_V2{ b_rot.x + _position.x, b_rot.y + _position.y };
 
-		// È·±£¶Ëµã°´ÕÕ×ø±êË³ĞòÅÅÁĞÒÔÂú×ã¿âµÄÆÚÍû
+		// ç¡®ä¿ç«¯ç‚¹æŒ‰ç…§åæ ‡é¡ºåºæ’åˆ—ä»¥æ»¡è¶³åº“çš„æœŸæœ›
 		if (std::fabs(a_world.x - b_world.x) >= std::fabs(a_world.y - b_world.y)) {
 			if (a_world.x > b_world.x) std::swap(a_world, b_world);
 		}
@@ -182,14 +182,14 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 			if (a_world.y > b_world.y) std::swap(a_world, b_world);
 		}
 
-		// °ë¾¶°´×î´óËõ·Å·ÖÁ¿Ëõ·Å
+		// åŠå¾„æŒ‰æœ€å¤§ç¼©æ”¾åˆ†é‡ç¼©æ”¾
 		CF_Capsule wc = cf_make_capsule(a_world, b_world, cap.r * max_abs_s);
 		cached_world_shape_ = CF_ShapeWrapper::FromCapsule(wc);
 		break;
 	}
 	case CF_SHAPE_TYPE_POLY:
 	{
-		// ¶à±ßĞÎ¶¥µãÏÈËõ·ÅÔÙĞı×ª²¢Æ½ÒÆ£¬È»ºóÖØĞÂ¹¹½¨¶à±ßĞÎ»º´æ
+		// å¤šè¾¹å½¢é¡¶ç‚¹å…ˆç¼©æ”¾å†æ—‹è½¬å¹¶å¹³ç§»ï¼Œç„¶åé‡æ–°æ„å»ºå¤šè¾¹å½¢ç¼“å­˜
 		CF_Poly poly = shape.u.poly;
 		CF_Poly wp{};
 		wp.count = poly.count;
@@ -204,17 +204,17 @@ void BasePhysics::tweak_shape_with_rotation() const noexcept
 		break;
 	}
 	default:
-		// ÆäËûÀàĞÍÄ¬ÈÏ×ö¼òµ¥Ëõ·Å+Æ½ÒÆÒÔ»ñµÃ world-space ±íÊ¾
+		// å…¶ä»–ç±»å‹é»˜è®¤åšç®€å•ç¼©æ”¾+å¹³ç§»ä»¥è·å¾— world-space è¡¨ç¤º
 		{
 			CF_ShapeWrapper scaled = shape;
-			// ¶ÔÓÚÎ´ÖªÀàĞÍ£¬Ö»¶Ô¿ÉÄÜ´æÔÚµÄÏòÁ¿×Ö¶Î³¢ÊÔËõ·Å£¨±£ÊØ´¦Àí£©
-			// Ö±½Ó×ß translate_local_to_world ×öÆ½ÒÆ£¨Ëõ·ÅÒÑÔÚ scaled ÖĞ¾¡Á¿´¦Àí£©
+			// å¯¹äºæœªçŸ¥ç±»å‹ï¼Œåªå¯¹å¯èƒ½å­˜åœ¨çš„å‘é‡å­—æ®µå°è¯•ç¼©æ”¾ï¼ˆä¿å®ˆå¤„ç†ï¼‰
+			// ç›´æ¥èµ° translate_local_to_world åšå¹³ç§»ï¼ˆç¼©æ”¾å·²åœ¨ scaled ä¸­å°½é‡å¤„ç†ï¼‰
 			cached_world_shape_ = translate_local_to_world(scaled, _position);
 		}
 		break;
 	}
 
-	// ¸üĞÂÔà±êÖ¾Óë°æ±¾ºÅ£¬¹©Íâ²¿¼ì²â±ä»¯
+	// æ›´æ–°è„æ ‡å¿—ä¸ç‰ˆæœ¬å·ï¼Œä¾›å¤–éƒ¨æ£€æµ‹å˜åŒ–
 	world_shape_dirty_ = false;
 	++world_shape_version_;
 }

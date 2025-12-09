@@ -5,7 +5,7 @@
 #if COLLISION_DEBUG
 #include <iomanip>
 #include <cmath>
-// ¸¨Öú£º´òÓ¡ĞÎ×´µÄ world-space ĞÅÏ¢£¬ÓÃÓÚµ÷ÊÔÅö×²Ï¸½Ú
+// è¾…åŠ©ï¼šæ‰“å°å½¢çŠ¶çš„ world-space ä¿¡æ¯ï¼Œç”¨äºè°ƒè¯•ç¢°æ’ç»†èŠ‚ã€‚ä»…åœ¨ COLLISION_DEBUG å¯ç”¨æ—¶ç¼–è¯‘ã€‚
 static void dump_shape_world(const CF_ShapeWrapper& s) noexcept {
 	switch (s.type) {
 	case CF_SHAPE_TYPE_AABB:
@@ -33,21 +33,23 @@ static void dump_shape_world(const CF_ShapeWrapper& s) noexcept {
 }
 #endif
 
-// ÇåÀí²¢¹æ·¶»¯Åö×²Á÷ÖĞ²úÉúµÄ manifold£¬±£Ö¤ÊıÖµÓëÓïÒå°²È«£¨¹©ºóĞø´¦ÀíÊ¹ÓÃ£©
+// æ¸…ç†å¹¶è§„èŒƒåŒ–ç¢°æ’æµä¸­äº§ç”Ÿçš„ manifoldï¼Œä¿è¯æ•°å€¼ä¸è¯­ä¹‰å®‰å…¨ï¼ˆä¾›åç»­å¤„ç†ä½¿ç”¨ï¼‰
+// - å°† count é™å®šåœ¨åˆæ³•èŒƒå›´ [0,2]
+// - ä¿®æ­£ depths, contact_points, normal ç­‰å¯èƒ½çš„ NaN/Inf/è´Ÿå€¼
 static void normalize_and_clamp_manifold(CF_Manifold& m) noexcept
 {
-	// ½« count ÏŞ¶¨ÔÚ [0,2]
+	// å°† count é™å®šåœ¨ [0,2]
 	if (m.count < 0) m.count = 0;
 	if (m.count > 2) m.count = 2;
 
-	// È·±£ penetration depth ·Ç NaN/Inf ÇÒ²»Îª¸º
+	// ç¡®ä¿ penetration depth é NaN/Inf ä¸”ä¸ä¸ºè´Ÿ
 	for (int i = 0; i < 2; ++i) {
 		if (std::isnan(m.depths[i]) || std::isinf(m.depths[i]) || m.depths[i] < 0.0f) {
 			m.depths[i] = 0.0f;
 		}
 	}
 
-	// ÇåÀí contact points ÖĞµÄ·Ç·¨Öµ
+	// æ¸…ç† contact points ä¸­çš„éæ³•å€¼
 	for (int i = 0; i < 2; ++i) {
 		CF_V2& cp = m.contact_points[i];
 		if (std::isnan(cp.x) || std::isnan(cp.y) || std::isinf(cp.x) || std::isinf(cp.y)) {
@@ -55,7 +57,7 @@ static void normalize_and_clamp_manifold(CF_Manifold& m) noexcept
 		}
 	}
 
-	// ¹éÒ»»¯·¨ÏßÏòÁ¿£¬Èô²»¿ÉÓÃÔòÖÃÁã
+	// å½’ä¸€åŒ–æ³•çº¿å‘é‡ï¼Œè‹¥ä¸å¯ç”¨åˆ™ç½®é›¶
 	float len = v2math::length(m.n);
 	if (std::isnan(len) || std::isinf(len) || len <= 1e-6f) {
 		m.n = cf_v2(0.0f, 0.0f);
@@ -66,7 +68,9 @@ static void normalize_and_clamp_manifold(CF_Manifold& m) noexcept
 	}
 }
 
-// ½«¾Ö²¿¿Õ¼äµÄ shape Æ½ÒÆÖÁ world-space£¨²»×öĞı×ª£©£¬ÓÃÓÚ narrowphase Ç°µÄÔ¤´¦Àí
+// å°†å±€éƒ¨ç©ºé—´çš„ shape å¹³ç§»è‡³ world-spaceï¼ˆä¸åšæ—‹è½¬ï¼‰ï¼Œç”¨äº narrowphase å‰çš„é¢„å¤„ç†
+// - delta ä¸º world-space ä¸­çš„ä½ç½®åç§»ï¼ˆé€šå¸¸ä¸º object.positionï¼‰
+// - è¯¥å‡½æ•°ä¸ä¼šä¿®æ”¹è¾“å…¥ shapeï¼Œè€Œæ˜¯è¿”å›ä¸€ä¸ªæ–°çš„ CF_ShapeWrapperï¼ˆå€¼æ‹·è´ï¼‰
 static CF_ShapeWrapper translate_shape_world(const CF_ShapeWrapper& s, const CF_V2& delta) noexcept
 {
 	CF_ShapeWrapper out = s;
@@ -93,7 +97,8 @@ static CF_ShapeWrapper translate_shape_world(const CF_ShapeWrapper& s, const CF_
 	return out;
 }
 
-// ½« shape ×ª»»Îª AABB£¬ÓÃÓÚ broadphase Íø¸ñË÷Òı»ò¿ìËÙÌŞ³ı
+// å°† shape è½¬æ¢ä¸º AABBï¼Œç”¨äº broadphase ç½‘æ ¼ç´¢å¼•æˆ–å¿«é€Ÿå‰”é™¤
+// - è¿”å›å€¼ä¸ºè¯¥å½¢çŠ¶åœ¨ world-space ä¸‹çš„è½´å¯¹é½åŒ…å›´ç›’ï¼ˆç”¨äºæ ¼å­ç´¢å¼•ï¼‰
 static CF_Aabb shape_wrapper_to_aabb(const CF_ShapeWrapper& s) noexcept
 {
 	CF_Aabb aabb{};
@@ -146,17 +151,19 @@ static CF_Aabb shape_wrapper_to_aabb(const CF_ShapeWrapper& s) noexcept
 	return aabb;
 }
 
-// Ê¹ÓÃ Cute Framework µÄÅö×²º¯Êı¼ÆËã world-space shape µÄÅö×²ĞÅÏ¢£¬
-// ²¢¶Ô½á¹û½øĞĞ»ù´¡Ğ£ÑéºÍ¹éÒ»»¯£¬·µ»ØÊÇ·ñ·¢ÉúÅö×²¡£
+// ä½¿ç”¨ Cute Framework çš„ç¢°æ’å‡½æ•°è®¡ç®— world-space shape çš„ç¢°æ’ä¿¡æ¯ï¼Œ
+// å¹¶å¯¹ç»“æœè¿›è¡ŒåŸºç¡€æ ¡éªŒå’Œå½’ä¸€åŒ–ï¼Œè¿”å›æ˜¯å¦å‘ç”Ÿç¢°æ’ã€‚
+// - è°ƒç”¨è€…åº”ä¿è¯ä¼ å…¥çš„ A/B ä¸º world-spaceï¼ˆtranslate_shape_world æˆ– BasePhysics å·²å¤„ç†ï¼‰
+// - out_manifold ä¸ºå¯é€‰è¾“å‡ºï¼ˆè‹¥é nullptr åˆ™å†™å…¥è®¡ç®—ç»“æœï¼‰
 static bool shapes_collide_world(const CF_ShapeWrapper& A, const CF_ShapeWrapper& B, CF_Manifold* out_manifold) noexcept
 {
 	CF_Manifold m{};
 	cf_collide(&A.u, nullptr, A.type, &B.u, nullptr, B.type, &m);
 
-	// Èç¹ûÃ»ÓĞ½Ó´¥µãÔòÈÏÎªÎ´Åö×²
+	// å¦‚æœæ²¡æœ‰æ¥è§¦ç‚¹åˆ™è®¤ä¸ºæœªç¢°æ’
 	if (m.count <= 0) return false;
 
-	// ¹æ·¶»¯ manifold Êı¾İ£¬·ÀÖ¹ÊıÖµÒì³£
+	// è§„èŒƒåŒ– manifold æ•°æ®ï¼Œé˜²æ­¢æ•°å€¼å¼‚å¸¸
 	for (int i = 0; i < 2; ++i) {
 		if (m.depths[i] < 0.0f) m.depths[i] = 0.0f;
 	}
@@ -173,14 +180,15 @@ static bool shapes_collide_world(const CF_ShapeWrapper& A, const CF_ShapeWrapper
 	return true;
 }
 
-// ×¢Òâ£ºPhysicsSystem Í¨¹ı ObjToken ¹ÜÀí BasePhysics µÄ×¢²áÓë·´×¢²á£¬´Ó¶øÔÚ Step() ÖĞÍ³Ò»½øĞĞÅö×²¼ì²âÓë»Øµ÷¡£
+// æ³¨æ„ï¼šPhysicsSystem é€šè¿‡ ObjToken ç®¡ç† BasePhysics çš„æ³¨å†Œä¸åæ³¨å†Œï¼Œä»è€Œåœ¨ Step() ä¸­ç»Ÿä¸€è¿›è¡Œç¢°æ’æ£€æµ‹ä¸å›è°ƒã€‚
+// ä»¥ä¸‹å®ç°å…³æ³¨æ€§èƒ½ä¸ç¨³å®šæ€§ï¼šä½¿ç”¨æ ¼å­ broadphase é™ä½ narrowphase æ¬¡æ•°ï¼Œåˆå¹¶é‡å¤ contact ä»¥é™åˆ¶æ¯å¯¹æœ€å¤šä¸¤ä¸ª contactã€‚
 void PhysicsSystem::Register(const ObjManager::ObjToken& token, BasePhysics* phys) noexcept
 {
 	if (!phys) return;
 	uint64_t key = make_key(token);
 	auto it = token_map_.find(key);
 	if (it != token_map_.end()) {
-		// Èç¹ûÒÑ´æÔÚÌõÄ¿£¬¸üĞÂÖ¸ÕëÓë token
+		// å¦‚æœå·²å­˜åœ¨æ¡ç›®ï¼Œæ›´æ–°æŒ‡é’ˆä¸ token
 		entries_[it->second].physics = phys;
 		entries_[it->second].token = token;
 		return;
@@ -192,7 +200,8 @@ void PhysicsSystem::Register(const ObjManager::ObjToken& token, BasePhysics* phy
 	token_map_[key] = entries_.size() - 1;
 }
 
-// ·´×¢²á£º½«ÌõÄ¿´Ó entries_ ÖĞÒÆ³ı²¢Î¬»¤Ó³ÉäÒ»ÖÂĞÔ
+// åæ³¨å†Œï¼šå°†æ¡ç›®ä» entries_ ä¸­ç§»é™¤å¹¶ç»´æŠ¤æ˜ å°„ä¸€è‡´æ€§
+// - å°†å°¾éƒ¨æ¡ç›®ç§»åŠ¨åˆ°è¢«åˆ é™¤ä½ç½®ä»¥é¿å… O(n) åˆ é™¤æˆæœ¬ï¼ŒåŒæ—¶æ›´æ–° token_map_
 void PhysicsSystem::Unregister(const ObjManager::ObjToken& token) noexcept
 {
 	uint64_t key = make_key(token);
@@ -214,7 +223,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 	events_.clear();
 	if (entries_.empty()) return;
 
-	// Çå¿ÕÉÏ´Î frame Ê¹ÓÃ¹ıµÄÍø¸ñ bucket£¬ÒÔ±ã¸´ÓÃÈİÆ÷
+	// æ¸…ç©ºä¸Šæ¬¡ frame ä½¿ç”¨è¿‡çš„ç½‘æ ¼ bucketï¼Œä»¥ä¾¿å¤ç”¨å®¹å™¨
 	for (uint64_t k : grid_keys_used_) {
 		auto git = grid_.find(k);
 		if (git != grid_.end()) {
@@ -229,15 +238,15 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		BasePhysics* p = entries_[i].physics;
 		if (!p) continue;
 
-		// »ñÈ¡ shape ²¢¸ù¾İÅäÖÃ¾ö¶¨ÊÇ·ñĞèÒª½«ÆäÊÓÎªÒÑ¾­ÊÇ world-space£¨use_world_shape_£©
+		// è·å– shape å¹¶æ ¹æ®é…ç½®å†³å®šæ˜¯å¦éœ€è¦å°†å…¶è§†ä¸ºå·²ç»æ˜¯ world-spaceï¼ˆuse_world_shape_ï¼‰
 		CF_ShapeWrapper s = p->get_shape();
 		CF_ShapeWrapper ws;
 		if (p->is_world_shape_enabled()) {
-			// ÎïÀí×é¼şÒÑ¾­Ìá¹© world-space µÄ shape
+			// ç‰©ç†ç»„ä»¶å·²ç»æä¾› world-space çš„ shape
 			ws = s;
 		}
 		else {
-			// ½« local shape Æ½ÒÆµ½ world-space
+			// å°† local shape å¹³ç§»åˆ° world-spaceï¼ˆæ—‹è½¬åœ¨ BasePhysics::tweak_shape_with_rotation ä¸­å¤„ç†ï¼‰
 			ws = translate_shape_world(s, p->get_position());
 		}
 
@@ -249,7 +258,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		int32_t gx1 = static_cast<int32_t>(std::floor(waabb.max.x / cell_size));
 		int32_t gy1 = static_cast<int32_t>(std::floor(waabb.max.y / cell_size));
 
-		// ½«ÌõÄ¿·ÅÈë¸²¸Çµ½µÄÍø¸ñÍ°ÖĞ£¬ÓÃÓÚºóĞøµÄÁÚÓò¼ì²â
+		// å°†æ¡ç›®æ”¾å…¥è¦†ç›–åˆ°çš„ç½‘æ ¼æ¡¶ä¸­ï¼Œç”¨äºåç»­çš„é‚»åŸŸæ£€æµ‹
 		for (int32_t gx = gx0; gx <= gx1; ++gx) {
 			for (int32_t gy = gy0; gy <= gy1; ++gy) {
 				uint64_t gkey = grid_key(gx, gy);
@@ -267,14 +276,14 @@ void PhysicsSystem::Step(float cell_size) noexcept
 			}
 		}
 
-		// »º´æ¸ÃÌõÄ¿µÄÍø¸ñ×ø±ê£¨ÓÃÓÚÁÚÓò±éÀú£©
+		// ç¼“å­˜è¯¥æ¡ç›®çš„ç½‘æ ¼åæ ‡ï¼ˆç”¨äºé‚»åŸŸéå†ï¼‰
 		float cx = (waabb.min.x + waabb.max.x) * 0.5f;
 		float cy = (waabb.min.y + waabb.max.y) * 0.5f;
 		entries_[i].grid_x = static_cast<int32_t>(std::floor(cx / cell_size));
 		entries_[i].grid_y = static_cast<int32_t>(std::floor(cy / cell_size));
 	}
 
-	// ½øĞĞ narrowphase£º¶ÔÃ¿¸öÌõÄ¿¼ì²éÁÚÓòÍ°ÄÚ¿ÉÄÜµÄÅö×²¶Ô²¢²úÉúÊÂ¼ş
+	// è¿›è¡Œ narrowphaseï¼šå¯¹æ¯ä¸ªæ¡ç›®æ£€æŸ¥é‚»åŸŸæ¡¶å†…å¯èƒ½çš„ç¢°æ’å¯¹å¹¶äº§ç”Ÿäº‹ä»¶
 	events_.reserve(entries_.size());
 
 	for (size_t i = 0; i < entries_.size(); ++i) {
@@ -294,11 +303,11 @@ void PhysicsSystem::Step(float cell_size) noexcept
 					BasePhysics* pb = b.physics;
 					if (!pb) continue;
 
-					// ºöÂÔ VOID ÀàĞÍµÄÅö×²Æ÷
+					// å¿½ç•¥ VOID ç±»å‹çš„ç¢°æ’å™¨
 					if (pa->get_collider_type() == ColliderType::VOID || pb->get_collider_type() == ColliderType::VOID)
 						continue;
 
-					// Ê¹ÓÃ world_shapes_ ½øĞĞ narrowphase Åö×²¼ì²â
+					// ä½¿ç”¨ world_shapes_ è¿›è¡Œ narrowphase ç¢°æ’æ£€æµ‹
 					CF_Manifold m{};
 					const CF_ShapeWrapper& aw = world_shapes_[i];
 					const CF_ShapeWrapper& bw = world_shapes_[j];
@@ -316,7 +325,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		}
 	}
 
-	// ºÏ²¢Í¬Ò»¶ÔµÄ¶à¸ö contact£¬Ê¹Ã¿¶Ô×îÖÕ×î¶à°üº¬Á½¸ö½Ó´¥µã£¬±ãÓÚÉÏ²ã´¦Àí
+	// åˆå¹¶åŒä¸€å¯¹çš„å¤šä¸ª contactï¼Œä½¿æ¯å¯¹æœ€ç»ˆæœ€å¤šåŒ…å«ä¸¤ä¸ªæ¥è§¦ç‚¹ï¼Œä¾¿äºä¸Šå±‚å¤„ç†
 	if (!events_.empty()) {
 		merged_map_.clear();
 		merged_order_.clear();
@@ -337,7 +346,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				continue;
 			}
 
-			// ºÏ²¢ manifold£º½«½Ó´¥µãÓë´©Í¸Éî¶ÈºÏ²¢ÖÁ×î¶àÁ½¸ö contact
+			// åˆå¹¶ manifoldï¼šå°†æ¥è§¦ç‚¹ä¸ç©¿é€æ·±åº¦åˆå¹¶è‡³æœ€å¤šä¸¤ä¸ª contact
 			CF_Manifold& dst = it->second.manifold;
 			const CF_Manifold& src = ev.manifold;
 			const float eps_sq = 1e-4f;
@@ -362,17 +371,17 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				}
 			}
 
-			// ºÏ²¢·¨Ïß·½Ïò£¨¼ÓÈ¨Æ½¾ù£©
+			// åˆå¹¶æ³•çº¿æ–¹å‘ï¼ˆåŠ æƒå¹³å‡ï¼‰
 			if (v2math::length(dst.n) > 1e-6f || v2math::length(src.n) > 1e-6f) {
 				dst.n.x = dst.n.x * 0.5f + src.n.x * 0.5f;
 				dst.n.y = dst.n.y * 0.5f + src.n.y * 0.5f;
 			}
 
-			// ¹æ·¶»¯ºÏ²¢½á¹û
+			// è§„èŒƒåŒ–åˆå¹¶ç»“æœ
 			normalize_and_clamp_manifold(dst);
 		}
 
-		// ½«ºÏ²¢½á¹ûÌæ»» events_
+		// å°†åˆå¹¶ç»“æœæ›¿æ¢ events_
 		std::vector<CollisionEvent> merged_events;
 		merged_events.reserve(merged_map_.size());
 		for (uint64_t key : merged_order_) {
@@ -381,7 +390,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		events_.swap(merged_events);
 	}
 
-	// Ê¹ÓÃÊÂ¼ş²úÉú Enter/Stay/Exit »Øµ÷ĞòÁĞ
+	// ä½¿ç”¨äº‹ä»¶äº§ç”Ÿ Enter/Stay/Exit å›è°ƒåºåˆ—
 	current_pairs_.clear();
 	current_pairs_.reserve(events_.size() * 2);
 
@@ -415,8 +424,9 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		auto prev_it = prev_collision_pairs_.find(pair_key);
 		const bool was_colliding = (prev_it != prev_collision_pairs_.end());
 
-		BaseObject* oa = ObjManager::Instance().Get(ev.a);
-		BaseObject* ob = ObjManager::Instance().Get(ev.b);
+		// ä½¿ç”¨ token-based çš„ operator[] è·å–å¯¹è±¡å¼•ç”¨ï¼ˆåœ¨å‰é¢å·²é€šè¿‡ IsValid æ ¡éªŒï¼Œoperator[] ä¸åº”æŠ›å‡ºï¼‰
+		BaseObject& oa = ObjManager::Instance()[ev.a];
+		BaseObject& ob = ObjManager::Instance()[ev.b];
 
 #if COLLISION_DEBUG
 		static int enterCount = 0;
@@ -426,18 +436,14 @@ void PhysicsSystem::Step(float cell_size) noexcept
 
 			std::cerr << "[Physics] Enter collision (detailed): a=" << ev.a.index << " b=" << ev.b.index << "\n";
 
-			if (oa && ob) {
-				const CF_ShapeWrapper& aworld = world_shapes_[ev.a.index];
-				const CF_ShapeWrapper& bworld = world_shapes_[ev.b.index];
+			// æ—¢ç„¶é€šè¿‡ IsValid() ä¿è¯äº† token æœ‰æ•ˆï¼Œè¿™é‡Œç›´æ¥è®¿é—® world_shapes_
+			const CF_ShapeWrapper& aworld = world_shapes_[ev.a.index];
+			const CF_ShapeWrapper& bworld = world_shapes_[ev.b.index];
 
-				std::cerr << "  A (world):\n";
-				dump_shape_world(aworld);
-				std::cerr << "  B (world):\n";
-				dump_shape_world(bworld);
-			}
-			else {
-				std::cerr << "  Warning: one of objects is null when printing detailed shapes\n";
-			}
+			std::cerr << "  A (world):\n";
+			dump_shape_world(aworld);
+			std::cerr << "  B (world):\n";
+			dump_shape_world(bworld);
 
 			std::cerr << "  manifold.count=" << ev.manifold.count
 				<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")\n";
@@ -450,25 +456,23 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		}
 #endif
 
-		if (oa) {
-			if (was_colliding) {
-				oa->OnCollisionState(ev.b, ev.manifold, BaseObject::CollisionPhase::Stay);
-			}
-			else {
-				oa->OnCollisionState(ev.b, ev.manifold, BaseObject::CollisionPhase::Enter);
-			}
+		// ç›´æ¥ä»¥å¼•ç”¨è°ƒç”¨å›è°ƒï¼ˆé¡ºåºä¸ä¿è¯ï¼ša çš„å›è°ƒå¯èƒ½å…ˆäº bï¼Œä¹Ÿå¯èƒ½ç›¸åï¼‰
+		if (was_colliding) {
+			oa.OnCollisionState(ev.b, ev.manifold, BaseObject::CollisionPhase::Stay);
 		}
-		if (ob) {
-			if (was_colliding) {
-				ob->OnCollisionState(ev.a, ev.manifold, BaseObject::CollisionPhase::Stay);
-			}
-			else {
-				ob->OnCollisionState(ev.a, ev.manifold, BaseObject::CollisionPhase::Enter);
-			}
+		else {
+			oa.OnCollisionState(ev.b, ev.manifold, BaseObject::CollisionPhase::Enter);
+		}
+
+		if (was_colliding) {
+			ob.OnCollisionState(ev.a, ev.manifold, BaseObject::CollisionPhase::Stay);
+		}
+		else {
+			ob.OnCollisionState(ev.a, ev.manifold, BaseObject::CollisionPhase::Enter);
 		}
 	}
 
-	// ¶ÔÉÏÖ¡´æÔÚµ«±¾Ö¡ÏûÊ§µÄ¶Ô´¥·¢ Exit »Øµ÷
+	// å¯¹ä¸Šå¸§å­˜åœ¨ä½†æœ¬å¸§æ¶ˆå¤±çš„å¯¹è§¦å‘ Exit å›è°ƒ
 	for (const auto& prev_pair : prev_collision_pairs_) {
 		uint64_t key = prev_pair.first;
 		if (current_pairs_.find(key) == current_pairs_.end()) {
@@ -478,15 +482,12 @@ void PhysicsSystem::Step(float cell_size) noexcept
 
 			if (!ObjManager::Instance().IsValid(ta) || !ObjManager::Instance().IsValid(tb)) continue;
 
-			BaseObject* oa = ObjManager::Instance().Get(ta);
-			BaseObject* ob = ObjManager::Instance().Get(tb);
+			// ä½¿ç”¨ operator[] è·å–å¼•ç”¨ï¼ˆå·²æ ¡éªŒï¼‰
+			BaseObject& oa = ObjManager::Instance()[ta];
+			BaseObject& ob = ObjManager::Instance()[tb];
 
-			if (oa) {
-				oa->OnCollisionState(tb, CF_Manifold{}, BaseObject::CollisionPhase::Exit);
-			}
-			if (ob) {
-				ob->OnCollisionState(ta, CF_Manifold{}, BaseObject::CollisionPhase::Exit);
-			}
+			oa.OnCollisionState(tb, CF_Manifold{}, BaseObject::CollisionPhase::Exit);
+			ob.OnCollisionState(ta, CF_Manifold{}, BaseObject::CollisionPhase::Exit);
 		}
 	}
 	prev_collision_pairs_.swap(current_pairs_);

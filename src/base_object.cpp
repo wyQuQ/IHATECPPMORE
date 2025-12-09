@@ -1,12 +1,11 @@
 #include "base_object.h"
-#include "drawing_sequence.h" // ÔÚ C++ ÎÄ¼şÖĞÒıÓÃÒÔ±ãÊ¹ÓÃ DrawingSequence ½Ó¿Ú
+#include "drawing_sequence.h" // åœ¨ C++ æ–‡ä»¶ä¸­å¼•ç”¨ä»¥ä¾¿ä½¿ç”¨ DrawingSequence æ¥å£
 #include <iostream>
 
-// BaseObject µÄ¾«Áé×ÊÔ´Óë»æÖÆ×¢²áÏà¹ØÂß¼­£º
-// - SpriteSetSource ÔÚÉèÖÃĞÂÂ·¾¶Ê±»á×¢²á/×¢Ïú DrawingSequence ÒÔÄÉÈëÍ³Ò»µÄÉÏ´«Óë»æÖÆÁ÷³Ì¡£
-// - SpriteClearPath »áĞ¶ÔØ×ÊÔ´²¢´Ó DrawingSequence ÖĞ×¢Ïú¡£
-// - TweakColliderWithPivot ÓÃÓÚÔÚÓÃ»§¸Ä±ä pivot Ê±Í¬²½µ÷ÕûÅö×²ĞÎ×´¡£
-#include "obj_manager.h"
+// BaseObject çš„ç²¾çµèµ„æºä¸ç»˜åˆ¶æ³¨å†Œç›¸å…³é€»è¾‘ï¼š
+// - SpriteSetSource åœ¨è®¾ç½®æ–°è·¯å¾„æ—¶ä¼šæ³¨å†Œ/æ³¨é”€ DrawingSequence ä»¥çº³å…¥ç»Ÿä¸€çš„ä¸Šä¼ ä¸ç»˜åˆ¶æµç¨‹ã€‚
+// - SpriteClearPath ä¼šå¸è½½èµ„æºå¹¶ä» DrawingSequence ä¸­æ³¨é”€ã€‚
+// - TweakColliderWithPivot ç”¨äºåœ¨ç”¨æˆ·æ”¹å˜ pivot æ—¶åŒæ­¥è°ƒæ•´ç¢°æ’å½¢çŠ¶ã€‚
 
 void BaseObject::SpriteSetSource(const std::string& path, int count, bool set_shape_aabb) noexcept
 {
@@ -14,7 +13,7 @@ void BaseObject::SpriteSetSource(const std::string& path, int count, bool set_sh
     bool had = HasPath(&current_path);
     if (had && current_path == path)return;
     if (had) {
-        // ×¢Ïú¾É×ÊÔ´µÄ»æÖÆ×¢²á£¬ÊÍ·Å per-owner canvas µÄÒıÓÃ
+        // æ³¨é”€æ—§èµ„æºçš„ç»˜åˆ¶æ³¨å†Œï¼Œé‡Šæ”¾ per-owner canvas çš„å¼•ç”¨
         DrawingSequence::Instance().Unregister(this);
     }
     PngSprite::ClearPath();
@@ -22,10 +21,10 @@ void BaseObject::SpriteSetSource(const std::string& path, int count, bool set_sh
     SpriteSetVerticalFrameCount(count);
     bool has = HasPath();
     if (has) {
-        // ×¢²áµ½»æÖÆĞòÁĞ£¬±ãÓÚ DrawAll/BlitAll ´¦Àí
+        // æ³¨å†Œåˆ°ç»˜åˆ¶åºåˆ—ï¼Œä¾¿äº DrawAll/BlitAll å¤„ç†
         DrawingSequence::Instance().Register(this);
         if (set_shape_aabb) {
-            // Èç¹ûĞèÒª£¬¸ù¾İµ±Ç°Ö¡×Ô¶¯ÉèÖÃÅö×² AABB£¨ÒÔÌùÍ¼ÖĞĞÄÎª»ù×¼£©
+            // å¦‚æœéœ€è¦ï¼Œæ ¹æ®å½“å‰å¸§è‡ªåŠ¨è®¾ç½®ç¢°æ’ AABBï¼ˆä»¥è´´å›¾ä¸­å¿ƒä¸ºåŸºå‡†ï¼‰
             PngFrame frame = SpriteGetFrame();
             if (frame.w > 0 && frame.h > 0) {
                 SetCenteredAabb(static_cast<float>(frame.w) * 0.5f, static_cast<float>(frame.h) * 0.5f);
@@ -43,7 +42,7 @@ void BaseObject::SpriteClearPath() noexcept
     }
 }
 
-// µ±ÓÃ»§ÏëÒª½« pivot Ó¦ÓÃÓÚÅö×²Æ÷Ê±£¬µ÷Õû±¾µØ shape ÒÔ½«ÊàÖáÆ«ÒÆÓ¦ÓÃµ½ĞÎ×´£¨±ãÓÚäÖÈ¾/Åö×²¶ÔÆë£©
+// å½“ç”¨æˆ·æƒ³è¦å°† pivot åº”ç”¨äºç¢°æ’å™¨æ—¶ï¼Œè°ƒæ•´æœ¬åœ° shape ä»¥å°†æ¢è½´åç§»åº”ç”¨åˆ°å½¢çŠ¶ï¼ˆä¾¿äºæ¸²æŸ“/ç¢°æ’å¯¹é½ï¼‰
 void BaseObject::TweakColliderWithPivot(const CF_V2& pivot) noexcept
 {
     CF_ShapeWrapper shape = get_shape();
@@ -73,7 +72,7 @@ void BaseObject::TweakColliderWithPivot(const CF_V2& pivot) noexcept
 
 BaseObject::~BaseObject() noexcept
 {
-    // ÔÚÏú»ÙÊ±Í¨Öª OnDestroy ²¢È·±£´Ó»æÖÆĞòÁĞ×¢Ïú£¬ÊÍ·ÅÓë»æÖÆÏà¹ØµÄËùÓĞ×ÊÔ´ÒıÓÃ¡£
+    // åœ¨é”€æ¯æ—¶é€šçŸ¥ OnDestroy å¹¶ç¡®ä¿ä»ç»˜åˆ¶åºåˆ—æ³¨é”€ï¼Œé‡Šæ”¾ä¸ç»˜åˆ¶ç›¸å…³çš„æ‰€æœ‰èµ„æºå¼•ç”¨ã€‚
     OnDestroy();
     DrawingSequence::Instance().Unregister(this);
 }

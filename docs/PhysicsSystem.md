@@ -1,32 +1,32 @@
 # PhysicsSystem
 
-ËµÃ÷
-- `PhysicsSystem` ÊÇ¼òµ¥µÄ 2D Åö×²¹ÜÀí×ÓÏµÍ³£¬¸ºÔğ broadphase Íø¸ñ·ÖÍ°¡¢narrowphase Åö×²¼ì²â¼°Åö×²ÊÂ¼şµÄºÏ²¢Óë·Ö·¢£¨Enter/Stay/Exit£©¡£
-- Éè¼ÆÓÃÓÚÔÚÃ¿Ö¡ÓÉ `ObjManager::UpdateAll()` µ÷ÓÃ `Step()`¡£
+## æ¦‚è¿°  
+`PhysicsSystem` æ˜¯ 2D ç¢°æ’æ£€æµ‹ä¸äº‹ä»¶åˆ†å‘å­ç³»ç»Ÿï¼Œè´Ÿè´£å°†æ‰€æœ‰æ³¨å†Œçš„ `BasePhysics` æ¡ç›®çº³å…¥ broadphase/narrowphase æµç¨‹ï¼Œåˆå¹¶é‡å¤ contactï¼Œå¹¶æŒ‰å¸§äº§ç”Ÿ Enter/Stay/Exit å›è°ƒç»™å¯¹åº”çš„ `BaseObject`ã€‚
 
-Ö÷ÒªÖ°ÔğÓëÁ÷³Ì
-1. ×¢²á/·´×¢²á£º
-   - `Register(const ObjToken&, BasePhysics*)`£º½«ÎïÀí×é¼ş¼ÓÈëÏµÍ³£¨Í¨³£ÔÚ¶ÔÏó Start() Ê±ÓÉ ObjManager ×Ô¶¯Íê³É£©¡£
-   - `Unregister(const ObjToken&)`£º´ÓÏµÍ³ÒÆ³ı£¨¶ÔÏóÏú»ÙÇ°µ÷ÓÃ£©¡£
+## ä¸»è¦èŒè´£
+- æ³¨å†Œ / åæ³¨å†Œï¼šé€šè¿‡ `Register(const ObjToken&, BasePhysics*)` / `Unregister` ç®¡ç†å‚ä¸ç¢°æ’æ£€æµ‹çš„æ¡ç›®ã€‚
+- æ¯å¸§æ¨è¿› `Step(cell_size)`ï¼š
+  - å°†å„å¯¹è±¡çš„ world-space å½¢çŠ¶ï¼ˆæˆ–ç”± `BasePhysics` æä¾›çš„ world-shapeï¼‰æ”¾å…¥ broadphase ç½‘æ ¼ï¼ˆgridï¼‰ï¼›
+  - å¯¹æ¯ä¸ªæ ¼å­åŠå…¶é‚»åŸŸæ‰§è¡Œ narrowphaseï¼ˆè°ƒç”¨ `cf_collide`ï¼‰ï¼›
+  - åˆå¹¶å±äºåŒä¸€å¯¹çš„å¤šä¸ª contactï¼ˆæœ€å¤šä¿ç•™ä¸¤ä¸ª contactï¼‰ï¼›
+  - åŸºäºä¸Šä¸€å¸§ `prev_collision_pairs_` ä¸æœ¬å¸§ `current_pairs_` ç”Ÿæˆ Enter/Stay/Exitï¼Œå¹¶è°ƒç”¨ `BaseObject::OnCollisionState`ã€‚
 
-2. Ã¿Ö¡ÍÆ½ø `Step(cell_size)`£º
-   - ½«ËùÓĞÒÑ×¢²áÌõÄ¿µÄ local/world shape ×ªÎª world-space£¨×ğÖØ `is_world_shape_enabled()`£©¡£
-   - Ê¹ÓÃ AABB »®·Öµ½ grid£¨cell_size ¿Éµ÷£¬Ä¬ÈÏ 64.0f£©ÒÔ×ö broadphase¡£
-   - ¶ÔÍø¸ñÄÚÁÚÓò¶ÔÖ´ĞĞ narrowphase£¨µ÷ÓÃ `cf_collide` »òµÈ¼Û£©£¬ÊÕ¼¯Åö×² `CollisionEvent`¡£
-   - ºÏ²¢Í¬Ò»¶ÔµÄ¶à¸ö½Ó´¥µã£¨×î¶à±£ÁôÁ½¸ö contact£©£¬¹æ·¶»¯ manifold¡£
-   - ¹¹Ôì Enter/Stay/Exit ÓïÒå£ºÍ¨¹ı±È½Ï `prev_collision_pairs_` Óë±¾Ö¡ `current_pairs_`£¬·Ö±ğµ÷ÓÃ¶ÔÓ¦¶ÔÏóµÄÅö×²»Øµ÷£¨`OnCollisionState`£¬ÓÉ `BaseObject` ·Ö·¢µ½ Enter/Stay/Exit£©¡£
+## å·¥ä½œæµç¨‹è¦ç‚¹
+- world-space å½¢çŠ¶æ¥æºï¼š
+  - è‹¥ `BasePhysics::is_world_shape_enabled()` ä¸º trueï¼ŒPhysicsSystem ç›´æ¥ä½¿ç”¨ `get_shape()` è¿”å›çš„ shapeï¼ˆå‡å®šå·²æ˜¯ world-spaceï¼‰ã€‚
+  - å¦åˆ™ PhysicsSystem ä¼šæŠŠ local shape å¹³ç§»åˆ° object.positionï¼ˆrotation/pivot ç”± BasePhysics çš„è½¬æ¢è´Ÿè´£ï¼‰ã€‚
+- Broadphaseï¼šä½¿ç”¨è½´å¯¹é½åŒ…å›´ç›’ï¼ˆAABBï¼‰ä¸å›ºå®šæ ¼å­å¤§å°ï¼ˆé»˜è®¤ cell_size = 64.0fï¼‰å°†å¯¹è±¡ç´¢å¼•å…¥ç½‘æ ¼ï¼Œå‡å°‘ narrowphase å¯¹æ¯”å¯¹æ•°ã€‚
+- Narrowphaseï¼šå¯¹å€™é€‰å¯¹è°ƒç”¨ `cf_collide`ï¼Œå¹¶å°†è¿”å›çš„ `CF_Manifold` åšåŸºç¡€æ ¡éªŒä¸å½’ä¸€ï¼ˆé¿å… NaN/Infã€è´Ÿæ·±åº¦ç­‰ï¼‰ã€‚
+- åˆå¹¶ï¼šåŒä¸€å¯¹å¯èƒ½äº§ç”Ÿå¤šä¸ª contactï¼Œç³»ç»Ÿåˆå¹¶è¿™äº› manifoldï¼ˆåˆå¹¶ contact pointsã€é‡‡ç”¨åŠ æƒæ³•çº¿ï¼‰ï¼Œå¹¶é™åˆ¶æœ€ç»ˆ count â‰¤ 2ï¼Œä¾¿äºä¸Šå±‚å¤„ç†ã€‚
+- äº‹ä»¶åˆ†å‘ï¼šå¯¹æ¯ä¸ªåˆå¹¶åçš„äº‹ä»¶ï¼Œå…ˆæ ¹æ® token éªŒè¯å¯¹è±¡ä»ç„¶æœ‰æ•ˆï¼ˆé€šè¿‡ `ObjManager::IsValid`ï¼‰ï¼Œå†ç”¨ `ObjManager::operator[]` è·å–å¼•ç”¨å¹¶è°ƒç”¨ `OnCollisionState`ï¼ŒåŒºåˆ† Enter/Stayã€‚å¯¹äºä¸Šä¸€å¸§å­˜åœ¨ä½†æœ¬å¸§æ¶ˆå¤±çš„å¯¹ï¼Œè§¦å‘ Exit å›è°ƒï¼ˆmanifold ä¸ºç©ºï¼‰ã€‚
 
-¹Ø¼üÊı¾İ½á¹¹
-- `entries_`£ºÒÑ×¢²áÌõÄ¿£¨token + BasePhysics* + grid ×ø±ê»º´æ£©¡£
-- `grid_`£ºbroadphase Íø¸ñ£¨`grid_key -> indices`£©¡£
-- `world_shapes_`£º±¾Ö¡°´ÌõÄ¿¼ÆËãµÄ world-space ĞÎ×´»º´æ¡£
-- `events_`¡¢`merged_map_`¡¢`prev_collision_pairs_`£ºÓÃÓÚÊÂ¼şÊÕ¼¯¡¢ºÏ²¢ºÍ½×¶ÎÅĞ¶Ï¡£
+## æ•°æ®ç»“æ„ï¼ˆç®€è¦ï¼‰
+- `entries_`ï¼šå­˜æ”¾æ³¨å†Œæ¡ç›®ï¼ˆtoken + BasePhysics* + grid åæ ‡ï¼‰ã€‚
+- `grid_`ï¼šä» grid_key -> æ¡ç›®ç´¢å¼•åˆ—è¡¨ï¼ˆç”¨äº broadphaseï¼‰ã€‚
+- `world_shapes_`ï¼šæŒ‰ entries_ ç¼“å­˜çš„ world-space shapeï¼ˆæ¯å¸§åˆ·æ–°ï¼‰ã€‚
+- `events_`ã€`merged_map_`ã€`prev_collision_pairs_`ï¼šç”¨äºä¿å­˜ã€åˆå¹¶ä¸æ¯”è¾ƒç¢°æ’äº‹ä»¶ç”Ÿæˆå›è°ƒåºåˆ—ã€‚
 
-ÊÂ¼ş»Øµ÷
-- ¶ÔÓÚÃ¿¸ö²úÉúÅö×²µÄÌõÄ¿¶Ô£¬ÏµÍ³»áÍ¨¹ı ObjManager ¼ì²é token ÊÇ·ñÈÔÈ»ÓĞĞ§£¬È»ºóÈ¡µÃ `BaseObject*`£¨»ò `BasePhysics*` ËùÊô¶ÔÏó£©²¢µ÷ÓÃ£º
-  - `OnCollisionState(other_token, manifold, phase)`£¨phase Îª Enter/Stay/Exit£©
-  - `BaseObject` µÄÄ¬ÈÏÊµÏÖ»á·Ö·¢µ½ `OnCollisionEnter/Stay/Exit`£¬ÉÏ²ã¿É¸²Ğ´ÕâĞ©¹³×ÓÒÔÊµÏÖÓÎÏ·Âß¼­¡£
-
-Ê¹ÓÃ½¨Òé
-- Í¨¹ı `ObjManager` ´´½¨¶ÔÏóÊ±£¬ObjManager »áÔÚ Start()/´´½¨Á÷³ÌÖĞ×Ô¶¯µ÷ÓÃ `PhysicsSystem::Register`£»Ïú»ÙÊ±»á×Ô¶¯ `Unregister`¡£
-- µ÷ÓÃË³Ğò£ºÔÚÖ÷Ñ­»·ÖĞÓÉ `ObjManager::UpdateAll()` Í³Ò»´¥·¢ `PhysicsSystem::Step()`£¬²»Òªµ¥¶ÀÔÚÆäËûµØ·½µ÷ÓÃÒÔÃâÊ±Ğò´íÂÒ¡£
+## ä½¿ç”¨å»ºè®®ä¸æ³¨æ„
+- `Register` / `Unregister` çš„è°ƒç”¨åº”é…åˆ `ObjManager`ï¼šåœ¨å¯¹è±¡åˆå¹¶åˆ°ç®¡ç†å™¨åæ³¨å†Œç‰©ç†ï¼ˆ`ObjManager` åœ¨æäº¤é˜¶æ®µè‡ªåŠ¨æ³¨å†Œï¼‰ã€‚
+- ç¢°æ’å›è°ƒé¡ºåºï¼šç³»ç»Ÿä¸ä¿è¯å¯¹ a/b è°ƒç”¨çš„å…ˆåé¡ºåºï¼›å›è°ƒåº”å¯¹å¹¶å‘ä¿®æ”¹å¯¹è±¡é›†åˆä¿æŒå¥å£®ï¼ˆä¾‹å¦‚é¿å…åœ¨å›è°ƒä¸­ç«‹å³åˆ é™¤å¯¹è±¡ï¼Œè€Œä½¿ç”¨ `ObjManager::Destroy` è®©å…¶å»¶è¿Ÿå¤„ç†ï¼‰ã€‚
+- æ€§èƒ½è°ƒä¼˜ï¼šè°ƒæ•´ `cell_size` å¯æ”¹å˜ broadphase ç²’åº¦ï¼Œè¿‡å°ä¼šå¢åŠ  bucket æ•°é‡ï¼Œè¿‡å¤§ä¼šå¢åŠ  narrowphase å¯¹æ•°ã€‚å¯ç”¨ `BasePhysics::enable_world_shape(true)` å¯å‡å°‘é‡å¤åæ ‡å˜æ¢å¼€é”€ï¼ˆå‰ææ˜¯ä¸Šå±‚èƒ½æ­£ç¡®æä¾› world-space shapeï¼‰ã€‚

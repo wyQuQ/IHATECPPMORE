@@ -1,30 +1,33 @@
 #include "player_object.h"
+#include "test_object.h"
 
 <<<<<<< Updated upstream
-// Ã¿Ö¡ÒÆ¶¯µÄËÙ¶È
+// Ã¿Ö¡ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
 static constexpr float speed = 3.0f;
 const float PI = 3.14159265358979f;
 
-// ÎÄ¼þ¼¶Ó³Éä£ºÎªÃ¿¸ö PlayerObject ÊµÀý±£´æÊÇ·ñ×ÅµØ
+// ï¿½Ä¼ï¿½ï¿½ï¿½Ó³ï¿½ä£ºÎªÃ¿ï¿½ï¿½ PlayerObject Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Åµï¿½
 static std::unordered_map<const PlayerObject*, bool> s_grounded_map;
 
-// ÎÄ¼þ¼¶Ó³Éä£ºÎªÃ¿¸öÊµÀý±£´æ°´×¡ÌøÔ¾¿ÉÓÃµÄÊ£ÓàÖ¡Êý£¨variable jump£©
+// ï¿½Ä¼ï¿½ï¿½ï¿½Ó³ï¿½ä£ºÎªÃ¿ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½æ°´×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½Ãµï¿½Ê£ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½variable jumpï¿½ï¿½
 static std::unordered_map<const PlayerObject*, float> s_jump_hold_time_left;
 
-// ÎÄ¼þ¼¶Ó³Éä£ºÎªÃ¿¸öÊµÀý±£´æÀë¿ªµØÃæºóÔÊÐíÌøÔ¾µÄ coyote Ê±¼ä£¨Ö¡£©
+// ï¿½Ä¼ï¿½ï¿½ï¿½Ó³ï¿½ä£ºÎªÃ¿ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ coyote Ê±ï¿½ä£¨Ö¡ï¿½ï¿½
 static std::unordered_map<const PlayerObject*, float> s_coyote_time_left;
 
-// ¿Éµ÷²ÎÊý
-static constexpr int max_jump_hold_frames = 12;       // °´×¡ÌøÔ¾×î¶àÔÊÐíµÄÖ¡Êý£¨°´×¡Ô½¾ÃÌøµÃÔ½¸ß£©
-static constexpr float low_gravity_multiplier = 0.4f; // °´×¡ÌøÔ¾Ê±µÄÖØÁ¦±¶ÂÊ£¨½ÏÐ¡£¬±£ÁôÉÏÉýËÙ¶È£©
-static constexpr float fall_gravity_multiplier = 1.6f; // ËÉ¿ª»òÏÂÂäÊ±µÄ¼ÓÇ¿ÖØÁ¦±¶ÂÊ£¨¸ü¿ìÏÂÂä£©
-static constexpr int coyote_time_frames = 6;         // ÀëµØºóÈÔ¿ÉÌøµÄÖ¡Êý£¨coyote time£©
+// ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½
+static constexpr int max_jump_hold_frames = 12;       // ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ß£ï¿½
+static constexpr float low_gravity_multiplier = 0.4f; // ï¿½ï¿½×¡ï¿½ï¿½Ô¾Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È£ï¿½
+static constexpr float fall_gravity_multiplier = 1.6f; // ï¿½É¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä¼ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä£©
+static constexpr int coyote_time_frames = 6;         // ï¿½ï¿½Øºï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½coyote timeï¿½ï¿½
 
+ObjToken test[3] = { ObjToken::Invalid() };
+int i = 0;
 void PlayerObject::Start()
 {
-	// Í³Ò»ÉèÖÃÌùÍ¼Â·¾¶¡¢ÊúÅÅÖ¡Êý¡¢¶¯»­¸üÐÂÆµÂÊºÍ»æÖÆÉî¶È£¬²¢×¢²áµ½»æÖÆÐòÁÐ
-	// ÈçÐèÒªÄ¬ÈÏÖµ£¬ÇëÊ¹ÓÃ¸ßÁ£¶ÈµÄ SetSprite*() ºÍ Set*() ·½·¨ÖðÒ»ÉèÖÃ·ÇÄ¬ÈÏÖµ²ÎÊý
-	// ×ÊÔ´Â·¾¶ÎÞÄ¬ÈÏÖµ£¬±ØÐëÊÖ¶¯ÉèÖÃ
+	// Í³Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ÊºÍ»ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½×¢ï¿½áµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ÒªÄ¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Èµï¿½ SetSprite*() ï¿½ï¿½ Set*() ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ã·ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½Ô´Â·ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
 =======
 
 // ä¸ºæ¯ä¸ª PlayerObject å®žä¾‹ä¿å­˜æ˜¯å¦ç€åœ°
@@ -59,16 +62,16 @@ void PlayerObject::Start()
 >>>>>>> Stashed changes
     SpriteSetStats("/sprites/idle.png", 3, 7, 0);
 
-    // ¿ÉÑ¡£º³õÊ¼»¯Î»ÖÃ£¨¸ù¾ÝÐèÒªµ÷Õû£©£¬ÀýÈçÆÁÄ»ÖÐÐÄ¸½½ü
+    // å¯é€‰ï¼šåˆå§‹åŒ–ä½ç½®ï¼ˆæ ¹æ®éœ€è¦è°ƒæ•´ï¼‰ï¼Œä¾‹å¦‚å±å¹•ä¸­å¿ƒé™„è¿‘
     SetPosition(cf_v2(0.0f, 0.0f));
 
     Scale(0.5f);
 <<<<<<< Updated upstream
 	SetPivot(1,1);
 
-	// ³õÊ¼»¯×ÅµØ×´Ì¬Îª false
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Åµï¿½×´Ì¬Îª false
 	s_grounded_map[this] = false;
-	// ³õÊ¼»¯°´×¡ÌøÔ¾±£ÁôÓë coyote Ê±¼äÎª 0
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ coyote Ê±ï¿½ï¿½Îª 0
 	s_jump_hold_time_left[this] = 0.0f;
 	s_coyote_time_left[this] = 0.0f;
 =======
@@ -84,15 +87,18 @@ void PlayerObject::Start()
 void PlayerObject::Update()
 {
 <<<<<<< Updated upstream
-	// µ±¼ì²âµ½°´¼ü°´ÏÂÊ±£¬ÉèÖÃËÙ¶È·½Ïò£¨²»Ö±½Ó SetPosition£¬Ê¹ÓÃËÙ¶È»ý·Ö£©
+	// ï¿½ï¿½ï¿½ï¿½âµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È·ï¿½ï¿½ò£¨²ï¿½Ö±ï¿½ï¿½ SetPositionï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½Ö£ï¿½
     CF_V2 dir = cf_v2(0,0);
     if (cf_key_down(CF_KEY_A)) {
         dir.x -= 1;
     }
-    if (cf_key_down(CF_KEY_D)) {
+    if (Input::IsKeyInState(CF_KEY_D, KeyState::Hold)) {
 		dir.x += 1;
     }
-    if (cf_key_down(CF_KEY_S)) {
+    if (Input::IsKeyInState(CF_KEY_W, KeyState::Hold)) {
+		dir.y += 1;
+    }
+    if (Input::IsKeyInState(CF_KEY_S, KeyState::Hold)) {
 		dir.y -= 1;
 =======
     // å½“æ£€æµ‹åˆ°æŒ‰é”®æŒ‰ä¸‹æ—¶ï¼Œè®¾ç½®é€Ÿåº¦æ–¹å‘ï¼ˆä¸ç›´æŽ¥ SetPositionï¼Œä½¿ç”¨é€Ÿåº¦ç§¯åˆ†ï¼‰
@@ -111,7 +117,7 @@ void PlayerObject::Update()
 >>>>>>> Stashed changes
     }
 
-    // ¶ÁÈ¡µ±Ç°ÊµÀýµÄ×ÅµØÓë¼ÆÊ±Æ÷×´Ì¬
+    // ï¿½ï¿½È¡ï¿½ï¿½Ç°Êµï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½×´Ì¬
     bool grounded = false;
     auto itg = s_grounded_map.find(this);
     if (itg != s_grounded_map.end()) grounded = itg->second;
@@ -124,44 +130,44 @@ void PlayerObject::Update()
     auto itc = s_coyote_time_left.find(this);
     if (itc != s_coyote_time_left.end()) coyote_left = itc->second;
 
-    // ÌøÔ¾´¦Àí£ºÖ§³Ö coyote time£¨ÀëµØ¶ÌÊ±¼äÄÚÈÔ¿ÉÌø£©ÒÔ¼°°´×¡ÑÓ³¤ÌøÔ¾£¨Í¨¹ý½µµÍÖØÁ¦£©
+    // ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½ coyote timeï¿½ï¿½ï¿½ï¿½Ø¶ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½×¡ï¿½Ó³ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     static constexpr float jump_speed = 20.0f;
     bool space_down = cf_key_down(CF_KEY_SPACE);
 
-    // Èç¹ûÂú×ãÌøÔ¾Ìõ¼þ£¨×ÅµØ»òÔÚ coyote ´°¿ÚÄÚ£©£¬²¢ÇÒ°´¼ü´¦ÓÚ°´ÏÂ×´Ì¬£¬ÔòÆðÌø
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅµØ»ï¿½ï¿½ï¿½ coyote ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (space_down && (grounded || coyote_left > 0.0f)) {
-        // ÆðÌø£ºÉèÖÃ³õËÙ¶È²¢¿ªÆô°´×¡±£Áô´°¿Ú
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½Ù¶È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         CF_V2 cur_vel = GetVelocity();
         cur_vel.y = jump_speed;
         SetVelocity(cur_vel);
 
-        // ÆðÌøºóÇå³ý×ÅµØºÍ coyote ×´Ì¬£¬Æô¶¯°´×¡ÌøÔ¾¼ÆÊ±
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅµØºï¿½ coyote ×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½Ê±
         s_grounded_map[this] = false;
         s_coyote_time_left[this] = 0.0f;
         s_jump_hold_time_left[this] = static_cast<float>(max_jump_hold_frames);
         hold_time_left = static_cast<float>(max_jump_hold_frames);
     }
 
-    // Èç¹û°´×¡¿Õ¸ñ²¢ÇÒ»¹ÓÐ°´×¡Ê±¼ä£¬Ôò±£Áô°´×¡Ê±¼ä£¨ÔÚÏÂÃæÓÃÓÚ½µµÍÖØÁ¦£©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½×¡ï¿½Õ¸ï¿½ï¿½Ò»ï¿½ï¿½Ð°ï¿½×¡Ê±ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡Ê±ï¿½ä£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (space_down && hold_time_left > 0.0f) {
-        // Ã¿Ö¡ÏûºÄÒ»Ö¡µÄ°´×¡Ê±¼ä
+        // Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½Ò»Ö¡ï¿½Ä°ï¿½×¡Ê±ï¿½ï¿½
         hold_time_left -= 1.0f;
         s_jump_hold_time_left[this] = hold_time_left;
     } else if (!space_down && hold_time_left > 0.0f) {
-        // ËÉ¿ªÊ±È¡ÏûÊ£Óà°´×¡Ê±¼ä
+        // ï¿½É¿ï¿½Ê±È¡ï¿½ï¿½Ê£ï¿½à°´×¡Ê±ï¿½ï¿½
         s_jump_hold_time_left[this] = 0.0f;
         hold_time_left = 0.0f;
     }
 
-    // Ë®Æ½ËÙ¶È£ºÖ»ÐÞ¸Ä x£¬±£Áô y£¨ÒÔÃâ¸²¸ÇÌøÔ¾»òÖØÁ¦Ôì³ÉµÄËÙ¶È£©
+    // Ë®Æ½ï¿½Ù¶È£ï¿½Ö»ï¿½Þ¸ï¿½ xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ yï¿½ï¿½ï¿½ï¿½ï¿½â¸²ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½ï¿½Ù¶È£ï¿½
     CF_V2 cur_vel = GetVelocity();
     cur_vel.x = dir.x * speed;
     SetVelocity(cur_vel);
 
-    // ¸ù¾ÝË®Æ½ÒÆ¶¯·½Ïò·­×ªÌùÍ¼²¢ÇÐ»»¶¯»­
+    // ï¿½ï¿½ï¿½ï¿½Ë®Æ½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½
     if (dir.x != 0) {
 <<<<<<< Updated upstream
-		SpriteFlipX(dir.x < 0); // ¸ù¾ÝË®Æ½ÒÆ¶¯·½Ïò·­×ªÌùÍ¼
+		SpriteFlipX(dir.x < 0); // ï¿½ï¿½ï¿½ï¿½Ë®Æ½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Í¼
 =======
         SpriteFlipX(dir.x < 0); // æ ¹æ®æ°´å¹³ç§»åŠ¨æ–¹å‘ç¿»è½¬è´´å›¾
 >>>>>>> Stashed changes
@@ -177,69 +183,70 @@ void PlayerObject::Update()
     CF_V2 vel = cf_v2(dir.x * speed, dir.y * speed);
 >>>>>>> Stashed changes
 
-	// Îª Player ¶ÔÏóÌí¼ÓÊ¼ÖÕÏò y Öá¸º·½ÏòµÄÖØÁ¦£¬µ«¸ù¾Ý×´Ì¬Ê¹ÓÃ²»Í¬±¶ÂÊ£º
-    // - ÔÚ°´×¡ÌøÔ¾ÇÒ´¦ÓÚ°´×¡´°¿ÚÊ±£º½µµÍÖØÁ¦£¨ÀýÈç³ËÒÔ 0.4£©£¬ÈÃÉÏÉý¸ü¸ß
-    // - ÔÚÏÂÂäÊ±£¨ËÙ¶ÈÎª¸º£©£ºÊ¹ÓÃ¼ÓÇ¿ÖØÁ¦±¶ÂÊ£¬ÈÃÏÂÂä¸üÔúÊµ£¨¸ü¿ì£©
-    // - ÆäËüÇé¿öÊ¹ÓÃ±ê×¼ÖØÁ¦
-    static constexpr float gravity = 3.0f;        // »ù´¡Ã¿Ö¡ÖØÁ¦¼ÓËÙ¶È£¨¿É¸ù¾ÝÐèÒªµ÷Õû£©
-    static constexpr float max_fall_speed = -12.0f; // ÖÕ¶ËÏÂÂäËÙ¶È£¨¸ºÖµ£©
+	// Îª Player ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ y ï¿½á¸ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ï¿½Ê£ï¿½
+    // - ï¿½Ú°ï¿½×¡ï¿½ï¿½Ô¾ï¿½Ò´ï¿½ï¿½Ú°ï¿½×¡ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0.4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ù¶ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¼ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ì£©
+    // - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã±ï¿½×¼ï¿½ï¿½ï¿½ï¿½
+    static constexpr float gravity = 3.0f;        // ï¿½ï¿½ï¿½ï¿½Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È£ï¿½ï¿½É¸ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    static constexpr float max_fall_speed = -12.0f; // ï¿½Õ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È£ï¿½ï¿½ï¿½Öµï¿½ï¿½
 
 <<<<<<< Updated upstream
-    // ¶ÁÈ¡µ±Ç°´¹Ö±ËÙ¶ÈÒÔÅÐ¶ÏÊÇÉÏÉý»¹ÊÇÏÂÂä
+    // ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½Ö±ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     cur_vel = GetVelocity();
     float gravity_multiplier = 1.0f;
 
-    // ½öÔÚÉÏÉý½×¶Î£¨´¹Ö±ËÙ¶ÈÎªÕý£©²¢ÇÒÕýÔÚ°´×¡ÇÒÓÐ±£ÁôÊ±¼äÊ±Ê¹ÓÃµÍÖØÁ¦
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¶Î£ï¿½ï¿½ï¿½Ö±ï¿½Ù¶ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½×¡ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ê±Ê¹ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½
     if (cur_vel.y > 0.0f && space_down && hold_time_left > 0.0f) {
         gravity_multiplier = low_gravity_multiplier;
     } else if (cur_vel.y < 0.0f) {
-        // ÏÂÂä½×¶ÎÊ¹ÓÃ¼ÓÇ¿ÖØÁ¦
+        // ï¿½ï¿½ï¿½ï¿½×¶ï¿½Ê¹ï¿½Ã¼ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½
         gravity_multiplier = fall_gravity_multiplier;
     } else {
         gravity_multiplier = 1.0f;
     }
 
-    // Ó¦ÓÃÖØÁ¦
+    // Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     AddVelocity(cf_v2(0.0f, -gravity * gravity_multiplier));
 
-    // ÏÞÖÆÏÂÂäËÙ¶È£¨·ÀÖ¹ÎÞÏÞ¼ÓËÙ£©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È£ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½Þ¼ï¿½ï¿½Ù£ï¿½
     cur_vel = GetVelocity();
     if (cur_vel.y < max_fall_speed) {
         cur_vel.y = max_fall_speed;
         SetVelocity(cur_vel);
     }
 
-    // Ã¿Ö¡µÝ¼õ coyote Ê±¼ä£¨ÈôÓÐ£©
+    // Ã¿Ö¡ï¿½Ý¼ï¿½ coyote Ê±ï¿½ä£¨ï¿½ï¿½ï¿½Ð£ï¿½
     if (coyote_left > 0.0f) {
         coyote_left -= 1.0f;
         s_coyote_time_left[this] = coyote_left;
     }
 
-	// ¼ÆËã³¯Ïò½Ç¶È£¨»¡¶ÈÖÆ£¬0 ¶ÈÎªÕýÓÒ£¬ÄæÊ±ÕëÐý×ª£©
+	// è®¡ç®—æœå‘è§’åº¦ï¼ˆå¼§åº¦åˆ¶ï¼Œ0 åº¦ä¸ºæ­£å³ï¼Œé€†æ—¶é’ˆæ—‹è½¬ï¼‰
     float angle = 0;
-    if (cf_key_down(CF_KEY_Q)) {
-		angle += PI / 60.0f; // Ã¿Ö¡ÄæÊ±ÕëÐý×ª 3 ¶È
+    if (Input::IsKeyInState(CF_KEY_Q, KeyState::Hold)) {
+		angle += PI / 60.0f; // æ¯å¸§é€†æ—¶é’ˆæ—‹è½¬ 3 åº¦
+		std::cout << GetRotation() << std::endl;
     }
-    if (cf_key_down(CF_KEY_E)) {
-		angle -= PI / 60.0f; // Ã¿Ö¡Ë³Ê±ÕëÐý×ª 3 ¶È
+    if (Input::IsKeyInState(CF_KEY_E, KeyState::Hold)) {
+		angle -= PI / 60.0f; // æ¯å¸§é¡ºæ—¶é’ˆæ—‹è½¬ 3 åº¦
     }
 	Rotate(angle);
 }
 
 void PlayerObject::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
-    // Åö×²½øÈëÊ±µÄ´¦ÀíÂß¼­
+    // ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
     printf("Collided with object token: %u\n", other_token.index);
 
-	// ½«Player¶ÔÏóµÄÎ»ÖÃÖØÖÃµ½ÉÏÒ»Ö¡Î»ÖÃ£¬±ÜÃâ´©Í¸
+	// ï¿½ï¿½Playerï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ò»Ö¡Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½â´©Í¸
 	SetPosition(GetPrevPosition());
 
-	// ÅÐ¶ÏÊÇ·ñÎª¡°µØÃæ½Ó´¥¡±£ºÊ¹ÓÃÐÞÕýÏòÁ¿µÄ y ·ÖÁ¿£¨correction = -n * depth£©
-	// Èç¹û correction.y > 0 ÔòËµÃ÷±»ÏòÉÏÐÞÕý£¨Õ¾ÔÚ±ðµÄÎïÌåÉÏ£©
+	// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½correction = -n * depthï¿½ï¿½
+	// ï¿½ï¿½ï¿½ correction.y > 0 ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½
 	if (manifold.count > 0) {
 		float correction_y = -manifold.n.y * manifold.depths[0];
 		if (correction_y > 0.001f) {
 			s_grounded_map[this] = true;
-			// ×ÅµØÊ±È¡Ïû°´×¡ÌøÔ¾±£ÁôÊ±¼äÓë coyote Ê±¼ä
+			// ï¿½Åµï¿½Ê±È¡ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ coyote Ê±ï¿½ï¿½
 			s_jump_hold_time_left[this] = 0.0f;
 			s_coyote_time_left[this] = 0.0f;
 		}
@@ -247,31 +254,31 @@ void PlayerObject::OnCollisionEnter(const ObjManager::ObjToken& other_token, con
 }
 
 void PlayerObject::OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
-    // Åö×²³ÖÐøÊ±µÄ´¦ÀíÂß¼­
+    // ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
 	printf("Still colliding with object token: %u\n", other_token.index);
 
 	CF_V2 correction = cf_v2(-manifold.n.x * manifold.depths[0], -manifold.n.y * manifold.depths[0]);
-	CF_V2 current_position = GetPosition(); // Ê¹ÓÃ¹«¿ª½Ó¿Ú
+	CF_V2 current_position = GetPosition(); // Ê¹ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
 	CF_V2 new_position = cf_v2(current_position.x + correction.x, current_position.y + correction.y);
 	SetPosition(new_position);
 
-	// Èç¹ûÐÞÕýÏòÁ¿ÓÐÕýµÄ y ·ÖÁ¿£¬ËµÃ÷ÎÒÃÇ±»ÏòÉÏÍÆ£¬ÊÓÎª×ÅµØ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Îªï¿½Åµï¿½
 	if (correction.y > 0.001f) {
 		s_grounded_map[this] = true;
-		// ×ÅµØÊ±È¡Ïû°´×¡ÌøÔ¾±£ÁôÊ±¼äÓë coyote Ê±¼ä
+		// ï¿½Åµï¿½Ê±È¡ï¿½ï¿½ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ coyote Ê±ï¿½ï¿½
 		s_jump_hold_time_left[this] = 0.0f;
 		s_coyote_time_left[this] = 0.0f;
 	}
 }
 
 void PlayerObject::OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
-    // Åö×²ÍË³öÊ±µÄ´¦ÀíÂß¼­
+    // ï¿½ï¿½×²ï¿½Ë³ï¿½Ê±ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
     printf("No longer colliding with object token: %u\n", other_token.index);
 
-	// Àë¿ªÅö×²Ê±È¡Ïû×ÅµØ±ê¼Ç£¬²¢Æô¶¯ coyote Ê±¼ä£¨¶ÌÔÝÔÊÐíÔÙ´ÎÌøÔ¾£©
+	// ï¿½ë¿ªï¿½ï¿½×²Ê±È¡ï¿½ï¿½ï¿½ÅµØ±ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ coyote Ê±ï¿½ä£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½
 	s_grounded_map[this] = false;
 	s_coyote_time_left[this] = static_cast<float>(coyote_time_frames);
-	// Àë¿ªÊ±²»±£Áô°´×¡Ê±¼ä£¨°´×¡ÌøÔ¾½öÔÚÆðÌøºó¶ÌÊ±¼äÄÚÓÐÐ§£©
+	// ï¿½ë¿ªÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡Ê±ï¿½ä£¨ï¿½ï¿½×¡ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
 	s_jump_hold_time_left[this] = 0.0f;
 =======
     // è®¡ç®—æœå‘è§’åº¦ï¼ˆå¼§åº¦åˆ¶ï¼Œ0 åº¦ä¸ºæ­£å³ï¼Œé€†æ—¶é’ˆæ—‹è½¬ï¼‰

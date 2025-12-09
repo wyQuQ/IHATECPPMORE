@@ -1,5 +1,5 @@
 #pragma once
-// --- debug_config.h (ÁÙÊ±Õï¶ÏÓÃ) ---
+// --- debug_config.h (ä¸´æ—¶è¯Šæ–­ç”¨) ---
 #ifndef MCG_DEBUG
 #define MCG_DEBUG 0
 #endif
@@ -14,7 +14,7 @@
 #pragma message("debug_config: MCG_DEBUG=0")
 #endif
 
-// ×é¼şºê
+// ç»„ä»¶å®
 #ifndef COLLISION_DEBUG
 #define COLLISION_DEBUG MCG_DEBUG
 #endif
@@ -27,4 +27,4 @@
 #ifndef PNG_LOAD_DEBUG
 #define	PNG_LOAD_DEBUG MCG_DEBUG
 #endif
-// --- ½áÊøÁÙÊ±Õï¶Ï ---
+// --- ç»“æŸä¸´æ—¶è¯Šæ–­ ---

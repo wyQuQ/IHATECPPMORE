@@ -7,9 +7,9 @@
 #include <iostream>
 #include <unordered_map>
 
-// per-owner canvas »º´æ£¨ÎÄ¼şÄÚ¾²Ì¬£©
-// ËµÃ÷£ºÎªÃ¿¸ö×¢²áµÄ BaseObject »º´æÒ»¸ö CF_Canvas£¬ÓÃÓÚÔÚÉÏ´«½×¶Î´æ·ÅÏñËØÊı¾İ²¢ÔÚäÖÈ¾½×¶Î¸´ÓÃ¡£
-// ¸Ã»º´æÍ¨¹ı g_canvas_cache_mutex ±£»¤£»µ±¶ÔÏó×¢ÏúÊ±»áÊÍ·Å¶ÔÓ¦µÄ canvas ×ÊÔ´¡£
+// per-owner canvas ç¼“å­˜ï¼ˆæ–‡ä»¶å†…é™æ€ï¼‰
+// è¯´æ˜ï¼šä¸ºæ¯ä¸ªæ³¨å†Œçš„ BaseObject ç¼“å­˜ä¸€ä¸ª CF_Canvasï¼Œç”¨äºåœ¨ä¸Šä¼ é˜¶æ®µå­˜æ”¾åƒç´ æ•°æ®å¹¶åœ¨æ¸²æŸ“é˜¶æ®µå¤ç”¨ã€‚
+// è¯¥ç¼“å­˜é€šè¿‡ g_canvas_cache_mutex ä¿æŠ¤ï¼›å½“å¯¹è±¡æ³¨é”€æ—¶ä¼šé‡Šæ”¾å¯¹åº”çš„ canvas èµ„æºã€‚
 namespace {
 	struct CanvasCache {
 		CF_Canvas canvas{};
@@ -20,7 +20,7 @@ namespace {
 	static std::mutex g_canvas_cache_mutex;
 }
 
-// µ¥Àı·ÃÎÊ£ºÓÃ»§Í¨¹ı DrawingSequence::Instance() »ñÈ¡È«¾Ö»æÖÆĞòÁĞ¹ÜÀíÆ÷¡£
+// å•ä¾‹è®¿é—®ï¼šç”¨æˆ·é€šè¿‡ DrawingSequence::Instance() è·å–å…¨å±€ç»˜åˆ¶åºåˆ—ç®¡ç†å™¨ã€‚
 DrawingSequence& DrawingSequence::Instance() noexcept
 {
 	static DrawingSequence inst;
@@ -41,8 +41,8 @@ void DrawingSequence::Unregister(BaseObject* obj) noexcept
 {
 	if (!obj) return;
 
-	// ´ÓÈ«¾Ö»º´æÖĞÏú»Ù¶ÔÓ¦µÄ per-owner canvas£¨Èç¹û´æÔÚ£©¡£
-	// ÕâÊÇ¶ÔÏó×¢ÏúÊ±ÊÍ·ÅÏÔÊ½Í¼ĞÎ×ÊÔ´µÄ±ØÒª²½Öè¡£
+	// ä»å…¨å±€ç¼“å­˜ä¸­é”€æ¯å¯¹åº”çš„ per-owner canvasï¼ˆå¦‚æœå­˜åœ¨ï¼‰ã€‚
+	// è¿™æ˜¯å¯¹è±¡æ³¨é”€æ—¶é‡Šæ”¾æ˜¾å¼å›¾å½¢èµ„æºçš„å¿…è¦æ­¥éª¤ã€‚
 	{
 		std::lock_guard<std::mutex> lk(g_canvas_cache_mutex);
 		auto it = g_canvas_cache.find(obj);
@@ -55,17 +55,17 @@ void DrawingSequence::Unregister(BaseObject* obj) noexcept
 		}
 	}
 
-	// ´Ó×¢²áÁĞ±íÒÆ³ı¶ÔÏó£¬±£Ö¤ºóĞø DrawAll/BlitAll ²»ÔÙ´¦Àí¸Ã¶ÔÏó¡£
+	// ä»æ³¨å†Œåˆ—è¡¨ç§»é™¤å¯¹è±¡ï¼Œä¿è¯åç»­ DrawAll/BlitAll ä¸å†å¤„ç†è¯¥å¯¹è±¡ã€‚
 	std::lock_guard<std::mutex> lk(m_mutex);
 	m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
 		[obj](const std::unique_ptr<Entry>& p) { return p->owner == obj; }), m_entries.end());
 }
 
-// DrawAll: ÉÏ´«½×¶Î£¨Ö»×öÖ¡ÌáÈ¡ÓëÏñËØÉÏ´«£¬²»Ö´ĞĞ»æÖÆ£©
-// Ê¹ÓÃ³¡¾°£ºÓ¦ÔÚÖ÷Ñ­»·ÔçÆÚµ÷ÓÃ£¬ÒÔÈ·±£ËùÓĞÎÆÀíÔÚäÖÈ¾½×¶ÎÖ®Ç°ÒÑ±»¸üĞÂµ½ GPU¡£
+// DrawAll: ä¸Šä¼ é˜¶æ®µï¼ˆåªåšå¸§æå–ä¸åƒç´ ä¸Šä¼ ï¼Œä¸æ‰§è¡Œç»˜åˆ¶ï¼‰
+// ä½¿ç”¨åœºæ™¯ï¼šåº”åœ¨ä¸»å¾ªç¯æ—©æœŸè°ƒç”¨ï¼Œä»¥ç¡®ä¿æ‰€æœ‰çº¹ç†åœ¨æ¸²æŸ“é˜¶æ®µä¹‹å‰å·²è¢«æ›´æ–°åˆ° GPUã€‚
 void DrawingSequence::DrawAll()
 {
-	// »ñÈ¡×¢²á¿ìÕÕÒÔ¼õÉÙ³ÖËøÊ±¼ä£¬±£Ö¤¸ß²¢·¢³¡¾°ÏÂµÄ¶ÌËøÁ£¶È¡£
+	// è·å–æ³¨å†Œå¿«ç…§ä»¥å‡å°‘æŒé”æ—¶é—´ï¼Œä¿è¯é«˜å¹¶å‘åœºæ™¯ä¸‹çš„çŸ­é”ç²’åº¦ã€‚
 	std::vector<Entry> snapshot;
 	{
 		std::lock_guard<std::mutex> lk(m_mutex);
@@ -73,7 +73,7 @@ void DrawingSequence::DrawAll()
 		for (auto& p : m_entries) snapshot.push_back(*p);
 	}
 
-	// °´ depth + ×¢²áĞòºÅÅÅĞòÒÔ±£Ö¤È·¶¨ĞÔµÄ»æÖÆË³Ğò¡£
+	// æŒ‰ depth + æ³¨å†Œåºå·æ’åºä»¥ä¿è¯ç¡®å®šæ€§çš„ç»˜åˆ¶é¡ºåºã€‚
 	std::sort(snapshot.begin(), snapshot.end(), [](const Entry& a, const Entry& b) {
 		int da = a.owner ? a.owner->GetDepth() : 0;
 		int db = b.owner ? b.owner->GetDepth() : 0;
@@ -81,25 +81,25 @@ void DrawingSequence::DrawAll()
 		return a.reg_index < b.reg_index;
 	});
 
-	// ±éÀú¿ìÕÕ£ºÎªÃ¿¸ö¿É¼û¶ÔÏóÌáÈ¡µ±Ç°Ö¡²¢ÉÏ´«µ½Æä per-owner canvas£¨½öÉÏ´«£©¡£
+	// éå†å¿«ç…§ï¼šä¸ºæ¯ä¸ªå¯è§å¯¹è±¡æå–å½“å‰å¸§å¹¶ä¸Šä¼ åˆ°å…¶ per-owner canvasï¼ˆä»…ä¸Šä¼ ï¼‰ã€‚
 	for (auto& e : snapshot) {
 		BaseObject* owner = e.owner;
 		if (!owner) continue;
 
-		// Ìø¹ı²»¿É¼û¶ÔÏóÒÔ½ÚÊ¡×ÊÔ´¡£
+		// è·³è¿‡ä¸å¯è§å¯¹è±¡ä»¥èŠ‚çœèµ„æºã€‚
 		if (!owner->IsVisible()) continue;
 
 		PngFrame frame = owner->SpriteGetFrame();
 		if (frame.empty()) continue;
 
-		// ¼òµ¥Ğ£ÑéÏñËØ´óĞ¡£¬·À·¶ÎŞĞ§Êı¾İµ¼ÖÂµÄÏÔ´æ¸üĞÂÒì³£¡£
+		// ç®€å•æ ¡éªŒåƒç´ å¤§å°ï¼Œé˜²èŒƒæ— æ•ˆæ•°æ®å¯¼è‡´çš„æ˜¾å­˜æ›´æ–°å¼‚å¸¸ã€‚
 		size_t expected_bytes = static_cast<size_t>(frame.w) * static_cast<size_t>(frame.h) * 4u;
 		if (frame.pixels.size() < expected_bytes) {
 			std::cerr << "[DrawingSequence] pixel data size mismatch for owner\n";
 			continue;
 		}
 
-		// »ñÈ¡»ò´´½¨ per-owner canvas£¨ÔÚ g_canvas_cache ÉÏ¶ÌËø£©
+		// è·å–æˆ–åˆ›å»º per-owner canvasï¼ˆåœ¨ g_canvas_cache ä¸ŠçŸ­é”ï¼‰
 		CF_Canvas local_canvas{};
 		{
 			std::lock_guard<std::mutex> lk(g_canvas_cache_mutex);
@@ -131,18 +131,18 @@ void DrawingSequence::DrawAll()
 			continue;
 		}
 
-		// ÉÏ´«ÏñËØµ½ canvas µÄÄ¿±êÎÆÀí£¨Ó¦ÔÚÖ÷Ïß³Ì°²È«µ÷ÓÃ£©¡£
+		// ä¸Šä¼ åƒç´ åˆ° canvas çš„ç›®æ ‡çº¹ç†ï¼ˆåº”åœ¨ä¸»çº¿ç¨‹å®‰å…¨è°ƒç”¨ï¼‰ã€‚
 		CF_Texture tgt = cf_canvas_get_target(local_canvas);
 		size_t bytes = static_cast<size_t>(frame.w) * static_cast<size_t>(frame.h) * sizeof(CF_Pixel);
 		cf_texture_update(tgt, frame.pixels.data(), bytes);
 	}
 }
 
-// BlitAll: äÖÈ¾½×¶Î£¨½«ÒÑÉÏ´«µÄ canvas »æÖÆµ½ÆÁÄ»£©
-// ËµÃ÷£º¸Ã½×¶Î¶ÁÈ¡¶ÔÏóµÄ±ä»»ĞÅÏ¢²¢Ö´ĞĞÍ³Ò»µÄ»æÖÆÂß¼­¡£Ëø²ßÂÔÓë»Øµ÷Ò»ÖÂ£¬»æÖÆÖ÷Ìå±» try/catch °üÎ§ÒÔ±£Ö¤ÎÈ¶¨ĞÔ¡£
+// BlitAll: æ¸²æŸ“é˜¶æ®µï¼ˆå°†å·²ä¸Šä¼ çš„ canvas ç»˜åˆ¶åˆ°å±å¹•ï¼‰
+// è¯´æ˜ï¼šè¯¥é˜¶æ®µè¯»å–å¯¹è±¡çš„å˜æ¢ä¿¡æ¯å¹¶æ‰§è¡Œç»Ÿä¸€çš„ç»˜åˆ¶é€»è¾‘ã€‚é”ç­–ç•¥ä¸å›è°ƒä¸€è‡´ï¼Œç»˜åˆ¶ä¸»ä½“è¢« try/catch åŒ…å›´ä»¥ä¿è¯ç¨³å®šæ€§ã€‚
 void DrawingSequence::BlitAll()
 {
-	// »ñÈ¡×¢²á¿ìÕÕÒÔ¼õÉÙ³ÖËøÊ±¼ä¡£
+	// è·å–æ³¨å†Œå¿«ç…§ä»¥å‡å°‘æŒé”æ—¶é—´ã€‚
 	std::vector<Entry> snapshot;
 	{
 		std::lock_guard<std::mutex> lk(m_mutex);
@@ -161,17 +161,17 @@ void DrawingSequence::BlitAll()
 		BaseObject* owner = e.owner;
 		if (!owner) continue;
 
-		// ²»¿É¼û¶ÔÏóÌø¹ı»æÖÆ¡£
+		// ä¸å¯è§å¯¹è±¡è·³è¿‡ç»˜åˆ¶ã€‚
 		if (!owner->IsVisible()) continue;
 
-		// ²éÕÒ»º´æÖĞµÄ canvas£¨¶ÌËøÁ£¶È£©
+		// æŸ¥æ‰¾ç¼“å­˜ä¸­çš„ canvasï¼ˆçŸ­é”ç²’åº¦ï¼‰
 		CF_Canvas local_canvas{};
 		int w = 0, h = 0;
 		{
 			std::lock_guard<std::mutex> lk(g_canvas_cache_mutex);
 			auto it = g_canvas_cache.find(owner);
 			if (it == g_canvas_cache.end()) {
-				// Î´ÉÏ´«¹ıµÄ canvas£ºÌø¹ı¸Ã¶ÔÏóµÄ»æÖÆ
+				// æœªä¸Šä¼ è¿‡çš„ canvasï¼šè·³è¿‡è¯¥å¯¹è±¡çš„ç»˜åˆ¶
 				continue;
 			}
 			local_canvas = it->second.canvas;
@@ -181,20 +181,20 @@ void DrawingSequence::BlitAll()
 
 		if (local_canvas.id == 0 || w <= 0 || h <= 0) continue;
 
-		// ÔÚ¶ÁÈ¡Óë»æÖÆÏà¹ØµÄ¹²Ïí×´Ì¬Ê±¼ÓËø£¬»æÖÆÖ÷Ìå·ÅÈë try/catch ÒÔ¼ÇÂ¼²¢ºöÂÔÒì³££¬±£Ö¤Ö÷Ñ­»·ÎÈ¶¨ÔËĞĞ¡£
+		// åœ¨è¯»å–ä¸ç»˜åˆ¶ç›¸å…³çš„å…±äº«çŠ¶æ€æ—¶åŠ é”ï¼Œç»˜åˆ¶ä¸»ä½“æ”¾å…¥ try/catch ä»¥è®°å½•å¹¶å¿½ç•¥å¼‚å¸¸ï¼Œä¿è¯ä¸»å¾ªç¯ç¨³å®šè¿è¡Œã€‚
 		std::lock_guard<std::mutex> draw_lk(m_mutex);
 		try {
-			// Ä¬ÈÏ»æÖÆÔ¼¶¨£º
-			//  - ·­×ª×ÜÊÇÎ§ÈÆÌùÍ¼ÖĞĞÄÖ´ĞĞ
-			//  - Ğı×ªÎ§ÈÆÓÃ»§Ìá¹©µÄÊàÖá£¨pivot£©£¬pivot ÎªÏà¶ÔÓÚÌùÍ¼ÖĞĞÄµÄÏñËØÆ«ÒÆ
-			//  - scale£¨ÓÃ»§½Ó¿Ú£©Ó¦Ó°ÏìÌùÍ¼ÏÔÊ¾´óĞ¡£¬Î§ÈÆ pivot Ö´ĞĞËõ·Å
+			// é»˜è®¤ç»˜åˆ¶çº¦å®šï¼š
+			//  - ç¿»è½¬æ€»æ˜¯å›´ç»•è´´å›¾ä¸­å¿ƒæ‰§è¡Œ
+			//  - æ—‹è½¬å›´ç»•ç”¨æˆ·æä¾›çš„æ¢è½´ï¼ˆpivotï¼‰ï¼Œpivot ä¸ºç›¸å¯¹äºè´´å›¾ä¸­å¿ƒçš„åƒç´ åç§»
+			//  - scaleï¼ˆç”¨æˆ·æ¥å£ï¼‰åº”å½±å“è´´å›¾æ˜¾ç¤ºå¤§å°ï¼Œå›´ç»• pivot æ‰§è¡Œç¼©æ”¾
 			CF_V2 pos = owner ? owner->GetPosition() : cf_v2(0.0f, 0.0f);
 			const float fw = static_cast<float>(w);
 			const float fh = static_cast<float>(h);
 			const float cx = fw * 0.5f;
 			const float cy = fh * 0.5f;
 
-			// ´Ó BaseObject ¶ÁÈ¡Ğı×ª¡¢·­×ª±êÖ¾¡¢Ëõ·ÅÓëÊàÖáµã£¨ÊàÖáÒÔ"Ïà¶ÔÓÚÌùÍ¼ÖĞĞÄ"µÄÏñËØÆ«ÒÆ±íÊ¾£©
+			// ä» BaseObject è¯»å–æ—‹è½¬ã€ç¿»è½¬æ ‡å¿—ã€ç¼©æ”¾ä¸æ¢è½´ç‚¹ï¼ˆæ¢è½´ä»¥"ç›¸å¯¹äºè´´å›¾ä¸­å¿ƒ"çš„åƒç´ åç§»è¡¨ç¤ºï¼‰
 			const float rot = owner ? owner->GetRotation() : 0.0f;
 			const bool flipx = owner ? owner->SpriteGetFlipX() : false;
 			const bool flipy = owner ? owner->SpriteGetFlipY() : false;
@@ -202,22 +202,22 @@ void DrawingSequence::BlitAll()
 			const float user_sy = owner ? owner->GetScaleY() : 1.0f;
 			CF_V2 pivot = owner ? owner->GetPivot() : cf_v2(0.0f, 0.0f);
 
-			// »æÖÆ±ä»»²½Öè£¨ÓïÒåÇåÎúÇÒ¸ßĞ§£©£º
-			// 1) ÒÆ¶¯ÊàÖáµ½ÊÀ½çÎ»ÖÃ pos£¨±íÊ¾ÊàÖáµÄÊÀ½ç×ø±ê£©
-			// 2) ÈôĞèÒª·­×ª/Ëõ·Å£ºÎ§ÈÆÊàÖáÖ´ĞĞÆ½ÒÆ->scale->»ØÆ½ÒÆ£¨Ëõ·Å»áÍ¬Ê±Ó°ÏìÌùÍ¼´óĞ¡ÓëÊàÖáµÄÓ³Éä£©
-			// 3) ÈôĞèÒªĞı×ª£ºÔÚÊàÖá´¦Ğı×ª£¨Ğı×ª·ûºÅÊÜ·­×ªÓ°Ïì£©
-			// 4) ½«ÌùÍ¼×óÉÏ½Ç»æÖÆµ½ (-pivot) ´¦£¬Ê¹ÊàÖáÓ³Éäµ½ÊÀ½ç pos
+			// ç»˜åˆ¶å˜æ¢æ­¥éª¤ï¼ˆè¯­ä¹‰æ¸…æ™°ä¸”é«˜æ•ˆï¼‰ï¼š
+			// 1) ç§»åŠ¨æ¢è½´åˆ°ä¸–ç•Œä½ç½® posï¼ˆè¡¨ç¤ºæ¢è½´çš„ä¸–ç•Œåæ ‡ï¼‰
+			// 2) è‹¥éœ€è¦ç¿»è½¬/ç¼©æ”¾ï¼šå›´ç»•æ¢è½´æ‰§è¡Œå¹³ç§»->scale->å›å¹³ç§»ï¼ˆç¼©æ”¾ä¼šåŒæ—¶å½±å“è´´å›¾å¤§å°ä¸æ¢è½´çš„æ˜ å°„ï¼‰
+			// 3) è‹¥éœ€è¦æ—‹è½¬ï¼šåœ¨æ¢è½´å¤„æ—‹è½¬ï¼ˆæ—‹è½¬ç¬¦å·å—ç¿»è½¬å½±å“ï¼‰
+			// 4) å°†è´´å›¾å·¦ä¸Šè§’ç»˜åˆ¶åˆ° (-pivot) å¤„ï¼Œä½¿æ¢è½´æ˜ å°„åˆ°ä¸–ç•Œ pos
 			cf_draw_push();
 
-			// ½«ÊàÖáÒÆ¶¯µ½ÊÀ½ç×ø±ê pos
+			// å°†æ¢è½´ç§»åŠ¨åˆ°ä¸–ç•Œåæ ‡ pos
 			cf_draw_translate(pos.x, pos.y);
 
-			// Î§ÈÆÊàÖáËõ·Å£¨Óë·­×ª¶ÀÁ¢µş¼Ó£©
+			// å›´ç»•æ¢è½´ç¼©æ”¾ï¼ˆä¸ç¿»è½¬ç‹¬ç«‹å åŠ ï¼‰
 			if (user_sx != 1.0f || user_sy != 1.0f) {
 				cf_draw_scale(user_sx, user_sy);
 			}
 
-			// ·­×ª£¨×÷Îª scale µÄÌØÊâÇé¿ö£©£¬ÏÈ°´·­×ªÔÚÊàÖá´¦×ö±ä»»
+			// ç¿»è½¬ï¼ˆä½œä¸º scale çš„ç‰¹æ®Šæƒ…å†µï¼‰ï¼Œå…ˆæŒ‰ç¿»è½¬åœ¨æ¢è½´å¤„åšå˜æ¢
 			const float flip_sx = flipx ? -1.0f : 1.0f;
 			const float flip_sy = flipy ? -1.0f : 1.0f;
 			if (flipx || flipy) {
@@ -226,19 +226,19 @@ void DrawingSequence::BlitAll()
 				cf_draw_translate(pivot.x, pivot.y);
 			}
 
-			// Ğı×ª£ºÔÚÊàÖá´¦Ğı×ª£¨Ğı×ª·½ÏòĞèÒª¿¼ÂÇ·­×ª¶Ô·ûºÅµÄÓ°Ïì£©
+			// æ—‹è½¬ï¼šåœ¨æ¢è½´å¤„æ—‹è½¬ï¼ˆæ—‹è½¬æ–¹å‘éœ€è¦è€ƒè™‘ç¿»è½¬å¯¹ç¬¦å·çš„å½±å“ï¼‰
 			if (rot != 0.0f) {
 				cf_draw_translate(-2 * pivot.x * flipx, -2 * pivot.y * flipy);
 				cf_draw_rotate(-rot * flip_sx * flip_sy);
 				cf_draw_translate(2 * pivot.x * flipx, 2 * pivot.y * flipy);
 			}
 
-			// ×îÖÕ»æÖÆ£ºcf_draw_canvas »áÊÜµ½Ö®Ç°µÄËõ·Å/Ğı×ª/Æ½ÒÆÓ°Ïì£¬´Ó¶øÊµÏÖ°´ scale Ëõ·ÅÌùÍ¼ÏÔÊ¾´óĞ¡
+			// æœ€ç»ˆç»˜åˆ¶ï¼šcf_draw_canvas ä¼šå—åˆ°ä¹‹å‰çš„ç¼©æ”¾/æ—‹è½¬/å¹³ç§»å½±å“ï¼Œä»è€Œå®ç°æŒ‰ scale ç¼©æ”¾è´´å›¾æ˜¾ç¤ºå¤§å°
 			cf_draw_canvas(local_canvas, -pivot, cf_v2(fw, fh));
 
 			cf_draw_pop();
 		} catch (const std::exception& ex) {
-			// ¼ÇÂ¼Òì³£µ«²»Å×³ö£¬±£Ö¤»æÖÆÑ­»·¼ÌĞøÖ´ĞĞ
+			// è®°å½•å¼‚å¸¸ä½†ä¸æŠ›å‡ºï¼Œä¿è¯ç»˜åˆ¶å¾ªç¯ç»§ç»­æ‰§è¡Œ
 			std::cerr << "[DrawingSequence] draw threw std::exception: " << ex.what() << "\n";
 		} catch (...) {
 			std::cerr << "[DrawingSequence] draw threw unknown exception\n";

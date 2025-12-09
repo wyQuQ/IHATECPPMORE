@@ -6,42 +6,42 @@
 #include <atomic>
 
 /// <summary>
-/// �̰߳�ȫ�Ķಥί�У��۲��ߣ�ģ���ࡣ
+/// 线程安全的多播委托（观察者）模板类。
 ///
-/// ���Ĺ��ܣ�
-/// - �洢����ɵ��ö���ͨ�� `std::function<void(Args...)>`����
-/// - ͨ�� `add` ���Ӵ�����������һ�������Ƴ��� `Token`������Ϊ `std::size_t`����
-/// - ͨ�� `remove(Token)` ���� token �Ƴ��������������Ƿ�ɹ���
-/// - ͨ�� `invoke(...)` �����ص� `operator()` �㲥����������ע�ᴦ����������ʱ���ȸ��Ƶ�ǰ�������б����ͷ����������ڻص��г���ִ���û����롣  
-/// - �ṩ `clear()` ������д�������  
-/// - ʹ���ڲ���������֤ `add/remove/clear/invoke` ���̰߳�ȫ��`next_id_` ʹ��ԭ�Ӳ�������Ψһ token��
+/// 核心功能：
+/// - 存储任意可调用对象（通过 `std::function<void(Args...)>`）。
+/// - 通过 `add` 添加处理器并返回一个用于移除的 `Token`（类型为 `std::size_t`）。
+/// - 通过 `remove(Token)` 根据 token 移除处理器，返回是否成功。
+/// - 通过 `invoke(...)` 或重载的 `operator()` 广播调用所有已注册处理器。调用时会先复制当前处理器列表并释放锁，避免在回调中持锁执行用户代码。  
+/// - 提供 `clear()` 清空所有处理器。  
+/// - 使用内部互斥锁保证 `add/remove/clear/invoke` 的线程安全；`next_id_` 使用原子操作生成唯一 token。
 ///
-/// ע�����
-/// - �ڻص�ִ���ڼ䲻������ڲ� mutex����˻ص��п��԰�ȫ�ص��� `add` �� `remove`�����Ե�ǰ����ִ�еĵ��ò���Ӱ���Ǵ��Ѹ��Ƶĸ�������  
-/// - `Token` �� 1 ��ʼ���������ﵽ `std::size_t` ����ʱ����ƣ�������������������������Ƿ���Ҫ�����ӵĻ��ղ��ԡ�
+/// 注意事项：
+/// - 在回调执行期间不会持有内部 mutex，因此回调中可以安全地调用 `add` 或 `remove`（但对当前正在执行的调用不会影响那次已复制的副本）。  
+/// - `Token` 从 1 开始自增；当达到 `std::size_t` 上限时会回绕（极端情况），请根据需求决定是否需要更复杂的回收策略。
 ///
-/// ʹ��ʾ����
+/// 使用示例：
 /// ```cpp
-/// // �޲����޷���ֵ
+/// // 无参数无返回值
 /// Delegate<> on_update;
 /// auto t1 = on_update.add([](){ std::cout << "Subscriber A\n"; });
 /// auto t2 = on_update.add([](){ std::cout << "Subscriber B\n"; });
-/// on_update(); // �㲥����
-/// on_update.remove(t1); // �Ƴ������� A
-/// on_update.clear(); // ������ж�����
+/// on_update(); // 广播调用
+/// on_update.remove(t1); // 移除订阅者 A
+/// on_update.clear(); // 清空所有订阅者
 /// ```
-/// ������ʾ����
+/// 带参数示例：
 /// ```cpp
 /// Delegate<int, const std::string&> on_event;
 /// on_event.add([](int code, const std::string &msg){
 ///     std::cout << "code=" << code << " msg=" << msg << "\n";
 /// });
 /// on_event.invoke(42, "hello");
-/// // ����ֱ�ӣ�
+/// // 或者直接：
 /// on_event(42, "hello");
 /// ```
 /// </summary>
-/// <typeparam name="...Args">���������ܵĲ����б�����</typeparam>
+/// <typeparam name="...Args">处理器接受的参数列表类型</typeparam>
 template<typename... Args>
 class Delegate {
 public:
@@ -50,7 +50,7 @@ public:
 
     Delegate() : next_id_(0) {}
 
-    // ���Ӵ����������������Ƴ��� token
+    // 添加处理器，返回用于移除的 token
     Token add(Handler h) {
         std::lock_guard<std::mutex> lock(mutex_);
         Token id = ++next_id_;
@@ -58,13 +58,13 @@ public:
         return id;
     }
 
-    // �Ƴ��������������Ƿ�ɹ�
+    // 移除处理器，返回是否成功
     bool remove(Token id) {
         std::lock_guard<std::mutex> lock(mutex_);
         return handlers_.erase(id) > 0;
     }
 
-    // ����������ע�ᴦ�����������ڳ���ʱ�����ⲿ���룩
+    // 调用所有已注册处理器（不会在持锁时调用外部代码）
     void invoke(Args... args) const {
         std::vector<Handler> copy;
         {
@@ -77,10 +77,10 @@ public:
         }
     }
 
-    // ��ݵ����﷨
+    // 便捷调用语法
     void operator()(Args... args) const { invoke(std::forward<Args>(args)...); }
 
-    // ������д�����
+    // 清空所有处理器
     void clear() {
         std::lock_guard<std::mutex> lock(mutex_);
         handlers_.clear();
@@ -92,5 +92,5 @@ private:
     std::atomic<Token> next_id_;
 };
 
-// �ಥί�У��޲������޷���ֵ
+// 多播委托：无参数、无返回值
 extern Delegate<> main_thread_on_update;

@@ -18,9 +18,9 @@ static void print_debug_flags_once() {
 	std::cerr << "MCG_DEBUG=" << MCG_DEBUG << " MCG_DEBUG_LEVEL=" << MCG_DEBUG_LEVEL << std::endl;
 }
 
-// È«¾ÖÖ¡¼ÆÊı
+// å…¨å±€å¸§è®¡æ•°
 std::atomic<int> g_frame_count{0};
-// ¶à²¥Î¯ÍĞ£ºÎŞ²ÎÊı¡¢ÎŞ·µ»ØÖµ
+// å¤šæ’­å§”æ‰˜ï¼šæ— å‚æ•°ã€æ— è¿”å›å€¼
 Delegate<> main_thread_on_update;
 
 int main(int argc, char* argv[])
@@ -28,10 +28,10 @@ int main(int argc, char* argv[])
 	print_debug_flags_once();
 	using namespace Cute;
 
-	// ´°¿Ú´óĞ¡
+	// çª—å£å¤§å°
 	int window_width = 1024;
 	int window_height = 720;
-	// ´´½¨Ó¦ÓÃ³ÌĞò´°¿Ú
+	// åˆ›å»ºåº”ç”¨ç¨‹åºçª—å£
 	int options = CF_APP_OPTIONS_WINDOW_POS_CENTERED_BIT;
 	CF_Result result = make_app("My I Wanna", 0, 0, 0, window_width, window_height, options, argv[0]);
 	if (is_error(result)) return -1;
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 	float half_width = static_cast<float>(window_width) * 0.5f;
 	float half_height = static_cast<float>(window_height) * 0.5f;
 
-	// ¹ÒÔØ content Ä¿Â¼µ½ĞéÄâ¸ù "/"£¬Ê¹×ÊÔ´¿ÉÓÃÎª "/sprites/idle.png"
+	// æŒ‚è½½ content ç›®å½•åˆ°è™šæ‹Ÿæ ¹ "/"ï¼Œä½¿èµ„æºå¯ç”¨ä¸º "/sprites/idle.png"
 	{
 		CF_Path base = fs_get_base_directory();
 		base.normalize();
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	}
 
 <<<<<<< Updated upstream
-	// Ê¹ÓÃ InstanceController ´´½¨¶ÔÏó£ºÏÖÔÚ·µ»Ø token£¨ObjectToken£©
+	// Ê¹ï¿½ï¿½ InstanceController ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ tokenï¿½ï¿½ObjectTokenï¿½ï¿½
 	auto player_token = ObjManager::Instance().CreateImmediate<PlayerObject>();
 	auto test_token = ObjManager::Instance().CreateImmediate<TestObject>();
 =======
@@ -102,26 +102,26 @@ int main(int argc, char* argv[])
 		g_frame_count++;
 		main_thread_on_update();
 
-		// ÉÏ´«½×¶Î£¨±£³ÖÔ­Ñù£©
+		// ä¸Šä¼ é˜¶æ®µï¼ˆä¿æŒåŸæ ·ï¼‰
 		try {
 			DrawingSequence::Instance().DrawAll();
 		} catch (const std::exception& ex) {
-			std::cerr << "»æÖÆÒì³£ (upload): " << ex.what() << std::endl;
+			std::cerr << "ç»˜åˆ¶å¼‚å¸¸ (upload): " << ex.what() << std::endl;
 			break;
 		}
 
-		// ---- Äãµ±Ç°µÄ²âÊÔ»æÖÆ£¨²Î¿¼·½ĞÎ / ÎÄ±¾ µÈ£© ----
+		// ---- ä½ å½“å‰çš„æµ‹è¯•ç»˜åˆ¶ï¼ˆå‚è€ƒæ–¹å½¢ / æ–‡æœ¬ ç­‰ï¼‰ ----
 		{
 			cf_draw_push();
 
-			// ÂÌÉ«ÖĞĞÄµã£¨ÈİÒ×±æÊ¶£©
+			// ç»¿è‰²ä¸­å¿ƒç‚¹ï¼ˆå®¹æ˜“è¾¨è¯†ï¼‰
 			cf_draw_push_color(cf_color_green());
 			{
 				cf_draw_circle2(cf_v2(0.0f, 0.0f), 8.0f, 0.0f);
 			}
 			cf_draw_pop_color();
 
-			// °×É«ÎÄ±¾ÏÔÊ¾µ±Ç°È«¾ÖÖ¡¼ÆÊı£¨Èô×ÖÌå¿ÉÓÃ£©
+			// ç™½è‰²æ–‡æœ¬æ˜¾ç¤ºå½“å‰å…¨å±€å¸§è®¡æ•°ï¼ˆè‹¥å­—ä½“å¯ç”¨ï¼‰
 			cf_draw_translate(-half_width, -half_height);
 			cf_draw_push_color(cf_color_white());
 			cf_draw_text(("frame: " + std::to_string(g_frame_count.load())).c_str(), cf_v2(10.0f, 16.0f), -1);
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 			cf_draw_pop();
 		}
 
-		// ÍË³öÌáÊ¾Óë×îÖÕ³ÊÏÖ
+		// é€€å‡ºæç¤ºä¸æœ€ç»ˆå‘ˆç°
 		if (esc_was_down)
 		{
 			cf_draw_push();
@@ -153,22 +153,22 @@ int main(int argc, char* argv[])
 			cf_draw_pop();
 		}
 
-		// ---- ÔÚ²âÊÔ»æÖÆÖ®ºó°ÑÒÑÉÏ´«µÄ canvas »æÖÆµ½ÆÁÄ» ----
+		// ---- åœ¨æµ‹è¯•ç»˜åˆ¶ä¹‹åæŠŠå·²ä¸Šä¼ çš„ canvas ç»˜åˆ¶åˆ°å±å¹• ----
 		try {
 			DrawingSequence::Instance().BlitAll();
 		} catch (const std::exception& ex) {
-			std::cerr << "»æÖÆÒì³£ (blit): " << ex.what() << std::endl;
+			std::cerr << "ç»˜åˆ¶å¼‚å¸¸ (blit): " << ex.what() << std::endl;
 			break;
 		}
 
 		app_draw_onto_screen(true);
 	}
-	// ³ÌĞòÍË³ö£ºÓÉ¿ØÖÆÆ÷Ïú»ÙËùÓĞ¶ÔÏó
+	// ç¨‹åºé€€å‡ºï¼šç”±æ§åˆ¶å™¨é”€æ¯æ‰€æœ‰å¯¹è±¡
 	ObjManager::Instance().DestroyAll();
 
 	main_thread_on_update.clear();
 
-	// Ïú»ÙÓ¦ÓÃ³ÌĞò
+	// é”€æ¯åº”ç”¨ç¨‹åº
 	destroy_app();
 
 	return 0;
