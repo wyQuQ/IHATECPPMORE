@@ -31,6 +31,9 @@ int main(int argc, char* argv[])
 	print_debug_flags_once();
 	using namespace Cute;
 
+	// 为简短调用创建引用别名
+	auto& objs = ObjManager::Instance();
+
 	// 窗口大小
 	int window_width = 1024;
 	int window_height = 720;
@@ -52,43 +55,43 @@ int main(int argc, char* argv[])
 	}
 
 	// 使用 InstanceController 创建对象：现在返回 token（ObjectToken）
-	auto player_token = ObjManager::Instance().Create<PlayerObject>();
-	auto block_token = ObjManager::Instance().Create<TestBlock>();
+	auto player_token = objs.Create<PlayerObject>();
+	auto block_token = objs.Create<TestBlock>();
 
 	// 创建背景对象
-	auto background_token = ObjManager::Instance().Create<Backgroud>();
+	auto background_token = objs.Create<Backgroud>();
 
 	// 创建方块对象。
-	// -模版参数指定位置和类型（1为草地，2为泥土）
-	auto block1_token = ObjManager::Instance().Create<BlockObject<cf_v2(-494.0f, -342.0f), 1>>();
-	auto block2_token = ObjManager::Instance().Create<BlockObject<cf_v2(-458.0f, -342.0f), 1>>();
-	auto block3_token = ObjManager::Instance().Create<BlockObject<cf_v2(-422.0f, -342.0f), 1>>();
-	auto block4_token = ObjManager::Instance().Create<BlockObject<cf_v2(-386.0f, -342.0f), 1>>();
-	auto block5_token = ObjManager::Instance().Create<BlockObject<cf_v2(-350.0f, -342.0f), 2>>();
-	auto block6_token = ObjManager::Instance().Create<BlockObject<cf_v2(-314.0f, -342.0f), 2>>();
-	auto block7_token = ObjManager::Instance().Create<BlockObject<cf_v2(-278.0f, -342.0f), 2>>();
-	auto block8_token = ObjManager::Instance().Create<BlockObject<cf_v2(-242.0f, -342.0f), 1>>();
-	auto block9_token = ObjManager::Instance().Create<BlockObject<cf_v2(-206.0f, -342.0f), 1>>();
-	auto block10_token = ObjManager::Instance().Create<BlockObject<cf_v2(-170.0f, -342.0f), 2>>();
-	auto block11_token = ObjManager::Instance().Create<BlockObject<cf_v2(-134.0f, -342.0f), 2>>();
-	auto block12_token = ObjManager::Instance().Create<BlockObject<cf_v2(-98.0f, -342.0f), 1>>();
-	auto block13_token = ObjManager::Instance().Create<BlockObject<cf_v2(-62.0f, -342.0f), 1>>();
-	auto block14_token = ObjManager::Instance().Create<BlockObject<cf_v2(-26.0f, -342.0f), 2>>();
-	auto block15_token = ObjManager::Instance().Create<BlockObject<cf_v2(10.0f, -342.0f), 2>>();
-	auto block16_token = ObjManager::Instance().Create<BlockObject<cf_v2(46.0f, -342.0f), 1>>();
-	auto block17_token = ObjManager::Instance().Create<BlockObject<cf_v2(82.0f, -342.0f), 1>>();
-	auto block18_token = ObjManager::Instance().Create<BlockObject<cf_v2(118.0f, -342.0f), 2>>();
-	auto block19_token = ObjManager::Instance().Create<BlockObject<cf_v2(154.0f, -342.0f), 2>>();
-	auto block20_token = ObjManager::Instance().Create<BlockObject<cf_v2(190.0f, -342.0f), 1>>();
-	auto block21_token = ObjManager::Instance().Create<BlockObject<cf_v2(226.0f, -342.0f), 1>>();
-	auto block22_token = ObjManager::Instance().Create<BlockObject<cf_v2(262.0f, -342.0f), 2>>();
-	auto block23_token = ObjManager::Instance().Create<BlockObject<cf_v2(298.0f, -342.0f), 2>>();
-	auto block24_token = ObjManager::Instance().Create<BlockObject<cf_v2(334.0f, -342.0f), 1>>();
-	auto block25_token = ObjManager::Instance().Create<BlockObject<cf_v2(370.0f, -342.0f), 1>>();
-	auto block26_token = ObjManager::Instance().Create<BlockObject<cf_v2(406.0f, -342.0f), 2>>();
-	auto block27_token = ObjManager::Instance().Create<BlockObject<cf_v2(442.0f, -342.0f), 2>>();
-	auto block28_token = ObjManager::Instance().Create<BlockObject<cf_v2(478.0f, -342.0f), 1>>();
-	auto block29_token = ObjManager::Instance().Create<BlockObject<cf_v2(514.0f, -342.0f), 1>>();
+	// -构造函数传参方式（位置、是否为草坪）
+	auto block1_token = objs.Create<BlockObject>(cf_v2(-494.0f, -342.0f), true);
+	auto block2_token = objs.Create<BlockObject>(cf_v2(-458.0f, -342.0f), true);
+	auto block3_token = objs.Create<BlockObject>(cf_v2(-422.0f, -342.0f), true);
+	auto block4_token = objs.Create<BlockObject>(cf_v2(-386.0f, -342.0f), true);
+	auto block5_token = objs.Create<BlockObject>(cf_v2(-350.0f, -342.0f), false);
+	auto block6_token = objs.Create<BlockObject>(cf_v2(-314.0f, -342.0f), false);
+	auto block7_token = objs.Create<BlockObject>(cf_v2(-278.0f, -342.0f), false);
+	auto block8_token = objs.Create<BlockObject>(cf_v2(-242.0f, -342.0f), true);
+	auto block9_token = objs.Create<BlockObject>(cf_v2(-206.0f, -342.0f), true);
+	auto block10_token = objs.Create<BlockObject>(cf_v2(-170.0f, -342.0f), false);
+	auto block11_token = objs.Create<BlockObject>(cf_v2(-134.0f, -342.0f), false);
+	auto block12_token = objs.Create<BlockObject>(cf_v2(-98.0f, -342.0f), true);
+	auto block13_token = objs.Create<BlockObject>(cf_v2(-62.0f, -342.0f), true);
+	auto block14_token = objs.Create<BlockObject>(cf_v2(-26.0f, -342.0f), false);
+	auto block15_token = objs.Create<BlockObject>(cf_v2(10.0f, -342.0f), false);
+	auto block16_token = objs.Create<BlockObject>(cf_v2(46.0f, -342.0f), true);
+	auto block17_token = objs.Create<BlockObject>(cf_v2(82.0f, -342.0f), true);
+	auto block18_token = objs.Create<BlockObject>(cf_v2(118.0f, -342.0f), false);
+	auto block19_token = objs.Create<BlockObject>(cf_v2(154.0f, -342.0f), false);
+	auto block20_token = objs.Create<BlockObject>(cf_v2(190.0f, -342.0f), true);
+	auto block21_token = objs.Create<BlockObject>(cf_v2(226.0f, -342.0f), true);
+	auto block22_token = objs.Create<BlockObject>(cf_v2(262.0f, -342.0f), false);
+	auto block23_token = objs.Create<BlockObject>(cf_v2(298.0f, -342.0f), false);
+	auto block24_token = objs.Create<BlockObject>(cf_v2(334.0f, -342.0f), true);
+	auto block25_token = objs.Create<BlockObject>(cf_v2(370.0f, -342.0f), true);
+	auto block26_token = objs.Create<BlockObject>(cf_v2(406.0f, -342.0f), false);
+	auto block27_token = objs.Create<BlockObject>(cf_v2(442.0f, -342.0f), false);
+	auto block28_token = objs.Create<BlockObject>(cf_v2(478.0f, -342.0f), true);
+	auto block29_token = objs.Create<BlockObject>(cf_v2(514.0f, -342.0f), true);
 
 	auto update_token = main_thread_on_update.add([]() {
 		ObjManager::Instance().UpdateAll();
@@ -196,7 +199,7 @@ int main(int argc, char* argv[])
 		app_draw_onto_screen(true);
 	}
 	// 程序退出：由控制器销毁所有对象
-	ObjManager::Instance().DestroyAll();
+	objs.DestroyAll();
 
 	main_thread_on_update.clear();
 

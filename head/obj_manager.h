@@ -42,12 +42,12 @@ public:
     }
 
     // Create: 允许在构造后、Start() 前对对象进行初始化的版本，返回 PendingToken。
-    // - initializer 会在对象构造后、Start() 调用前被调用，适合做一些初始状态绑定
+    // 将第二个模板限制为只有当 initializer 可用作 `T*` 调用时才会成为可选候选
     template <typename T, typename Init, typename... Args>
+        requires std::is_invocable_v<std::decay_t<Init>, T*>
     ObjToken Create(Init&& initializer, Args&&... args)
     {
-        static_assert(std::is_base_of<BaseObject, T>::value, "T must derive from BaseObject");
-        static_assert(std::is_invocable_v<Init, T*>, "initializer must be callable with T*");
+        static_assert(std::is_base_of_v<BaseObject, T>, "T must derive from BaseObject");
         auto obj = std::make_unique<T>(std::forward<Args>(args)...);
         if (initializer) {
             std::forward<Init>(initializer)(static_cast<T*>(obj.get()));
