@@ -11,21 +11,10 @@ int cur_frame = 0;
 static constexpr float speed = 3.0f;
 const float PI = 3.14159265358979f;
 
-// 为每个 PlayerObject 实例保存是否着地
-static std::unordered_map<const PlayerObject*, bool> s_grounded_map;
-
-// 为每个实例保存按住跳跃可用的剩余帧数（variable jump）
-static std::unordered_map<const PlayerObject*, float> s_jump_hold_time_left;
-
-// 为每个实例保存离地后仍可起跳的剩余帧数（coyote time）
-static std::unordered_map<const PlayerObject*, int> s_coyote_time_left;
-
-static std::unordered_map<const PlayerObject*, int> s_jump_count_map;
-
 // 可调参数
 static constexpr int max_jump_hold_frames = 12;       // 按住跳跃最多允许的帧数（按住越久跳得越高）
 static constexpr float low_gravity_multiplier = 0.4f; // 按住跳跃时的重力倍率（较小，保留上升速度）
-static constexpr float fall_gravity_multiplier = 1.6f; // 松开或下落时的加强重力倍率（更快下落）
+static constexpr float fall_gravity_multiplier = 0.4f; // 松开或下落时的加强重力倍率（更快下落）
 static constexpr int coyote_time_frames = 6;         // 离地后仍可跳的帧数（coyote time）
 
 static constexpr float gravity = 0.3f;        // 基础每帧重力加速度（可根据需要调整）
@@ -42,13 +31,7 @@ void PlayerObject::Start()
     SetPosition(cf_v2(0.0f, 0.0f));
 
     Scale(0.6f);
-
-    // 确保 maps 有默认条目（可选）
-    s_grounded_map[this] = false;
-    s_jump_hold_time_left[this] = 0.0f;
-
-	AddTag("player");
-    s_jump_count_map[this] = 2;
+    jump_count = 2;
 }
 
 void PlayerObject::Update()
@@ -60,15 +43,6 @@ void PlayerObject::Update()
     }
     if (Input::IsKeyInState(CF_KEY_D, KeyState::Hold)) {
         dir += 1;
-    }
-
-    // 设置贴图翻转（根据移动方向）
-    if (dir != 0) {
-        SpriteSetStats("/sprites/walk.png", 2, 5, 0, false);
-        SpriteFlipX(dir < 0);
-    }
-    else {
-        SpriteSetStats("/sprites/idle.png", 3, 6, 0, false);
     }
 
     // 应用水平速度
@@ -106,35 +80,35 @@ void PlayerObject::Update()
 
     // 读取按住/保留时间引用（直接修改 map）
     bool space_down = Input::IsKeyInState(CF_KEY_SPACE, KeyState::Hold);
-    float& hold_time_left = s_jump_hold_time_left[this];
-    int& coyote_left = s_coyote_time_left[this];
-    bool grounded = s_grounded_map[this];
+    float& hold_time = hold_time_left;
+    int& coyote_left = coyote_time_left;
+    bool grd = grounded;
 
     // 若不在地面且有 coyote 时间，逐帧递减（在 Update 而非 OnCollisionExit 中递减）
-    if (!grounded && coyote_left > 0) {
+    if (!grd && coyote_left > 0) {
         coyote_left -= 1;
         if (coyote_left < 0) coyote_left = 0;
     }
 
-	int& jump_count = s_jump_count_map[this];// 当前剩余跳跃次数
+	int& count = jump_count;// 当前剩余跳跃次数
 
     if (Input::IsKeyInState(CF_KEY_SPACE, KeyState::Down)) {
 
-        if (grounded || coyote_left > 0||jump_count>0) {
+        if (grd || coyote_left > 0||count>0) {
             CF_V2 v = GetVelocity();
             v.y = 8.0f; // 初始跳跃速度（可调）
             SetVelocity(v);
 
             // 开启按住延长跳跃的计时（仅在跳跃开始时设置）
-            hold_time_left = static_cast<float>(max_jump_hold_frames);
+            hold_time = static_cast<float>(max_jump_hold_frames);
 
             // 清理状态，防止重复起跳
-            s_grounded_map[this] = false;
+            grounded = false;
             coyote_left = 0;
 
 			// 减少跳跃次数
-            jump_count--;
-            if (jump_count < 0) jump_count = 0;
+            count--;
+            if (count < 0) count = 0;
         }
     }
 
@@ -143,11 +117,11 @@ void PlayerObject::Update()
     float gravity_multiplier = 1.0f;
 
     // 可变跳跃逻辑：仅在上升阶段、按住且有保留时间时生效
-    if (cur_vel_jump.y > 0.0f && space_down && hold_time_left > 0.0f) {
+    if (cur_vel_jump.y > 0.0f && space_down && hold_time > 0.0f) {
         gravity_multiplier = low_gravity_multiplier;
         // 消耗保留帧（每帧）
-        hold_time_left -= 1.0f;
-        if (hold_time_left < 0.0f) hold_time_left = 0.0f;
+        hold_time -= 1.0f;
+        if (hold_time < 0.0f) hold_time = 0.0f;
     }
     else if (cur_vel_jump.y < 0.0f) {
         gravity_multiplier = fall_gravity_multiplier;
@@ -167,57 +141,73 @@ void PlayerObject::Update()
     }
 
     // 如果处于着地，重置 coyote（可选）
-    if (s_grounded_map[this]) {
-        s_coyote_time_left[this] = coyote_time_frames;
+    if (grounded) {
+        coyote_time_left = coyote_time_frames;
     }
 
+
+}
+
+void PlayerObject::EndFrame() {
+    auto vel = GetVelocity();
+
+    // 设置贴图翻转（根据移动方向）
+    if (vel.x != 0) SpriteFlipX(vel.x < 0);
+
+    // 根据状态切换贴图
+    if (grounded) {
+        if (vel.x != 0) {
+            SpriteSetStats("/sprites/walk.png", 2, 5, 0, false);
+        }
+        else {
+            SpriteSetStats("/sprites/idle.png", 3, 6, 0, false);
+        }
+    }
+    else {
+        if (vel.y > 0) {
+            SpriteSetStats("/sprites/jump.png", 2, 4, 0, false);
+        }
+        else {
+            SpriteSetStats("/sprites/fall.png", 2, 4, 0, false);
+        }
+    }
+}
+
+void PlayerObject::Exclusion(const CF_Manifold& m) {
+
+    CF_V2 correction = cf_v2(-m.n.x * m.depths[0], -m.n.y * m.depths[0]);
+    CF_V2 current_position = GetPosition();
+    CF_V2 new_position = cf_v2(current_position.x + correction.x, current_position.y + correction.y);
+    SetPosition(new_position, true);
+
+    if (correction.y > 0.001f && GetVelocity().y < 0 && v2math::length(m.contact_points[0]-m.contact_points[1]) > speed) {
+        grounded = true;
+        hold_time_left = 0.0f;
+        coyote_time_left = coyote_time_frames;
+        jump_count = 2;
+        SetVelocity(cf_v2(GetVelocity().x, 0.0f));
+    }
 }
 
 void PlayerObject::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
 
     if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
-
-    // 将Player对象的位置重置到上一帧位置，避免穿透
-    SetPosition(GetPrevPosition());
-
-    if (manifold.count > 0) {
-        float correction_y = -manifold.n.y * manifold.depths[0];
-        if (correction_y > 0.001f) {
-            s_grounded_map[this] = true;
-            // 着地时取消按住跳跃保留时间（按住延长仅对当前跳跃有效）
-            s_jump_hold_time_left[this] = 0.0f;
-            // 着地时恢复 coyote（方便下一次离地）
-            s_coyote_time_left[this] = coyote_time_frames;
-            // 着地时重置跳跃次数
-            s_jump_count_map[this] = 2;
-        }
-    }
+	Exclusion(manifold);
 }
 
 void PlayerObject::OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
 
     if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
-
-    CF_V2 correction = cf_v2(-manifold.n.x * manifold.depths[0], -manifold.n.y * manifold.depths[0]);
-    CF_V2 current_position = GetPosition();
-    CF_V2 new_position = cf_v2(current_position.x + correction.x, current_position.y + correction.y);
-    SetPosition(new_position);
-
-    if (correction.y > 0.001f) {
-        s_grounded_map[this] = true;
-        s_jump_hold_time_left[this] = 0.0f;
-        s_coyote_time_left[this] = coyote_time_frames;
-        s_jump_count_map[this] = 2;
-    }
+	Exclusion(manifold);
 }
 
-void PlayerObject::OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept
-{
+void PlayerObject::OnCollisionExit(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
+
     if (objs[other_token].GetColliderType() != ColliderType::SOLID) return;
 
     // 离开碰撞时取消着地标记
-    s_grounded_map[this] = false;
+    grounded = false;
 
     // 启动 coyote 时间（离地后短时间仍可起跳）
-    s_coyote_time_left[this] = coyote_time_frames;
+    coyote_time_left = coyote_time_frames;
 }

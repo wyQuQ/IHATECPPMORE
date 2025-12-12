@@ -13,7 +13,6 @@
 #include "obj_manager.h"
 
 #include "player_object.h"
-#include "test_block.h"
 #include "backgroud.h"
 #include "block_object.h"
 #include "move_spike.h"
@@ -60,7 +59,6 @@ int main(int argc, char* argv[])
 
 	// 使用 InstanceController 创建对象：现在返回 token（ObjectToken）
 	auto player_token = objs.Create<PlayerObject>();
-	auto block_token = objs.Create<TestBlock>();
 	auto spike_token = objs.Create<MoveSpike>();
 	auto standing_spike_token = objs.Create<Spike>(CF_V2(0.0f, -324.0f));
 
@@ -85,6 +83,9 @@ int main(int argc, char* argv[])
 	auto block5_token = objs.Create<BlockObject>(cf_v2(-350.0f, -342.0f), false);
 	auto block6_token = objs.Create<BlockObject>(cf_v2(-314.0f, -342.0f), false);
 	auto block7_token = objs.Create<BlockObject>(cf_v2(-278.0f, -342.0f), false);
+	auto block7_1_token = objs.Create<BlockObject>(cf_v2(-278.0f, -306.0f), false);
+	auto block7_2_token = objs.Create<BlockObject>(cf_v2(-278.0f, -270.0f), false);
+	auto block7_3_token = objs.Create<BlockObject>(cf_v2(-278.0f, -234.0f), true);
 	auto block8_token = objs.Create<BlockObject>(cf_v2(-242.0f, -342.0f), true);
 	auto block9_token = objs.Create<BlockObject>(cf_v2(-206.0f, -342.0f), true);
 	auto block10_token = objs.Create<BlockObject>(cf_v2(-170.0f, -342.0f), false);
@@ -95,8 +96,11 @@ int main(int argc, char* argv[])
 	auto block15_token = objs.Create<BlockObject>(cf_v2(10.0f, -342.0f), false);
 	auto block16_token = objs.Create<BlockObject>(cf_v2(46.0f, -342.0f), true);
 	auto block17_token = objs.Create<BlockObject>(cf_v2(82.0f, -342.0f), true);
+	auto block17_1_token = objs.Create<BlockObject>(cf_v2(82.0f, -234.0f), true);
 	auto block18_token = objs.Create<BlockObject>(cf_v2(118.0f, -342.0f), false);
+	auto block18_1_token = objs.Create<BlockObject>(cf_v2(118.0f, -234.0f), true);
 	auto block19_token = objs.Create<BlockObject>(cf_v2(154.0f, -342.0f), false);
+	auto block19_1_token = objs.Create<BlockObject>(cf_v2(154.0f, -234.0f), true);
 	auto block20_token = objs.Create<BlockObject>(cf_v2(190.0f, -342.0f), true);
 	auto block21_token = objs.Create<BlockObject>(cf_v2(226.0f, -342.0f), true);
 	auto block22_token = objs.Create<BlockObject>(cf_v2(262.0f, -342.0f), false);

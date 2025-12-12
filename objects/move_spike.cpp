@@ -7,6 +7,11 @@ void MoveSpike::Start() {
 	SpriteSetStats("/sprites/Obj_Spike.png", 1, 1, 0);
 	SetPosition(cf_v2(300.0f, 0.0f)); // 初始位置
 	Scale(1.0f); // 初始缩放为 1 倍
+	SetCenteredPoly({
+		cf_v2(-SpriteWidth() * 0.5f, -SpriteHeight() * 0.5f),
+		cf_v2(SpriteWidth() * 0.5f, -SpriteHeight() * 0.5f),
+		cf_v2(0.0f, SpriteHeight() * 0.5f)
+		});
 
 	// 记录初始位置
 	CF_V2 initial_pos = GetPosition();

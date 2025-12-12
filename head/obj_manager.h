@@ -10,6 +10,10 @@
 
 #include "object_token.h"
 
+#ifndef APPLIANCE
+#define APPLIANCE [[deprecated("APPLIANCE: 涉及物理量的每帧更新，已在类内部完成。除非你需要单帧内多次更新，否则请勿使用该接口。")]]
+#endif
+
 // 前置声明，避免头文件循环依赖
 class BaseObject;
 
@@ -81,12 +85,12 @@ public:
     void DestroyAll() noexcept;
 
     // UpdateAll: 每帧主更新入口，顺序：
-    // 1) 为每个活跃对象调用 FramelyApply()（物理积分/调试绘制/记录 prev pos）
+    // 1) 为每个活跃对象调用 FrameEnterApply()（物理积分/调试绘制/记录 prev pos）
     // 2) 调用 PhysicsSystem::Step()（碰撞检测与回调）
     // 3) 为每个活跃对象调用 Update()
     // 4) 执行所有延迟销毁（在安全点处理，避免在遍历中删除）
     // 5) 提交本帧 pending 创建（将 pending_creates_ 合并到 objects_ 并注册到物理系统）
-    void UpdateAll() noexcept;
+    APPLIANCE void UpdateAll() noexcept;
 
     size_t Count() const noexcept { return alive_count_; }
 

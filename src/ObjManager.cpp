@@ -236,11 +236,13 @@ void ObjManager::DestroyAll() noexcept
 
 void ObjManager::UpdateAll() noexcept
 {
-    // 1) 应用物理更新：为每个活跃对象调用 FramelyApply()
+    // 1) 应用物理更新：为每个活跃对象调用 FrameEnterApply()
     // 使用索引遍历以避免持有范围 for 中的引用而在并发修改/重分配时失效
     for (size_t i = 0; i < objects_.size(); ++i) {
         Entry& e = objects_[i];
-        if (e.alive && e.ptr && !e.skip_update_this_frame) { e.ptr->FramelyApply(); }
+        if (e.alive && e.ptr && !e.skip_update_this_frame) { 
+            e.ptr->FrameEnterApply(); 
+        }
     }
 
     // 2) 全局碰撞检测与回调（PhysicsSystem::Step 会触发对象的碰撞回调）
@@ -249,10 +251,20 @@ void ObjManager::UpdateAll() noexcept
     // 3) 每帧为活跃对象调用 Update()
     for (size_t i = 0; i < objects_.size(); ++i) {
         Entry& e = objects_[i];
-        if (e.alive && e.ptr && !e.skip_update_this_frame) { e.ptr->Update(); }
+        if (e.alive && e.ptr && !e.skip_update_this_frame) { 
+            e.ptr->Update(); 
+        }
     }
 
-    // 4) 执行延迟销毁队列（在更新循环安全点处理）
+	// 4) 帧尾应用：为每个活跃对象调用 FrameExitApply()
+    for (size_t i = 0; i < objects_.size(); ++i) {
+        Entry& e = objects_[i];
+        if (e.alive && e.ptr && !e.skip_update_this_frame) {
+            e.ptr->FrameExitApply();
+        }
+    }
+
+    // 5) 执行延迟销毁队列（在更新循环安全点处理）
     if (!pending_destroys_.empty()) {
         for (const ObjToken& token : pending_destroys_) {
             if (token.index >= objects_.size()) {
@@ -277,8 +289,8 @@ void ObjManager::UpdateAll() noexcept
         pending_destroy_set_.clear();
     }
 
-    // 5) 提交本帧 pending 的创建：在安全点把 pending_creates_ 合并到 objects_ 并注册物理系统，
-    //    使其在下一帧参与 FramelyApply / Update / 物理处理。
+    // 6) 提交本帧 pending 的创建：在安全点把 pending_creates_ 合并到 objects_ 并注册物理系统，
+    //    使其在下一帧参与 FrameEnterApply / Update / 物理处理。
     if (!pending_creates_.empty()) {
         // 预留容量以避免在合并过程中发生多次重分配
         objects_.reserve(objects_.size() + pending_creates_.size());

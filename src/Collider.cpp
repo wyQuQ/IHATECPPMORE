@@ -53,19 +53,12 @@ static void normalize_and_clamp_manifold(CF_Manifold& m) noexcept
 	for (int i = 0; i < 2; ++i) {
 		CF_V2& cp = m.contact_points[i];
 		if (std::isnan(cp.x) || std::isnan(cp.y) || std::isinf(cp.x) || std::isinf(cp.y)) {
-			cp = cf_v2(0.0f, 0.0f);
+			cp = v2math::zero();
 		}
 	}
 
 	// 归一化法线向量，若不可用则置零
-	float len = v2math::length(m.n);
-	if (std::isnan(len) || std::isinf(len) || len <= 1e-6f) {
-		m.n = cf_v2(0.0f, 0.0f);
-	}
-	else {
-		m.n.x /= len;
-		m.n.y /= len;
-	}
+	m.n = v2math::normalized(m.n);
 }
 
 // 将局部空间的 shape 平移至 world-space（不做旋转），用于 narrowphase 前的预处理
@@ -109,8 +102,8 @@ static CF_Aabb shape_wrapper_to_aabb(const CF_ShapeWrapper& s) noexcept
 	else if (s.type == CF_SHAPE_TYPE_CIRCLE) {
 		CF_V2 p = s.u.circle.p;
 		float r = s.u.circle.r;
-		aabb.min = cf_v2(p.x - r, p.y - r);
-		aabb.max = cf_v2(p.x + r, p.y + r);
+		aabb.min = p - cf_v2(r, r);
+		aabb.max = p + cf_v2(r, r);
 		return aabb;
 	}
 	else if (s.type == CF_SHAPE_TYPE_CAPSULE) {
@@ -127,8 +120,8 @@ static CF_Aabb shape_wrapper_to_aabb(const CF_ShapeWrapper& s) noexcept
 	}
 	else if (s.type == CF_SHAPE_TYPE_POLY) {
 		if (s.u.poly.count <= 0) {
-			aabb.min = cf_v2(0.0f, 0.0f);
-			aabb.max = cf_v2(0.0f, 0.0f);
+			aabb.min = v2math::zero();
+			aabb.max = v2math::zero();
 			return aabb;
 		}
 		float minx = s.u.poly.verts[0].x;
@@ -146,8 +139,8 @@ static CF_Aabb shape_wrapper_to_aabb(const CF_ShapeWrapper& s) noexcept
 		return aabb;
 	}
 	// fallback
-	aabb.min = cf_v2(0.0f, 0.0f);
-	aabb.max = cf_v2(0.0f, 0.0f);
+	aabb.min = v2math::zero();
+	aabb.max = v2math::zero();
 	return aabb;
 }
 
@@ -167,14 +160,7 @@ static bool shapes_collide_world(const CF_ShapeWrapper& A, const CF_ShapeWrapper
 	for (int i = 0; i < 2; ++i) {
 		if (m.depths[i] < 0.0f) m.depths[i] = 0.0f;
 	}
-	float len = v2math::length(m.n);
-	if (len > 1e-6f) {
-		m.n.x /= len;
-		m.n.y /= len;
-	}
-	else {
-		m.n.x = 0.0f; m.n.y = 0.0f;
-	}
+	m.n = v2math::normalized(m.n);
 
 	if (out_manifold) *out_manifold = m;
 	return true;
@@ -277,10 +263,9 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		}
 
 		// 缓存该条目的网格坐标（用于邻域遍历）
-		float cx = (waabb.min.x + waabb.max.x) * 0.5f;
-		float cy = (waabb.min.y + waabb.max.y) * 0.5f;
-		entries_[i].grid_x = static_cast<int32_t>(std::floor(cx / cell_size));
-		entries_[i].grid_y = static_cast<int32_t>(std::floor(cy / cell_size));
+		CF_V2 center = (waabb.min + waabb.max) * 0.5f;
+		entries_[i].grid_x = static_cast<int32_t>(std::floor(center.x / cell_size));
+		entries_[i].grid_y = static_cast<int32_t>(std::floor(center.y / cell_size));
 	}
 
 	// 进行 narrowphase：对每个条目检查邻域桶内可能的碰撞对并产生事件
@@ -326,6 +311,7 @@ void PhysicsSystem::Step(float cell_size) noexcept
 	}
 
 	// 合并同一对的多个 contact，使每对最终最多包含两个接触点，便于上层处理
+	// 优先保留法向量方向与物体速度方向更一致的碰撞信息
 	if (!events_.empty()) {
 		merged_map_.clear();
 		merged_order_.clear();
@@ -346,6 +332,38 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				continue;
 			}
 
+			// 获取物体 a 的速度用于判断法向量优先级
+			BasePhysics* pa = nullptr;
+			for (const auto& entry : entries_) {
+				if (make_key(entry.token) == k1) {
+					pa = entry.physics;
+					break;
+				}
+			}
+
+			// 计算法向量与速度方向的对齐度（点积）
+			// 更大的点积表示法向量更接近速度方向，优先保留这种碰撞
+			float current_alignment = 0.0f;
+			float new_alignment = 0.0f;
+
+			if (pa) {
+				CF_V2 vel = pa->get_velocity();
+				float vel_len = v2math::length(vel);
+
+				if (vel_len > 1e-3f) { // 仅当物体有明显速度时才考虑方向
+					CF_V2 vel_norm = v2math::normalized(vel);
+
+					current_alignment = v2math::dot(it->second.manifold.n, vel_norm);
+					new_alignment = v2math::dot(ev.manifold.n, vel_norm);
+
+					// 如果新碰撞的法向量更接近速度方向，则完全替换
+					if (new_alignment > current_alignment + 0.1f) { // 0.1 为阈值，避免频繁抖动
+						it->second = ev;
+						continue;
+					}
+				}
+			}
+
 			// 合并 manifold：将接触点与穿透深度合并至最多两个 contact
 			CF_Manifold& dst = it->second.manifold;
 			const CF_Manifold& src = ev.manifold;
@@ -356,9 +374,8 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				bool found = false;
 				for (int di = 0; di < dst.count; ++di) {
 					const CF_V2& dp = dst.contact_points[di];
-					float dx = sp.x - dp.x;
-					float dy = sp.y - dp.y;
-					if (dx * dx + dy * dy <= eps_sq) {
+					CF_V2 diff = sp - dp;
+					if (v2math::dot(diff, diff) <= eps_sq) {
 						if (src.depths[si] > dst.depths[di]) dst.depths[di] = src.depths[si];
 						found = true;
 						break;
@@ -371,10 +388,18 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				}
 			}
 
-			// 合并法线方向（加权平均）
+			// 法线方向合并：根据速度对齐度加权
 			if (v2math::length(dst.n) > 1e-6f || v2math::length(src.n) > 1e-6f) {
-				dst.n.x = dst.n.x * 0.5f + src.n.x * 0.5f;
-				dst.n.y = dst.n.y * 0.5f + src.n.y * 0.5f;
+				// 如果有明显的对齐度差异，按对齐度加权；否则简单平均
+				if (std::abs(new_alignment - current_alignment) > 0.05f) {
+					float total = std::abs(current_alignment) + std::abs(new_alignment) + 1e-6f;
+					float w_dst = std::abs(current_alignment) / total;
+					float w_src = std::abs(new_alignment) / total;
+					dst.n = dst.n * w_dst + src.n * w_src;
+				}
+				else {
+					dst.n = (dst.n + src.n) * 0.5f;
+				}
 			}
 
 			// 规范化合并结果
@@ -411,13 +436,6 @@ void PhysicsSystem::Step(float cell_size) noexcept
 			}
 		};
 
-#if COLLISION_DEBUG
-	// 限制每帧的详细打印次数，防止刷屏
-	const int kMaxDetailedPrintsPerFrame = 3;
-	int detailedPrints = 0;
-	static int enterCount = 0;
-#endif
-
 	for (const auto& ev : events_) {
 		if (!ObjManager::Instance().IsValid(ev.a) || !ObjManager::Instance().IsValid(ev.b)) continue;
 
@@ -436,50 +454,32 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		BaseObject& ob = ObjManager::Instance()[ev.b];
 
 #if COLLISION_DEBUG
-		// 仅在达到限制前打印有限数量的详细 Enter 信息；Stay/Exit 打印简短摘要
-		if (!was_colliding) {
-			if (detailedPrints < kMaxDetailedPrintsPerFrame) {
-				std::cerr << "[Physics] Collision Event #" << (++enterCount) << ": a=" << ev.a.index << " b=" << ev.b.index
-					<< " (ENTER)" << "\n";
+		// 调试绘制碰撞信息：紫色线连接接触点，紫色箭头表示法向量
+		cf_draw_push();
+		cf_draw_push_color(CF_Color(1.0f, 0.5f, 1.0f, 1.0f)); // 粉紫色
 
-				std::cerr << "[Physics] Enter collision (detailed): a=" << ev.a.index << " b=" << ev.b.index << "\n";
-
-				// 安全地从 token_map_ 找到 entries_ 的索引，再访问 world_shapes_
-				auto itA = token_map_.find(make_key(ev.a));
-				auto itB = token_map_.find(make_key(ev.b));
-				if (itA != token_map_.end() && itB != token_map_.end()) {
-					const CF_ShapeWrapper& aworld = world_shapes_[itA->second];
-					const CF_ShapeWrapper& bworld = world_shapes_[itB->second];
-
-					std::cerr << "  A (world):\n";
-					dump_shape_world(aworld);
-					std::cerr << "  B (world):\n";
-					dump_shape_world(bworld);
-				}
-				else {
-					std::cerr << "  [Debug] world_shapes_ lookup failed for tokens\n";
-				}
-
-				// 简洁打印 manifold 概要（避免逐点刷屏）
-				std::cerr << "  manifold.count=" << ev.manifold.count
-					<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")"
-					<< " max_depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
-
-				++detailedPrints;
-			}
-			else {
-				// 达到详细打印限制后，只打印简短摘要（可用于统计或快速排查）
-				std::cerr << "[Physics] Collision ENTER summary: a=" << ev.a.index << " b=" << ev.b.index
-					<< " normal=(" << ev.manifold.n.x << "," << ev.manifold.n.y << ")"
-					<< " depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
-			}
+		// 绘制接触点之间的连线（如果有两个接触点）
+		if (ev.manifold.count == 2) {
+			CF_V2 cp0 = ev.manifold.contact_points[0];
+			cf_draw_circle2(cp0, 2.0f, 0.0f);
+			CF_V2 cp1 = ev.manifold.contact_points[1];
+			cf_draw_circle2(cp1, 2.0f, 0.0f);
+			cf_draw_line(cp0, cp1, 0.0f);
 		}
-		else {
-			// Stay 情况仅打印非常简短的统计信息（避免大量输出）
-			// 若需要也可注释掉以下行以完全禁用 Stay 输出
-			// std::cerr << "[Physics] Collision STAY: a=" << ev.a.index << " b=" << ev.b.index
-			// 	<< " depth=" << std::max(ev.manifold.depths[0], ev.manifold.depths[1]) << "\n";
+
+		// 从每个接触点绘制法向量（短线表示方向）
+		const float normal_length = 10.0f; // 法向量的可视长度
+		for (int i = 0; i < ev.manifold.count; ++i) {
+			CF_V2 cp = ev.manifold.contact_points[i];
+			CF_V2 normal_end = cp + ev.manifold.n * normal_length;
+			cf_draw_line(cp, normal_end, 0.0f);
+
+			// 在法向量终点绘制一个小圆点，使方向更明显
+			cf_draw_circle2(normal_end, 2.0f, 0.0f);
 		}
+
+		cf_draw_pop_color();
+		cf_draw_pop();
 #endif
 
 		// 直接以引用调用回调（顺序不保证：a 的回调可能先于 b，也可能相反）
