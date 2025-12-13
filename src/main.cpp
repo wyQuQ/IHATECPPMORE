@@ -68,11 +68,10 @@ int main(int argc, char* argv[])
 	// 创建检查点对象
 	auto checkpoint1_token = objs.Create<Checkpoint>(cf_v2(-400.0f, -308.0f));
 	auto checkpoint2_token = objs.Create<Checkpoint>(cf_v2(400.0f, -308.0f));
+
 	// 记录上一个（或默认） checkpoint 的位置，用于玩家复活/传送使用
-	// -当前记默认位置为 (-300, -324)
-	CF_V2 last_checkpoint_pos = cf_v2(-300.0f, -308.0f);
-	if (checkpoint1_token.isValid()) 
-		last_checkpoint_pos = objs[checkpoint1_token].GetPosition();
+	// -当前记默认位置为
+	CF_V2 last_checkpoint_pos = cf_v2(-300.0f, 0.0f);
 
 	// 创建方块对象。
 	// -构造函数传参方式（位置、是否为草坪）
@@ -144,17 +143,15 @@ int main(int argc, char* argv[])
 			{
 
 				try {
-					// 找到与玩家当前最近的 checkpoint（registered）
-					ObjManager::ObjToken nearest = objs.FindTokensByTag("checkpoint");
+					// 找到上一个激活的的 checkpoint（registered）
+					ObjManager::ObjToken nearest = objs.FindTokensByTag("checkpoint_active");
 					if (nearest.isValid() && objs.IsValid(nearest)) {
-						CF_V2 dest = objs[nearest].GetPosition() + CF_V2(0.0f, 30.0f);
-						objs[player_token].SetPosition(dest);
-						last_checkpoint_pos = dest; // 更新 last checkpoint 记录
+						last_checkpoint_pos = objs[nearest].GetPosition() + CF_V2(0.0f, 30.0f);// 更新 last checkpoint 记录
 					}
-					else {
 						// 未找到已合并的 checkpoint：退回到 last_checkpoint_pos（可能是启动时的默认）
 						objs[player_token].SetPosition(last_checkpoint_pos);
-					}
+						objs[player_token].SetVelocity(cf_v2(0.0f, 0.0f));
+						objs[player_token].SetForce(cf_v2(0.0f, 0.0f));
 				}
 				catch (...) {
 					std::cerr << "[Main] Teleport failed\n";
@@ -162,19 +159,25 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				// 玩家已被销毁或 token 无效：复活（Create 返回 pending token，可立即通过非 const operator[] 初始化）
-				player_token = objs.Create<PlayerObject>();
-				if (player_token.isValid()) {
-					try {
-						// 将新创建（pending）玩家放到上一个 checkpoint 位置
+				try {
+					// 玩家已被销毁或 token 无效：复活（Create 返回 pending token，可立即通过非 const operator[] 初始化）
+					player_token = objs.Create<PlayerObject>();
+					ObjManager::ObjToken nearest = objs.FindTokensByTag("checkpoint_active");
+					if (nearest.isValid() && objs.IsValid(nearest)) {
+						// 更新 last checkpoint 记录
+						last_checkpoint_pos = objs[nearest].GetPosition() + CF_V2(0.0f, 30.0f);
+					}
+					if (player_token.isValid()) {
+						// 将新创建（pending）玩家放到上一个激活的 checkpoint 位置
 						objs[player_token].SetPosition(last_checkpoint_pos);
 						objs[player_token].SetVelocity(cf_v2(0.0f, 0.0f));
 						objs[player_token].SetForce(cf_v2(0.0f, 0.0f));
 					}
-					catch (...) {
-						std::cerr << "[Main] Respawn: failed to initialize new player\n";
-					}
 				}
+				catch (...) {
+					std::cerr << "[Main] Respawn: failed to initialize new player\n";
+				}
+				
 			}
 		}
 

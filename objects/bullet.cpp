@@ -14,6 +14,9 @@ void Bullet::Start()
     // 设置子弹贴图源，其他参数使用默认值
     SpriteSetSource("/sprites/bullet.png", 2);
     SpriteSetUpdateFreq(5); // 设置动画更新频率为每 5 帧更新一次
+
+	// 添加标签以便后续查询
+	AddTag("bullet");
 }
 
 void Bullet::Update()
@@ -27,4 +30,21 @@ void Bullet::Update()
     }
 
     // 这里可以加入其他子弹行为（移动、碰撞响应等）
+}
+
+// 碰撞回调：子弹在持续碰撞时销毁自己
+// （期望效果：允许其他对象执行完OnCollisionEnter后再销毁子弹）
+void Bullet::OnCollisionStay(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept
+{
+    try {
+        if (!other.isValid()) return;
+        // 确保 other 为已注册对象
+        if (!objs.IsValid(other)) return;
+
+        // 碰撞到任意物体，销毁子弹
+        objs.Destroy(GetObjToken());
+    }
+    catch (...) {
+        // 保证 noexcept
+    }
 }

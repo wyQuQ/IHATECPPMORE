@@ -10,7 +10,8 @@ public:
     ~Checkpoint() noexcept override {}
 
     void Start() override;
-    void Update() override;
+
+    void OnCollisionEnter(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept override;
 
 private:
     CF_V2 position;
