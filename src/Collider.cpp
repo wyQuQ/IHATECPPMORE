@@ -1,10 +1,10 @@
 #include "base_physics.h"
 #include "base_object.h"
 #include "debug_config.h"
+#include <cmath>
 
 #if COLLISION_DEBUG
 #include <iomanip>
-#include <cmath>
 // 辅助：打印形状的 world-space 信息，用于调试碰撞细节。仅在 COLLISION_DEBUG 启用时编译。
 static void dump_shape_world(const CF_ShapeWrapper& s) noexcept {
 	switch (s.type) {

@@ -104,7 +104,6 @@ public:
     APPLIANCE void FrameEnterApply() noexcept
     {
 		StartFrame();
-        m_prev_position = get_position();
         ApplyForce();
         ApplyVelocity();
     }
@@ -150,6 +149,7 @@ public:
         }
         EndFrame();
         DebugDraw();
+        m_prev_position = get_position();
 	}
 
 	// 供派生类在帧首执行初始化/状态准备，默认为空

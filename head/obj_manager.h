@@ -57,7 +57,7 @@ public:
         if (initializer) {
             std::forward<Init>(initializer)(static_cast<T*>(obj.get()));
         }
-        return CreateEntry(std::move(obj));
+        return CreateEntry(std::unique_ptr<BaseObject>(static_cast<BaseObject*>(obj.release())));
     }
 
     // 验证 token 是否为当前有效的已合并对象（不考虑 pending 情况）

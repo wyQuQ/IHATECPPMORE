@@ -212,3 +212,36 @@ void PlayerObject::OnCollisionExit(const ObjManager::ObjToken& other_token, cons
     // 启动 coyote 时间（离地后短时间仍可起跳）
     coyote_time_left = coyote_time_frames;
 }
+
+#if TESTER
+// Tester 类的简单实现（用于测试 BaseObject 功能）
+void Tester::Start()
+{
+    // 设置贴图路径、竖排帧数、动画更新频率和绘制深度
+    SpriteSetStats("/sprites/block2.png", 1, 1, 0);
+    // 初始化位置（根据需要调整）
+    SetPosition(cf_v2(0.0f, 0.0f));
+    Scale(0.5f);
+	tspeed = 1.6f; // 每帧移动速度
+}
+
+void Tester::Update()
+{
+    // 当检测到按键按下时，设置速度方向（不直接 SetPosition，使用速度积分）
+    CF_V2 dir = v2math::zero();
+    if (Input::IsKeyInState(CF_KEY_LEFT, KeyState::Hold)) {
+        dir.x -= 1;
+    }
+    if (Input::IsKeyInState(CF_KEY_RIGHT, KeyState::Hold)) {
+        dir.x += 1;
+    }
+    if (Input::IsKeyInState(CF_KEY_DOWN, KeyState::Hold)) {
+        dir.y -= 1;
+    }
+    if (Input::IsKeyInState(CF_KEY_UP, KeyState::Hold)) {
+        dir.y += 1;
+    }
+	dir = v2math::normalized(dir);
+	SetVelocity(dir * tspeed);
+}
+#endif
