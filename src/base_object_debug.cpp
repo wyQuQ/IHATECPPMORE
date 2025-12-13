@@ -2,6 +2,36 @@
 #include "base_physics.h" // 提供 CF_ShapeWrapper / v2math 等
 #include <cmath>
 
+void ManifoldDrawDebug(const CF_Manifold& m) noexcept {
+    // 调试绘制碰撞信息：紫色线连接接触点，紫色箭头表示法向量
+    cf_draw_push();
+    cf_draw_push_color(CF_Color(1.0f, 0.5f, 1.0f, 1.0f)); // 粉紫色
+
+    // 绘制接触点之间的连线（如果有两个接触点）
+    if (m.count == 2) {
+        CF_V2 cp0 = m.contact_points[0];
+        cf_draw_circle2(cp0, 2.0f, 0.0f);
+        CF_V2 cp1 = m.contact_points[1];
+        cf_draw_circle2(cp1, 2.0f, 0.0f);
+        cf_draw_line(cp0, cp1, 0.0f);
+    }
+
+    // 从每个接触点绘制法向量（短线表示方向）
+    const float normal_length = 8.0f; // 法向量的可视长度
+    for (int i = 0; i < m.count; ++i) {
+        CF_V2 cp = m.contact_points[i];
+        CF_V2 normal = m.n * normal_length;
+        cf_draw_line(cp - normal, cp + normal, 0.0f);
+
+        // 在法向量终点绘制一个小圆点，使方向更明显
+        cf_draw_circle2(cp - normal, 2.0f, 0.0f);
+        cf_draw_circle2(cp + normal, 2.0f, 0.0f);
+    }
+
+    cf_draw_pop_color();
+    cf_draw_pop();
+}
+
 // 实现：根据 BaseObject 中的 CF_ShapeWrapper 绘制红色轮廓（noexcept）
 void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept
 {

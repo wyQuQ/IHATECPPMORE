@@ -49,6 +49,7 @@
 
 class BaseObject;
 void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept;
+void ManifoldDrawDebug(const CF_Manifold& m) noexcept;
 
 inline ObjManager& objs = ObjManager::Instance();
 
@@ -65,10 +66,6 @@ public:
 
         // 保证上一帧位置与当前位置一致，避免首帧大位移引发错误碰撞修正
         m_prev_position = get_position();
-
-        // 清理并禁用位置缓冲（避免遗留的 buffered target 导致跳跃）
-        m_target_position.clear();
-        m_position_buffered = false;
 
         // 精灵/渲染状态初始化为明确安全值
         m_visible = true;
@@ -119,6 +116,9 @@ public:
     virtual void OnCollisionStay(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept {}
     virtual void OnCollisionExit(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept {}
 
+	// 排斥碰撞回调：派生类按需重载
+	virtual void OnExclusionSolid(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept {}
+
     // 每帧更新钩子：由场景主循环调用，派生类在这里执行行为逻辑/AI/输入响应等。
     virtual void Update() {}
 
@@ -136,19 +136,8 @@ public:
      */
     APPLIANCE void FrameExitApply() noexcept
     {
-        if (m_position_buffered) {
-            CF_V2 cp = get_position();
-            float dx = 0, dy = 0;
-            for (const CF_V2& p : m_target_position) {
-                if (abs(p.x - cp.x) > abs(dx)) dx = p.x - cp.x;
-                if (abs(p.y - cp.y) > abs(dy)) dy = p.y - cp.y;
-            }
-            set_position(CF_V2{ cp.x + dx, cp.y + dy });
-            m_position_buffered = false;
-            m_target_position.clear();
-        }
         EndFrame();
-        DebugDraw();
+        ShapeDraw();
         m_prev_position = get_position();
 	}
 
@@ -321,16 +310,13 @@ public:
      * - 若你在一帧内多处逻辑可能设置对象位置，使用 buffer=true 可避免中间状态对碰撞/物理的即时影响，
      *   框架会在帧尾按策略合并（选择 x/y 上最大的偏移）。
      */
-    void SetPosition(const CF_V2& p, bool buffer = false) noexcept {
-        if(!buffer)
-            set_position(p); 
-        else {
-            m_target_position.emplace_back(p);
-            m_position_buffered = true;
-        }
-    }
+    void SetPosition(const CF_V2& p) noexcept { set_position(p); }
     void SetVelocity(const CF_V2& v) noexcept { set_velocity(v); }
+    void SetVelocityX(float vx) noexcept { set_velocity_x(vx); }
+	void SetVelocityY(float vy) noexcept { set_velocity_y(vy); }
     void SetForce(const CF_V2& f) noexcept { set_force(f); }
+	void SetForceX(float fx) noexcept { set_force_x(fx); }
+	void SetForceY(float fy) noexcept { set_force_y(fy); }
     void AddVelocity(const CF_V2& dv) noexcept { add_velocity(dv); }
     void AddForce(const CF_V2& df) noexcept { add_force(df); }
 
@@ -360,11 +346,6 @@ public:
         aabb.max.x = half_w;
         aabb.max.y = half_h;
         set_shape(CF_ShapeWrapper::FromAabb(aabb));
-#if SHAPE_DEBUG
-        std::cerr << "[BaseObject] SetCenteredAabb: half_w=" << half_w << " half_h=" << half_h
-            << " -> AABB local min=(" << aabb.min.x << "," << aabb.min.y << ")"
-            << " max=(" << aabb.max.x << "," << aabb.max.y << ")" << std::endl;
-#endif
     }
 
     void SetCenteredCircle(float radius) noexcept
@@ -373,9 +354,6 @@ public:
         c.p = CF_V2{ 0.0f, 0.0f };
         c.r = radius;
         set_shape(CF_ShapeWrapper::FromCircle(c));
-#if SHAPE_DEBUG
-        std::cerr << "[BaseObject] SetCenteredCircle: radius=" << radius << std::endl;
-#endif
     }
 
     void SetCenteredCapsule(const CF_V2& dir, float half_length, float radius) noexcept
@@ -393,11 +371,6 @@ public:
 
         CF_Capsule c = cf_make_capsule(a, b, radius);
         set_shape(CF_ShapeWrapper::FromCapsule(c));
-#if SHAPE_DEBUG
-        std::cerr << "[BaseObject] SetCenteredCapsule: dir=(" << dir_normalized.x << "," << dir_normalized.y
-            << ") half_length=" << half_length << " radius=" << radius
-            << " -> a=(" << a.x << "," << a.y << ") b=(" << b.x << "," << b.y << ")" << std::endl;
-#endif
     }
 
     void SetCenteredPoly(const std::vector<CF_V2>& localVerts) noexcept
@@ -410,13 +383,6 @@ public:
         }
         cf_make_poly(&p);
         set_shape(CF_ShapeWrapper::FromPoly(p));
-#if SHAPE_DEBUG
-        std::cerr << "[BaseObject] SetCenteredPoly: count=" << n << " verts(local):";
-        for (int i = 0; i < n; ++i) {
-            std::cerr << " (" << p.verts[i].x << "," << p.verts[i].y << ")";
-        }
-        std::cerr << std::endl;
-#endif
     }
 
     /*
@@ -433,6 +399,12 @@ public:
     BARE_SHAPE_API    void SetCapsule(const CF_Capsule& c) noexcept { set_shape(CF_ShapeWrapper::FromCapsule(c)); }
     BARE_SHAPE_API    void SetPoly(const CF_Poly& p) noexcept { set_shape(CF_ShapeWrapper::FromPoly(p)); }
 
+	void ExcludeWithSolids(bool v) noexcept { m_exclude_with_solid = v; }
+
+	// 碰撞检测：检测与另一个对象是否碰撞，若碰撞则输出碰撞信息到 out_m，否则 out_m 置空
+    bool IsCollidedWith(const BaseObject& other, CF_Manifold& out_m) noexcept;
+
+
     // 碰撞相位枚举：用于统一的 OnCollisionState 调用
     enum class CollisionPhase : int { Enter = 1, Stay = 0, Exit = -1 };
 
@@ -442,49 +414,36 @@ public:
      * 使用建议：
      * - 引擎或管理器会调用此函数；派生类一般只需实现 OnCollisionEnter/Stay/Exit。
      */
-    APPLIANCE void OnCollisionState(const ObjManager::ObjToken& other, const CF_Manifold& manifold, CollisionPhase phase) noexcept
-    {
-        switch (phase) {
-        case CollisionPhase::Enter:
-            OnCollisionEnter(other, manifold);
-            break;
-        case CollisionPhase::Stay:
-            OnCollisionStay(other, manifold);
-            break;
-        case CollisionPhase::Exit:
-            OnCollisionExit(other, manifold);
-            break;
-        }
-    }
+    APPLIANCE void OnCollisionState(const ObjManager::ObjToken& other, const CF_Manifold& manifold, CollisionPhase phase) noexcept;
 
-#if BASEOBJECT_DEBUG_DRAW
+#if SHAPE_DEBUG
     // 调试绘制：如果启用宏则调用全局调试渲染函数
-    void DebugDraw() const noexcept
+    void ShapeDraw() const noexcept
     {
         RenderBaseObjectCollisionDebug(this);
     }
 #else
-    inline void DebugDraw() const noexcept {}
+    inline void ShapeDraw() const noexcept {}
+#endif
+#if COLLISION_DEBUG
+	// 调试绘制：如果启用宏则调用全局调试渲染函数
+    void ManifoldDraw(const CF_Manifold& m) const noexcept
+    {
+        ManifoldDrawDebug(m);
+	}
+#else
+	inline void ManifoldDraw(const CF_Manifold& m) const noexcept {}
 #endif
 
     // 轻量标签 API：用于快速标识/查询对象（非线程安全）
     // - AddTag：添加标记（重复添加无效）
     // - HasTag：判断是否存在标记
     // - RemoveTag：移除标记
-    void AddTag(const std::string& tag) noexcept
-    {
-        tags.insert(tag);
-    }
+    void AddTag(const std::string& tag) noexcept { tags.insert(tag); }
 
-    bool HasTag(const std::string& tag) const noexcept
-    {
-        return tags.find(tag) != tags.end();
-    }
+    bool HasTag(const std::string& tag) const noexcept { return tags.find(tag) != tags.end(); }
 
-    void RemoveTag(const std::string& tag) noexcept
-    {
-        tags.erase(tag);
-    }
+    void RemoveTag(const std::string& tag) noexcept { tags.erase(tag); }
 
     // 对象销毁钩子：在对象被销毁前由管理器调用，派生类可重载以释放资源
     virtual void OnDestroy() noexcept {}
@@ -548,12 +507,13 @@ private:
     bool m_flip_y = false;
 	float m_scale_x = 1.0f;
 	float m_scale_y = 1.0f;
-	std::vector<CF_V2> m_target_position;
-	bool m_position_buffered = false;
     CF_V2 m_prev_position = CF_V2{ 0.0f, 0.0f };
 
     bool m_isColliderRotate = true;
     bool m_isColliderApplyPivot = true;
+	bool m_exclude_with_solid = false;
+    CF_Manifold ExclusionWithSolid(const ObjManager::ObjToken& oth, const CF_Manifold& m) noexcept;
+    void FindContactPos(CF_V2 current, CF_V2 offset, const BaseObject& other, CF_Manifold& res);
 
 	std::unordered_set<std::string> tags;
 

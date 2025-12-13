@@ -1,6 +1,7 @@
 #include "base_physics.h"
 #include "base_object.h"
 #include "debug_config.h"
+#include <algorithm>
 #include <cmath>
 
 #if COLLISION_DEBUG
@@ -303,6 +304,8 @@ void PhysicsSystem::Step(float cell_size) noexcept
 						ev.a = a.token;
 						ev.b = b.token;
 						ev.manifold = m;
+						CF_V2 delta = pa->get_position() - pb->get_position();
+						ev.distance_sq = v2math::dot(delta, delta);
 						events_.push_back(ev);
 					}
 				}
@@ -402,6 +405,9 @@ void PhysicsSystem::Step(float cell_size) noexcept
 				}
 			}
 
+			// 更新最小距离平方
+			it->second.distance_sq = std::min(it->second.distance_sq, ev.distance_sq);
+
 			// 规范化合并结果
 			normalize_and_clamp_manifold(dst);
 		}
@@ -413,6 +419,12 @@ void PhysicsSystem::Step(float cell_size) noexcept
 			merged_events.push_back(merged_map_[key]);
 		}
 		events_.swap(merged_events);
+	}
+
+	if (events_.size() > 1) {
+		std::sort(events_.begin(), events_.end(), [](const CollisionEvent& lhs, const CollisionEvent& rhs) {
+			return lhs.distance_sq < rhs.distance_sq;
+		});
 	}
 
 	// 使用事件产生 Enter/Stay/Exit 回调序列
@@ -453,35 +465,6 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		BaseObject& oa = ObjManager::Instance()[ev.a];
 		BaseObject& ob = ObjManager::Instance()[ev.b];
 
-#if COLLISION_DEBUG
-		// 调试绘制碰撞信息：紫色线连接接触点，紫色箭头表示法向量
-		cf_draw_push();
-		cf_draw_push_color(CF_Color(1.0f, 0.5f, 1.0f, 1.0f)); // 粉紫色
-
-		// 绘制接触点之间的连线（如果有两个接触点）
-		if (ev.manifold.count == 2) {
-			CF_V2 cp0 = ev.manifold.contact_points[0];
-			cf_draw_circle2(cp0, 2.0f, 0.0f);
-			CF_V2 cp1 = ev.manifold.contact_points[1];
-			cf_draw_circle2(cp1, 2.0f, 0.0f);
-			cf_draw_line(cp0, cp1, 0.0f);
-		}
-
-		// 从每个接触点绘制法向量（短线表示方向）
-		const float normal_length = 8.0f; // 法向量的可视长度
-		for (int i = 0; i < ev.manifold.count; ++i) {
-			CF_V2 cp = ev.manifold.contact_points[i];
-			CF_V2 normal = ev.manifold.n * normal_length;
-			cf_draw_line(cp - normal, cp + normal, 0.0f);
-
-			// 在法向量终点绘制一个小圆点，使方向更明显
-			cf_draw_circle2(cp - normal, 2.0f, 0.0f);
-			cf_draw_circle2(cp + normal, 2.0f, 0.0f);
-		}
-
-		cf_draw_pop_color();
-		cf_draw_pop();
-#endif
 		auto orient_manifold = [](const CF_Manifold& src, const BaseObject& self, const BaseObject& other) {
 			CF_Manifold out = src;
 			CF_V2 dir = other.GetPosition() - self.GetPosition();
@@ -496,20 +479,18 @@ void PhysicsSystem::Step(float cell_size) noexcept
 
 		CF_Manifold manifold_for_a = orient_manifold(ev.manifold, oa, ob);
 		CF_Manifold manifold_for_b = orient_manifold(ev.manifold, ob, oa);
-
-		if (was_colliding) {
-			oa.OnCollisionState(ev.b, manifold_for_a, BaseObject::CollisionPhase::Stay);
-		}
-		else {
-			oa.OnCollisionState(ev.b, manifold_for_a, BaseObject::CollisionPhase::Enter);
-		}
-
-		if (was_colliding) {
-			ob.OnCollisionState(ev.a, manifold_for_b, BaseObject::CollisionPhase::Stay);
-		}
-		else {
-			ob.OnCollisionState(ev.a, manifold_for_b, BaseObject::CollisionPhase::Enter);
-		}
+			if (was_colliding) {
+				oa.OnCollisionState(ev.b, manifold_for_a, BaseObject::CollisionPhase::Stay);
+			}
+			else {
+				oa.OnCollisionState(ev.b, manifold_for_a, BaseObject::CollisionPhase::Enter);
+			}
+			if (was_colliding) {
+				ob.OnCollisionState(ev.a, manifold_for_b, BaseObject::CollisionPhase::Stay);
+			}
+			else {
+				ob.OnCollisionState(ev.a, manifold_for_b, BaseObject::CollisionPhase::Enter);
+			}
 	}
 
 	// 对上帧存在但本帧消失的对触发 Exit 回调

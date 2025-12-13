@@ -10,7 +10,7 @@ public:
     void Update() override;
 
     // 碰撞回调：用于检测与 任意物体 的接触
-    void OnCollisionStay(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept override;
+    void OnCollisionEnter(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept override;
 
 private:
     int m_spawn_frame;

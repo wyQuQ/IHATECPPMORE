@@ -34,17 +34,12 @@ void Bullet::Update()
 
 // 碰撞回调：子弹在持续碰撞时销毁自己
 // （期望效果：允许其他对象执行完OnCollisionEnter后再销毁子弹）
-void Bullet::OnCollisionStay(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept
+void Bullet::OnCollisionEnter(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept
 {
-    try {
-        if (!other.isValid()) return;
-        // 确保 other 为已注册对象
-        if (!objs.IsValid(other)) return;
+    if (!other.isValid()) return;
+    // 确保 other 为已注册对象
+    if (!objs.IsValid(other) || objs[other].GetColliderType() != ColliderType::SOLID) return;
 
-        // 碰撞到任意物体，销毁子弹
-        objs.Destroy(GetObjToken());
-    }
-    catch (...) {
-        // 保证 noexcept
-    }
+    // 碰撞到任意物体，销毁子弹
+    objs.Destroy(GetObjToken());
 }
