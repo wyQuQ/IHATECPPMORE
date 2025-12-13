@@ -18,16 +18,13 @@
 #ifndef COLLISION_DEBUG
 #define COLLISION_DEBUG MCG_DEBUG
 #endif
-#ifndef BASEOBJECT_DEBUG_DRAW
-#define BASEOBJECT_DEBUG_DRAW MCG_DEBUG
-#endif
 #ifndef SHAPE_DEBUG
 #define SHAPE_DEBUG MCG_DEBUG
 #endif
 #ifndef PNG_LOAD_DEBUG
-#define	PNG_LOAD_DEBUG MCG_DEBUG
+#define	PNG_LOAD_DEBUG 0
 #endif
 #ifndef TESTER
-#define TESTER MCG_DEBUG
+#define TESTER 0
 #endif
 // --- 结束临时诊断 ---

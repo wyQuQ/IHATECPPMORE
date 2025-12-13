@@ -49,6 +49,7 @@ public:
 		ObjManager::ObjToken a;
 		ObjManager::ObjToken b;
 		CF_Manifold manifold{};
+		float distance_sq = 0.0f;
 	};
 
 	static PhysicsSystem& Instance() noexcept
@@ -169,6 +170,8 @@ public:
 	}
 
 	void set_velocity(const CF_V2& v) { _velocity = v; }
+	void set_velocity_x(float vx) { _velocity.x = vx; }
+	void set_velocity_y(float vy) { _velocity.y = vy; }
 	const CF_V2& get_velocity() const { return _velocity; }
 	void apply_force(float dt)
 	{
@@ -182,6 +185,8 @@ public:
 	}
 
 	void set_force(const CF_V2& f) { _force = f; }
+	void set_force_x(float fx) { _force.x = fx; }
+	void set_force_y(float fy) { _force.y = fy; }
 	const CF_V2& get_force() const { return _force; }
 	void add_force(const CF_V2& df)
 	{

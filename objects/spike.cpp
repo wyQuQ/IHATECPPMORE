@@ -2,9 +2,6 @@
 
 void Spike::Start()
 {
-    // 刺为实心碰撞器
-    SetColliderType(ColliderType::SOLID);
-
     // 设置默认精灵资源
     SpriteSetSource("/sprites/Obj_Spike.png", 1);
 
