@@ -27,4 +27,7 @@
 #ifndef PNG_LOAD_DEBUG
 #define	PNG_LOAD_DEBUG MCG_DEBUG
 #endif
+#ifndef TESTER
+#define TESTER MCG_DEBUG
+#endif
 // --- 结束临时诊断 ---

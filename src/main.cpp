@@ -62,6 +62,10 @@ int main(int argc, char* argv[])
 	auto spike_token = objs.Create<MoveSpike>();
 	auto standing_spike_token = objs.Create<Spike>(CF_V2(154.0f, -324.0f));
 
+#if TESTER
+	auto tester_token = objs.Create<Tester>();
+#endif
+
 	// 创建背景对象
 	auto background_token = objs.Create<Backgroud>();
 
@@ -89,6 +93,7 @@ int main(int argc, char* argv[])
 	auto block9_token = objs.Create<BlockObject>(cf_v2(-206.0f, -342.0f), true);
 	auto block10_token = objs.Create<BlockObject>(cf_v2(-170.0f, -342.0f), false);
 	auto block11_token = objs.Create<BlockObject>(cf_v2(-134.0f, -342.0f), false);
+	auto block11_1_token = objs.Create<BlockObject>(cf_v2(-134.0f, -126.0f), false);
 	auto block12_token = objs.Create<BlockObject>(cf_v2(-98.0f, -342.0f), true);
 	auto block13_token = objs.Create<BlockObject>(cf_v2(-62.0f, -342.0f), true);
 	auto block14_token = objs.Create<BlockObject>(cf_v2(-26.0f, -342.0f), false);
