@@ -36,8 +36,8 @@ int main(int argc, char* argv[])
 	OUTPUT({"Main"}, "MCG_DEBUG=", MCG_DEBUG, " MCG_DEBUG_LEVEL=", MCG_DEBUG_LEVEL);
 
 	// 窗口大小
-	int window_width = 1024;
-	int window_height = 720;
+	int window_width = 1152;
+	int window_height = 864;
 
 	// 创建应用程序窗口
 	int options = CF_APP_OPTIONS_WINDOW_POS_CENTERED_BIT;
@@ -85,42 +85,20 @@ int main(int argc, char* argv[])
 
 	// 创建方块对象。
 	// -构造函数传参方式（位置、是否为草坪）
-	auto block1_token = objs.Create<BlockObject>(cf_v2(-494.0f, -342.0f), true);
-	auto block2_token = objs.Create<BlockObject>(cf_v2(-458.0f, -342.0f), true);
-	auto block3_token = objs.Create<BlockObject>(cf_v2(-422.0f, -342.0f), true);
-	auto block4_token = objs.Create<BlockObject>(cf_v2(-386.0f, -342.0f), true);
-	auto block5_token = objs.Create<BlockObject>(cf_v2(-350.0f, -342.0f), false);
-	auto block6_token = objs.Create<BlockObject>(cf_v2(-314.0f, -342.0f), false);
-	auto block7_token = objs.Create<BlockObject>(cf_v2(-278.0f, -342.0f), false);
-	auto block7_1_token = objs.Create<BlockObject>(cf_v2(-278.0f, -306.0f), false);
-	auto block7_2_token = objs.Create<BlockObject>(cf_v2(-278.0f, -270.0f), false);
-	auto block7_3_token = objs.Create<BlockObject>(cf_v2(-278.0f, -234.0f), true);
-	auto block8_token = objs.Create<BlockObject>(cf_v2(-242.0f, -342.0f), true);
-	auto block9_token = objs.Create<BlockObject>(cf_v2(-206.0f, -342.0f), true);
-	auto block10_token = objs.Create<BlockObject>(cf_v2(-170.0f, -342.0f), false);
-	auto block11_token = objs.Create<BlockObject>(cf_v2(-134.0f, -342.0f), false);
-	auto block11_1_token = objs.Create<BlockObject>(cf_v2(-134.0f, -126.0f), false);
-	auto block12_token = objs.Create<BlockObject>(cf_v2(-98.0f, -342.0f), true);
-	auto block13_token = objs.Create<BlockObject>(cf_v2(-62.0f, -342.0f), true);
-	auto block14_token = objs.Create<BlockObject>(cf_v2(-26.0f, -342.0f), false);
-	auto block15_token = objs.Create<BlockObject>(cf_v2(10.0f, -342.0f), false);
-	auto block16_token = objs.Create<BlockObject>(cf_v2(46.0f, -342.0f), true);
-	auto block17_token = objs.Create<BlockObject>(cf_v2(82.0f, -342.0f), true);
-	auto block17_1_token = objs.Create<BlockObject>(cf_v2(82.0f, -234.0f), true);
-	auto block18_token = objs.Create<BlockObject>(cf_v2(118.0f, -342.0f), false);
-	auto block18_1_token = objs.Create<BlockObject>(cf_v2(118.0f, -234.0f), true);
-	auto block19_token = objs.Create<BlockObject>(cf_v2(154.0f, -342.0f), false);
-	auto block19_1_token = objs.Create<BlockObject>(cf_v2(154.0f, -234.0f), true);
-	auto block20_token = objs.Create<BlockObject>(cf_v2(190.0f, -342.0f), true);
-	auto block21_token = objs.Create<BlockObject>(cf_v2(226.0f, -342.0f), true);
-	auto block22_token = objs.Create<BlockObject>(cf_v2(262.0f, -342.0f), false);
-	auto block23_token = objs.Create<BlockObject>(cf_v2(298.0f, -342.0f), false);
-	auto block24_token = objs.Create<BlockObject>(cf_v2(334.0f, -342.0f), true);
-	auto block25_token = objs.Create<BlockObject>(cf_v2(370.0f, -342.0f), true);
-	auto block26_token = objs.Create<BlockObject>(cf_v2(406.0f, -342.0f), false);
-	auto block27_token = objs.Create<BlockObject>(cf_v2(442.0f, -342.0f), false);
-	auto block28_token = objs.Create<BlockObject>(cf_v2(478.0f, -342.0f), true);
-	auto block29_token = objs.Create<BlockObject>(cf_v2(514.0f, -342.0f), true);
+	float hw = DrawUI::half_w;
+	float hh = DrawUI::half_h;
+	for (float y = -hh; y < hh; y += 36) {
+		objs.Create<BlockObject>(cf_v2(-hw, y), false);
+	}
+	for (float y = -hh; y < hh; y += 36) {
+		objs.Create<BlockObject>(cf_v2(hw - 36.0f, y), false);
+	}
+	for (float x = -hw + 36; x < hw - 36; x += 36) {
+		objs.Create<BlockObject>(cf_v2(x, hh - 36.0f), false);
+	}
+	for (float x = -hw + 36; x < hw - 36; x += 36) {
+		objs.Create<BlockObject>(cf_v2(x, -hh), true);
+	}
 
 	// 注册主线程更新委托：每帧调用 ObjManager::UpdateAll()
 	auto update_token = main_thread_on_update.add([]() {
@@ -256,13 +234,7 @@ int main(int argc, char* argv[])
 		if (game_over) { DrawUI::GameOverDraw(); }
 		// 退出提示与最终呈现
 		if (esc_was_down) { DrawUI::EscDraw(esc_down_start, esc_hold_threshold); }
-		// ---- 在测试绘制之后把已上传的 canvas 绘制到屏幕 ----
-		try {
-			DrawingSequence::Instance().BlitAll();
-		} catch (const std::exception& ex) {
-			OUTPUT({"Draw"}, "绘制异常 (blit): ", ex.what());
-			break;
-		}
+
 		app_draw_onto_screen(true);
 	}
 

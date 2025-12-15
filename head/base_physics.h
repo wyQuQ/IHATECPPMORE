@@ -79,6 +79,7 @@ private:
 		BasePhysics* physics = nullptr;
 		int32_t grid_x = 0;
 		int32_t grid_y = 0;
+		bool dirty = true;
 	};
 
 	// 将 (index,generation) 编码为 uint64_t，以便与 ObjManager 的 token 匹配
@@ -93,8 +94,11 @@ private:
 		return (static_cast<uint64_t>(static_cast<uint32_t>(x)) << 32) | static_cast<uint64_t>(static_cast<uint32_t>(y));
 	}
 
-	std::vector<Entry> entries_;
-	std::unordered_map<uint64_t, size_t> token_map_; // token_key -> entries_ 索引
+	std::vector<Entry> dynamic_entries_;
+	std::unordered_map<uint64_t, size_t> dynamic_token_map_;
+
+	std::vector<Entry> static_entries_;
+	std::unordered_map<uint64_t, size_t> static_token_map_;
 
 	std::unordered_map<uint64_t, std::vector<size_t>> grid_; // broadphase 网格映射
 
@@ -160,13 +164,16 @@ public:
 
 	// 位置/速度/力 的基本操作接口
 	// - set_* 和 add_* 会标记 world_shape_dirty_（如果 shape 依赖于 position/pivot/rotation）
-	void set_position(const CF_V2& p) { _position = p; world_shape_dirty_ = true; }
+	void set_position(const CF_V2& p) { _position = p; world_shape_dirty_ = true; position_dirty_ = true; }
 	const CF_V2& get_position() const { return _position; }
 	void apply_velocity(float dt)
 	{
-		_position.x += _velocity.x * dt;
-		_position.y += _velocity.y * dt;
-		world_shape_dirty_ = true;
+		if (_velocity.x != 0.0f || _velocity.y != 0.0f) {
+			_position.x += _velocity.x * dt;
+			_position.y += _velocity.y * dt;
+			world_shape_dirty_ = true;
+			position_dirty_ = true;
+		}
 	}
 
 	void set_velocity(const CF_V2& v) { _velocity = v; }
@@ -238,7 +245,13 @@ public:
 	// 标记 world shape 脏（延迟更新），允许上层在修改多个属性后手动调用 force_update_world_shape 来一次性更新
 	void mark_world_shape_dirty() noexcept { world_shape_dirty_ = true; }
 
+	// 位置脏标记相关接口
+	bool is_position_dirty() const noexcept { return position_dirty_; }
+	void clear_position_dirty() noexcept { position_dirty_ = false; }
+
 	// 访问本地 shape（不触发世界转换）
 	const CF_ShapeWrapper& get_local_shape() const noexcept { return shape; }
 
+private:
+	bool position_dirty_ = true; // 位置脏标记
 };

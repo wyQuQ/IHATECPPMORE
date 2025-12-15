@@ -7,11 +7,16 @@ void MoveSpike::Start() {
 	SpriteSetStats("/sprites/Obj_Spike.png", 1, 1, 0);
 	SetPosition(cf_v2(300.0f, 0.0f)); // 初始位置
 	Scale(1.0f); // 初始缩放为 1 倍
-	SetCenteredPoly({
-		cf_v2(-SpriteWidth() * 0.5f, -SpriteHeight() * 0.5f),
-		cf_v2(SpriteWidth() * 0.5f, -SpriteHeight() * 0.5f),
-		cf_v2(0.0f, SpriteHeight() * 0.5f)
-		});
+
+	float hw = SpriteWidth() / 2.0f;
+	float hh = SpriteHeight() / 2.0f;
+
+	std::vector<CF_V2> vertices = {
+		{ -hw, -hh },
+		{  hw, -hh },
+		{ 0.0f, hh }
+	};
+	SetCenteredPoly(vertices);
 
 	// 记录初始位置
 	CF_V2 initial_pos = GetPosition();

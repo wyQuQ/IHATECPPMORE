@@ -102,10 +102,32 @@ void DrawUI::TestDraw() {
 	cf_draw_pop_color();
 #endif
 
-	// 白色文本显示当前全局帧计数（若字体可用）
+	// 白色文本显示当前帧率（FPS）
 	cf_draw_translate(-half_w, -half_h);
 	cf_draw_push_color(cf_color_white());
-	cf_draw_text(("frame: " + std::to_string(g_frame_count.load())).c_str(), cf_v2(10.0f, 16.0f), -1);
+
+	// 计算0.5秒内的平均帧率
+	static auto last_time = std::chrono::steady_clock::now();
+	static int frame_count = 0;
+	static float elapsed_time = 0.0f;
+	static int displayed_fps = 0;
+
+	auto current_time = std::chrono::steady_clock::now();
+	float delta_time = std::chrono::duration<float>(current_time - last_time).count();
+	last_time = current_time;
+
+	frame_count++;
+	elapsed_time += delta_time;
+
+	if (elapsed_time >= 0.5f) {
+		displayed_fps = static_cast<int>(frame_count / elapsed_time);
+		frame_count = 0;
+		elapsed_time = 0.0f;
+	}
+
+	std::string fps_text = "FPS: " + std::to_string(displayed_fps);
+	cf_draw_text(fps_text.c_str(), cf_v2(10.0f, 16.0f), -1);
+
 	cf_draw_pop_color();
 
 	cf_draw_pop();

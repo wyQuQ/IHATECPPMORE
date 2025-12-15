@@ -21,14 +21,11 @@
 #ifndef SHAPE_DEBUG
 #define SHAPE_DEBUG MCG_DEBUG
 #endif
-#ifndef PNG_LOAD_DEBUG
-#define	PNG_LOAD_DEBUG 0
-#endif
 #ifndef TESTER
-#define TESTER 0
+#define TESTER MCG_DEBUG
 #endif
 #ifndef MESSAGE_DEBUG
-#define MESSAGE_DEBUG 0
+#define MESSAGE_DEBUG MCG_DEBUG
 #endif
 #ifndef OUTPUT_DEBUG
 #define OUTPUT_DEBUG MCG_DEBUG

@@ -8,10 +8,13 @@ void Spike::Start()
 	SetPivot(0, -1);
     SetPosition(CF_V2(position));
 
+	float hw = SpriteWidth() / 2.0f;
+	float hh = SpriteHeight() / 2.0f;
+
     std::vector<CF_V2> vertices = {
-        { -16.0f, 0.0f },
-        {  16.0f, 0.0f },
-        {   0.0f, 32.0f }
+        { -hw, 0.0f },
+        {  hw, 0.0f },
+        {   0.0f, hh * 2 }
 	};
 	SetCenteredPoly(vertices);
 }

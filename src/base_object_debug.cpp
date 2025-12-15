@@ -27,7 +27,6 @@ void ManifoldDrawDebug(const CF_Manifold& m) noexcept {
         cf_draw_circle2(cp - normal, 2.0f, 0.0f);
         cf_draw_circle2(cp + normal, 2.0f, 0.0f);
     }
-
     cf_draw_pop_color();
     cf_draw_pop();
 }
@@ -112,7 +111,6 @@ void RenderBaseObjectCollisionDebug(const BaseObject* obj) noexcept
         // 未知类型：无动作
         break;
     }
-
     cf_draw_pop_color();
     cf_draw_pop();
 }

@@ -72,6 +72,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURR
 # 同样 objects 目录添加包含路径
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/objects>)
 
+# FetchContent 后、target_link_libraries 之前
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+    ${cute_SOURCE_DIR}/src
+)
+
 # 根据 ENABLE_DEBUG 定义目标的宏标记（使用 target_compile_definitions）
 # debug 宏（MCG_DEBUG / MCG_DEBUG_LEVEL）会被 head/debug_config.h 使用
 if(ENABLE_DEBUG)

@@ -162,10 +162,7 @@ static bool shapes_collide_world(const CF_ShapeWrapper& A, const CF_ShapeWrapper
 	if (m.count <= 0) return false;
 
 	// 规范化 manifold 数据，防止数值异常
-	for (int i = 0; i < 2; ++i) {
-		if (m.depths[i] < 0.0f) m.depths[i] = 0.0f;
-	}
-	m.n = v2math::normalized(m.n);
+	normalize_and_clamp_manifold(m);
 
 	if (out_manifold) *out_manifold = m;
 	return true;
@@ -177,18 +174,18 @@ void PhysicsSystem::Register(const ObjManager::ObjToken& token, BasePhysics* phy
 {
 	if (!phys) return;
 	uint64_t key = make_key(token);
-	auto it = token_map_.find(key);
-	if (it != token_map_.end()) {
-		// 如果已存在条目，更新指针与 token
-		entries_[it->second].physics = phys;
-		entries_[it->second].token = token;
+
+	auto it = dynamic_token_map_.find(key);
+	if (it != dynamic_token_map_.end()) {
+		dynamic_entries_[it->second].physics = phys;
+		dynamic_entries_[it->second].token = token;
 		return;
 	}
 	Entry e;
 	e.token = token;
 	e.physics = phys;
-	entries_.push_back(e);
-	token_map_[key] = entries_.size() - 1;
+	dynamic_entries_.push_back(e);
+	dynamic_token_map_[key] = dynamic_entries_.size() - 1;
 }
 
 // 反注册：将条目从 entries_ 中移除并维护映射一致性
@@ -196,23 +193,53 @@ void PhysicsSystem::Register(const ObjManager::ObjToken& token, BasePhysics* phy
 void PhysicsSystem::Unregister(const ObjManager::ObjToken& token) noexcept
 {
 	uint64_t key = make_key(token);
-	auto it = token_map_.find(key);
-	if (it == token_map_.end()) return;
-	size_t idx = it->second;
-	size_t last = entries_.size() - 1;
-	if (idx != last) {
-		entries_[idx] = entries_[last];
-		uint64_t moved_key = make_key(entries_[idx].token);
-		token_map_[moved_key] = idx;
+
+	auto static_it = static_token_map_.find(key);
+	if (static_it != static_token_map_.end()) {
+		size_t idx = static_it->second;
+		size_t last = static_entries_.size() - 1;
+		if (idx != last) {
+			static_entries_[idx] = static_entries_[last];
+			uint64_t moved_key = make_key(static_entries_[idx].token);
+			static_token_map_[moved_key] = idx;
+		}
+		static_entries_.pop_back();
+		static_token_map_.erase(static_it);
 	}
-	entries_.pop_back();
-	token_map_.erase(it);
+	else {
+		auto dynamic_it = dynamic_token_map_.find(key);
+		if (dynamic_it == dynamic_token_map_.end()) return;
+		size_t idx = dynamic_it->second;
+		size_t last = dynamic_entries_.size() - 1;
+		if (idx != last) {
+			dynamic_entries_[idx] = dynamic_entries_[last];
+			uint64_t moved_key = make_key(dynamic_entries_[idx].token);
+			dynamic_token_map_[moved_key] = idx;
+		}
+		dynamic_entries_.pop_back();
+		dynamic_token_map_.erase(dynamic_it);
+	}
+
+
+    // 修复：当对象被销毁时，从碰撞对记录中移除相关条目，防止内存泄漏和性能下降
+    auto clean_pairs = [&](auto& pairs_map) {
+        for (auto it = pairs_map.begin(); it != pairs_map.end(); ) {
+            if (make_key(it->second.first) == key || make_key(it->second.second) == key) {
+                it = pairs_map.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    };
+
+    clean_pairs(prev_collision_pairs_);
+    clean_pairs(current_pairs_);
 }
 
 void PhysicsSystem::Step(float cell_size) noexcept
 {
 	events_.clear();
-	if (entries_.empty()) return;
+	if (dynamic_entries_.empty() && static_entries_.empty()) return;
 
 	// 清空上次 frame 使用过的网格 bucket，以便复用容器
 	for (uint64_t k : grid_keys_used_) {
@@ -223,25 +250,30 @@ void PhysicsSystem::Step(float cell_size) noexcept
 	}
 	grid_keys_used_.clear();
 
-	world_shapes_.resize(entries_.size());
+	// 调整 world_shapes_ 大小以容纳所有对象
+	world_shapes_.resize(dynamic_entries_.size() + static_entries_.size());
 
-	for (size_t i = 0; i < entries_.size(); ++i) {
-		BasePhysics* p = entries_[i].physics;
-		if (!p) continue;
+	// 辅助函数：将对象更新并放入网格
+	auto update_entry_in_grid = [&](Entry& entry, size_t world_shape_idx) {
+		BasePhysics* p = entry.physics;
+		if (!p) return;
 
-		// 获取 shape 并根据配置决定是否需要将其视为已经是 world-space（use_world_shape_）
-		CF_ShapeWrapper s = p->get_shape();
+		// 仅当对象是动态的或首次注册时才更新网格
 		CF_ShapeWrapper ws;
-		if (p->is_world_shape_enabled()) {
-			// 物理组件已经提供 world-space 的 shape
-			ws = s;
+		if (entry.dirty) {
+			CF_ShapeWrapper s = p->get_shape();
+			if (p->is_world_shape_enabled()) {
+				ws = s;
+			}
+			else {
+				ws = translate_shape_world(s, p->get_position());
+			}
+			world_shapes_[world_shape_idx] = ws;
 		}
 		else {
-			// 将 local shape 平移到 world-space（旋转在 BasePhysics::tweak_shape_with_rotation 中处理）
-			ws = translate_shape_world(s, p->get_position());
+			ws = world_shapes_[world_shape_idx];
 		}
 
-		world_shapes_[i] = ws;
 		CF_Aabb waabb = shape_wrapper_to_aabb(ws);
 
 		int32_t gx0 = static_cast<int32_t>(std::floor(waabb.min.x / cell_size));
@@ -249,180 +281,75 @@ void PhysicsSystem::Step(float cell_size) noexcept
 		int32_t gx1 = static_cast<int32_t>(std::floor(waabb.max.x / cell_size));
 		int32_t gy1 = static_cast<int32_t>(std::floor(waabb.max.y / cell_size));
 
-		// 将条目放入覆盖到的网格桶中，用于后续的邻域检测
 		for (int32_t gx = gx0; gx <= gx1; ++gx) {
 			for (int32_t gy = gy0; gy <= gy1; ++gy) {
 				uint64_t gkey = grid_key(gx, gy);
-				auto it = grid_.find(gkey);
-				if (it == grid_.end()) {
-					auto res = grid_.emplace(gkey, std::vector<size_t>());
-					it = res.first;
-					it->second.reserve(4);
-					grid_keys_used_.push_back(gkey);
-				}
-				else {
-					if (it->second.empty()) grid_keys_used_.push_back(gkey);
-				}
-				it->second.push_back(i);
+				grid_[gkey].push_back(world_shape_idx);
+				grid_keys_used_.emplace_back(gkey);
 			}
 		}
 
-		// 缓存该条目的网格坐标（用于邻域遍历）
 		CF_V2 center = (waabb.min + waabb.max) * 0.5f;
-		entries_[i].grid_x = static_cast<int32_t>(std::floor(center.x / cell_size));
-		entries_[i].grid_y = static_cast<int32_t>(std::floor(center.y / cell_size));
+		entry.grid_x = static_cast<int32_t>(std::floor(center.x / cell_size));
+		entry.grid_y = static_cast<int32_t>(std::floor(center.y / cell_size));
+
+		p->clear_position_dirty();
+	};
+
+	// 更新动态对象
+	for (size_t i = 0; i < dynamic_entries_.size(); ++i) {
+		update_entry_in_grid(dynamic_entries_[i], i);
 	}
 
-	// 进行 narrowphase：对每个条目检查邻域桶内可能的碰撞对并产生事件
-	events_.reserve(entries_.size());
+	// 更新静态对象（仅在首次或需要时）
+	size_t static_offset = dynamic_entries_.size();
+	for (size_t i = 0; i < static_entries_.size(); ++i) {
+		update_entry_in_grid(static_entries_[i], static_offset + i);
+	}
 
-	for (size_t i = 0; i < entries_.size(); ++i) {
-		Entry& a = entries_[i];
-		BasePhysics* pa = a.physics;
-		if (!pa || pa->get_collider_type() == ColliderType::VOID) continue;
 
+	// 进行 narrowphase
+	events_.reserve(dynamic_entries_.size() * 2); // 预估容量
+
+	// 辅助函数：执行碰撞检测
+	auto check_collisions_for_bucket = [&](size_t i, const std::vector<size_t>& bucket) {
+		Entry& a_entry = (i < static_offset) ? dynamic_entries_[i] : static_entries_[i - static_offset];
+		BasePhysics* pa = a_entry.physics;
+		if (!pa || pa->get_collider_type() == ColliderType::VOID) return;
+
+		for (size_t j_idx : bucket) {
+			if (j_idx <= i) continue;
+
+			Entry& b_entry = (j_idx < static_offset) ? dynamic_entries_[j_idx] : static_entries_[j_idx - static_offset];
+			BasePhysics* pb = b_entry.physics;
+			if (!pb || pb->get_collider_type() == ColliderType::VOID) continue;
+
+			CF_Manifold m{};
+			const CF_ShapeWrapper& aw = world_shapes_[i];
+			const CF_ShapeWrapper& bw = world_shapes_[j_idx];
+			if (shapes_collide_world(aw, bw, &m)) {
+				CollisionEvent ev;
+				ev.a = a_entry.token;
+				ev.b = b_entry.token;
+				ev.manifold = m;
+				CF_V2 delta = pa->get_position() - pb->get_position();
+				ev.distance_sq = v2math::dot(delta, delta);
+				events_.push_back(ev);
+			}
+		}
+	};
+
+	for (size_t i = 0; i < dynamic_entries_.size(); ++i) {
+		Entry& a = dynamic_entries_[i];
 		for (int dx = -1; dx <= 1; ++dx) {
 			for (int dy = -1; dy <= 1; ++dy) {
 				uint64_t nkey = grid_key(a.grid_x + dx, a.grid_y + dy);
 				auto nit = grid_.find(nkey);
-				if (nit == grid_.end()) continue;
-				const auto& bucket = nit->second;
-				for (size_t j : bucket) {
-					if (j <= i) continue;
-					Entry& b = entries_[j];
-					BasePhysics* pb = b.physics;
-					if (!pb) continue;
-
-					// 忽略 VOID 类型的碰撞器
-					if (pb->get_collider_type() == ColliderType::VOID)
-						continue;
-
-					// 使用 world_shapes_ 进行 narrowphase 碰撞检测
-					CF_Manifold m{};
-					const CF_ShapeWrapper& aw = world_shapes_[i];
-					const CF_ShapeWrapper& bw = world_shapes_[j];
-					bool collided = shapes_collide_world(aw, bw, &m);
-
-					if (collided) {
-						CollisionEvent ev;
-						ev.a = a.token;
-						ev.b = b.token;
-						ev.manifold = m;
-						CF_V2 delta = pa->get_position() - pb->get_position();
-						ev.distance_sq = v2math::dot(delta, delta);
-						events_.push_back(ev);
-					}
+				if (nit != grid_.end()) {
+					check_collisions_for_bucket(i, nit->second);
 				}
 			}
 		}
-	}
-
-	// 合并同一对的多个 contact，使每对最终最多包含两个接触点，便于上层处理
-	// 优先保留法向量方向与物体速度方向更一致的碰撞信息
-	if (!events_.empty()) {
-		merged_map_.clear();
-		merged_order_.clear();
-		merged_map_.reserve(events_.size() * 2);
-		merged_order_.reserve(events_.size());
-
-		for (const auto& ev : events_) {
-			uint64_t k1 = make_key(ev.a);
-			uint64_t k2 = make_key(ev.b);
-			uint64_t pair_key = (k1 <= k2)
-				? (k1 ^ (k2 + 0x9e3779b97f4a7c15ULL + (k1 << 6) + (k1 >> 2)))
-				: (k2 ^ (k1 + 0x9e3779b97f4a7c15ULL + (k2 << 6) + (k2 >> 2)));
-
-			auto it = merged_map_.find(pair_key);
-			if (it == merged_map_.end()) {
-				merged_map_.emplace(pair_key, ev);
-				merged_order_.push_back(pair_key);
-				continue;
-			}
-
-			// 获取物体 a 的速度用于判断法向量优先级
-			BasePhysics* pa = nullptr;
-			for (const auto& entry : entries_) {
-				if (make_key(entry.token) == k1) {
-					pa = entry.physics;
-					break;
-				}
-			}
-
-			// 计算法向量与速度方向的对齐度（点积）
-			// 更大的点积表示法向量更接近速度方向，优先保留这种碰撞
-			float current_alignment = 0.0f;
-			float new_alignment = 0.0f;
-
-			if (pa) {
-				CF_V2 vel = pa->get_velocity();
-				float vel_len = v2math::length(vel);
-
-				if (vel_len > 1e-3f) { // 仅当物体有明显速度时才考虑方向
-					CF_V2 vel_norm = v2math::normalized(vel);
-
-					current_alignment = v2math::dot(it->second.manifold.n, vel_norm);
-					new_alignment = v2math::dot(ev.manifold.n, vel_norm);
-
-					// 如果新碰撞的法向量更接近速度方向，则完全替换
-					if (new_alignment > current_alignment + 0.1f) { // 0.1 为阈值，避免频繁抖动
-						it->second = ev;
-						continue;
-					}
-				}
-			}
-
-			// 合并 manifold：将接触点与穿透深度合并至最多两个 contact
-			CF_Manifold& dst = it->second.manifold;
-			const CF_Manifold& src = ev.manifold;
-			const float eps_sq = 1e-4f;
-
-			for (int si = 0; si < src.count && dst.count < 2; ++si) {
-				const CF_V2& sp = src.contact_points[si];
-				bool found = false;
-				for (int di = 0; di < dst.count; ++di) {
-					const CF_V2& dp = dst.contact_points[di];
-					CF_V2 diff = sp - dp;
-					if (v2math::dot(diff, diff) <= eps_sq) {
-						if (src.depths[si] > dst.depths[di]) dst.depths[di] = src.depths[si];
-						found = true;
-						break;
-					}
-				}
-				if (!found && dst.count < 2) {
-					dst.contact_points[dst.count] = sp;
-					dst.depths[dst.count] = src.depths[si];
-					dst.count++;
-				}
-			}
-
-			// 法线方向合并：根据速度对齐度加权
-			if (v2math::length(dst.n) > 1e-6f || v2math::length(src.n) > 1e-6f) {
-				// 如果有明显的对齐度差异，按对齐度加权；否则简单平均
-				if (std::abs(new_alignment - current_alignment) > 0.05f) {
-					float total = std::abs(current_alignment) + std::abs(new_alignment) + 1e-6f;
-					float w_dst = std::abs(current_alignment) / total;
-					float w_src = std::abs(new_alignment) / total;
-					dst.n = dst.n * w_dst + src.n * w_src;
-				}
-				else {
-					dst.n = (dst.n + src.n) * 0.5f;
-				}
-			}
-
-			// 更新最小距离平方
-			it->second.distance_sq = std::min(it->second.distance_sq, ev.distance_sq);
-
-			// 规范化合并结果
-			normalize_and_clamp_manifold(dst);
-		}
-
-		// 将合并结果替换 events_
-		std::vector<CollisionEvent> merged_events;
-		merged_events.reserve(merged_map_.size());
-		for (uint64_t key : merged_order_) {
-			merged_events.push_back(merged_map_[key]);
-		}
-		events_.swap(merged_events);
 	}
 
 	if (events_.size() > 1) {

@@ -12,8 +12,8 @@ void Bullet::Start()
     // 记录生成时的全局帧计数
     m_spawn_frame = static_cast<int>(g_frame_count.load());
     // 设置子弹贴图源，其他参数使用默认值
-    SpriteSetSource("/sprites/bullet.png", 2);
-    SpriteSetUpdateFreq(5); // 设置动画更新频率为每 5 帧更新一次
+    SpriteSetStats("/sprites/bullet.png", 2, 5, 0);
+    IsColliderRotate(false);
 
 	// 添加标签以便后续查询
 	AddTag("bullet");

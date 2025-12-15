@@ -1,6 +1,7 @@
 #pragma once
 #include "base_physics.h"
-#include "png_sprite.h"
+#include "cute_sprite.h" // 使用 CF_Sprite
+#include "cute_math.h"   // For cf_sincos, cf_atan2
 #include <string>
 #include <utility>
 #include <vector> 
@@ -16,7 +17,7 @@
  * BaseObject.h — 对场景中可实例化对象的高层封装。
  *
  * 说明（概览）：
- * - `BaseObject` 将可渲染的 `PngSprite` 与物理表示 `BasePhysics` 组合，提供常用的安全公开接口：
+ * - `BaseObject` 将可渲染的 `CF_Sprite` 与物理表示 `BasePhysics` 组合，提供常用的安全公开接口：
  *   - 渲染/精灵控制：设置图片路径、帧率、翻转、缩放、旋转、可见性、深度等；
  *   - 物理控制（受限暴露）：位置/速度/力的安全 getter/setter、应用物理更新（Apply*）等；
  *   - 碰撞回调：`OnCollisionEnter/Stay/Exit` 及 `OnCollisionState`；
@@ -53,11 +54,11 @@ void ManifoldDrawDebug(const CF_Manifold& m) noexcept;
 
 inline ObjManager& objs = ObjManager::Instance();
 
-class BaseObject : public BasePhysics, private PngSprite {
+class BaseObject : public BasePhysics {
 public:
     // 构造：初始化物理量与精灵默认值，确保对象处于有效初始状态。
     BaseObject() noexcept
-        : BasePhysics(), PngSprite("", 1, 1)
+        : BasePhysics()
     {
         // 物理基础值：位置/速度/力 清零
         set_position(CF_V2{ 0.0f, 0.0f });
@@ -67,22 +68,14 @@ public:
         // 保证上一帧位置与当前位置一致，避免首帧大位移引发错误碰撞修正
         m_prev_position = get_position();
 
-        // 精灵/渲染状态初始化为明确安全值
-        m_visible = true;
-        m_depth = 0;
-        m_flip_x = false;
-        m_flip_y = false;
-        m_scale_x = 1.0f;
-        m_scale_y = 1.0f;
-
         // 帧延迟/world-shape 标志初始化
-        SetFrameDelay(m_sprite_update_freq);
         update_world_shape_flag();
 
         // 强制把 world-shape 与当前物理状态同步，避免初始碰撞形状基于未同步的缓存数据
         force_update_world_shape();
 
         tags.reserve(5);
+        m_sprite = cf_sprite_defaults();
     }
 
     // 生命周期钩子：在对象被添加到场景/管理器后调用（引擎层面）。派生类可覆盖以初始化资源。
@@ -100,6 +93,8 @@ public:
      */
     APPLIANCE void FrameEnterApply() noexcept
     {
+		m_collide_manifolds.clear();
+        m_collide_manifolds.reserve(4);
 		StartFrame();
         ApplyForce();
         ApplyVelocity();
@@ -137,7 +132,6 @@ public:
     APPLIANCE void FrameExitApply() noexcept
     {
         EndFrame();
-        ShapeDraw();
         m_prev_position = get_position();
 	}
 
@@ -146,45 +140,12 @@ public:
 	// 供派生类在帧尾执行清理/状态同步，默认为空
 	virtual void EndFrame() {}
 
-    // 精灵帧获取：若没有垂直帧则返回当前帧，否则根据垂直帧数获取正确帧
-    PngFrame SpriteGetFrame() const
-    {
-        if (m_vertical_frame_count <= 1) {
-            return GetCurrentFrame();
-        }
-        return GetCurrentFrameWithTotal(m_vertical_frame_count);
-    }
-
-    // 垂直帧数 getter（用于精灵表格等）
-    int SpriteGetVerticalFrameCount() const noexcept { return m_vertical_frame_count; }
-
-    // 设置精灵帧更新时间（帧延迟），freq 必须 > 0（否则被设为 1）
-    void SpriteSetUpdateFreq(int freq) noexcept
-    {
-        m_sprite_update_freq = (freq > 0 ? freq : 1);
-        SetFrameDelay(m_sprite_update_freq);
-    }
-    int SpriteGetUpdateFreq() const noexcept { return m_sprite_update_freq; }
-
-    // 设置精灵资源路径与垂直帧计数：
-    // - path：资源相对/绝对路径（取决于 PngSprite 的实现）
-    // - count：垂直帧数（用于 SpriteGetFrame）
-    // - set_shape_aabb：若为 true，通常会基于图像尺寸设置 AABB 作为默认碰撞箱
-    // 注意：该方法为 noexcept 且不会抛异常；如果资源加载失败请检查 PngSprite 的实现日志/返回值。
-    void SpriteSetSource(const std::string& path, int count, bool set_shape_aabb = true) noexcept;
-    void SpriteClearPath() noexcept;
-
-    // 检查是否已设置精灵路径，若传入 out_path 将填充当前路径
-    bool SpriteHasPath(std::string* out_path = nullptr) const noexcept { return HasPath(out_path); }
-
     // 精灵像素宽/高（考虑缩放），注意返回值是 int（像素级）
     int SpriteWidth() const noexcept {
-        auto frame = SpriteGetFrame();
-		return frame.w * GetScaleX();
+        return m_sprite.w;
 	}
     int SpriteHeight() const noexcept {
-        auto frame = SpriteGetFrame();
-        return frame.h * GetScaleY();
+        return m_sprite.h / m_sprite_vertical_frame_count;
     }
 
     // 可见性控制：用于渲染层判断是否跳过绘制（不会影响物理/碰撞）
@@ -199,46 +160,54 @@ public:
     // - GetRotation 返回当前精灵旋转（弧度，[-pi,pi]）
     // - SetRotation 会将传入角度限定到 [-pi,pi] 范围内，并在 IsColliderRotate 为 true 时同步到碰撞体并标记 world shape 脏
     // - Rotate 增量旋转，同样会在 IsColliderRotate 为 true 时更新碰撞体旋转
-    float GetRotation() const noexcept { return PngSprite::GetSpriteRotation(); }
+    float GetRotation() const noexcept { return cf_atan2(m_sprite.transform.r.s, m_sprite.transform.r.c); }
     void SetRotation(float rot) noexcept
     {
-        if(rot > pi) rot -= 2 * pi;
-		else if (rot < -pi) rot += 2 * pi;
-        PngSprite::SetSpriteRotation(rot);
+        if(rot > 3.1415926535f) rot -= 2 * 3.1415926535f;
+		else if (rot < -3.1415926535f) rot += 2 * 3.1415926535f;
+        m_sprite.transform.r = cf_sincos(rot);
         if (IsColliderRotate()) {
-            BasePhysics::set_rotation(PngSprite::GetSpriteRotation());
+            BasePhysics::set_rotation(rot);
             BasePhysics::mark_world_shape_dirty();
         }
     }
     void Rotate(float drot) noexcept
     {
-        PngSprite::RotateSprite(drot);
-        if (IsColliderRotate()) {
-            BasePhysics::set_rotation(PngSprite::GetSpriteRotation());
-            BasePhysics::mark_world_shape_dirty();
-        }
+        float new_rot = GetRotation() + drot;
+        SetRotation(new_rot);
     }
 
     // 精灵翻转控制（仅影响渲染，若需要影响碰撞请自行处理）
-    bool SpriteGetFlipX() { return m_flip_x; }
-    bool SpriteGetFlipY() { return m_flip_y; }
-    void SpriteFlipX() { m_flip_x = !m_flip_x; }
-    void SpriteFlipY() { m_flip_y = !m_flip_y; }
-    void SpriteFlipX(bool x) { m_flip_x = x; }
-    void SpriteFlipY(bool y) { m_flip_y = y; }
+    bool SpriteGetFlipX() const { return m_sprite.scale.x < 0; }
+    bool SpriteGetFlipY() const { return m_sprite.scale.y < 0; }
+    void SpriteFlipX(bool x) {
+        float current_scale_x = std::abs(m_sprite.scale.x);
+        m_sprite.scale.x = x ? -current_scale_x : current_scale_x;
+    }
+    void SpriteFlipY(bool y) {
+        float current_scale_y = std::abs(m_sprite.scale.y);
+        m_sprite.scale.y = y ? -current_scale_y : current_scale_y;
+    }
 
     // 缩放控制：ScaleX/ScaleY 会同时同步到底层 BasePhysics（影响碰撞形状缩放）
-	float GetScaleX() const noexcept { return m_scale_x; }
-    void ScaleX(float sx) noexcept { PngSprite::set_scale_x(sx); BasePhysics::scale_x(sx); m_scale_x = sx; }
-	float GetScaleY() const noexcept { return m_scale_y; }
-    void ScaleY(float sy) noexcept { PngSprite::set_scale_y(sy); BasePhysics::scale_y(sy); m_scale_y = sy; }
+	float GetScaleX() const noexcept { return m_sprite.scale.x; }
+    void ScaleX(float sx) noexcept { 
+        m_sprite.scale.x = sx;
+        BasePhysics::scale_x(sx); 
+    }
+	float GetScaleY() const noexcept { return m_sprite.scale.y; }
+    void ScaleY(float sy) noexcept { 
+        m_sprite.scale.y = sy;
+        BasePhysics::scale_y(sy); 
+    }
     void Scale(float s) noexcept {
-		PngSprite::set_scale_x(s); BasePhysics::scale_x(s); m_scale_x = s;
-		PngSprite::set_scale_y(s); BasePhysics::scale_y(s); m_scale_y = s;
+		m_sprite.scale = cf_v2(s, s);
+        BasePhysics::scale_x(s);
+        BasePhysics::scale_y(s);
 	}
 
     // 枢轴（pivot）控制：以相对（-1..1）或绝对像素值设置中心点
-    CF_V2 GetPivot() const noexcept { return PngSprite::get_pivot(); }
+    CF_V2 GetPivot() const noexcept { return m_sprite.offset; }
     /*
      * SetPivot
      *  - x_rel, y_rel：相对于精灵中心的比例（乘以半宽/半高得到局部坐标）
@@ -254,11 +223,10 @@ public:
 		float scale_x = GetScaleX();
 		float scale_y = GetScaleY();
         Scale(1.0f);
-        auto frame = SpriteGetFrame();
-        float hw = frame.w / 2.0f;
-        float hh = frame.h / 2.0f;
+        float hw = SpriteWidth() / 2.0f;
+        float hh = SpriteHeight() / 2.0f;
 		CF_V2 p = CF_V2{ x_rel * hw, y_rel * hh };
-        PngSprite::set_pivot(p);
+        m_sprite.offset = -p;
         if (IsColliderApplyPivot()) {
             TweakColliderWithPivot(p);
             BasePhysics::set_pivot(p);
@@ -269,12 +237,11 @@ public:
     }
 
     // 组合设置：路径 + 垂直帧数 + 更新频率 + 深度（便捷）
-    void SpriteSetStats(const std::string& path, int vertical_frame_count, int update_freq, int depth, bool set_shape_aabb = true) noexcept
-    {
-        SpriteSetSource(path, vertical_frame_count, set_shape_aabb);
-        SpriteSetUpdateFreq(update_freq);
-        SetDepth(depth);
-    }
+    void SpriteSetStats(const std::string& path, int vertical_frame_count, int update_freq, int depth, bool set_shape_aabb = true) noexcept;
+    // 新增：设置精灵源（向后兼容）
+    void SpriteSetSource(const std::string& path, int vertical_frame_count, bool set_shape_aabb = true) noexcept;
+    // 新增：设置精灵更新频率（向后兼容）
+    void SpriteSetUpdateFreq(int update_freq) noexcept;
 
     // 碰撞体旋转/应用 pivot 的策略开关：
     // - IsColliderRotate(true/false)：若为 true，同步 sprite 的旋转到物理碰撞体（常用于角色随朝向旋转时碰撞体也跟随）
@@ -450,12 +417,18 @@ public:
 
     ~BaseObject() noexcept;
 
+    // 新增：获取底层 CF_Sprite 的 const 引用
+    const CF_Sprite& GetSprite() const { return m_sprite; }
+    // 新增：获取底层 CF_Sprite 的可变引用
+    CF_Sprite& GetSprite() { return m_sprite; }
+
 protected:
     // 获取当前对象在 ObjManager 中的 token（受保护，仅供派生类安全读取）
     const ObjManager::ObjToken& GetObjToken() const noexcept { return m_obj_token; }
 
 private:
     friend class ObjManager;
+    friend class DrawingSequence;
 
     // 说明：将 BasePhysics 的常用方法在 BaseObject 中设为私有，阻止派生类未限定名调用。
     // 目的：
@@ -497,16 +470,16 @@ private:
 	// 内部工具：根据 pivot 微调碰撞体；实现细节在 cpp 文件中（供 SetPivot 调用）
 	void TweakColliderWithPivot(const CF_V2& pivot) noexcept;
 
-    int m_vertical_frame_count = 1;
-    void SpriteSetVerticalFrameCount(int count) noexcept { m_vertical_frame_count = (count > 0 ? count : 1); }
-
-    int m_sprite_update_freq = 1;
+    CF_Sprite m_sprite{}; // 使用框架的 CF_Sprite
     bool m_visible = true;
     int m_depth = 0;
-    bool m_flip_x = false;
-    bool m_flip_y = false;
-	float m_scale_x = 1.0f;
-	float m_scale_y = 1.0f;
+    // 新增：用于支持 SpriteSetUpdateFreq
+    std::string m_sprite_path;
+    int m_sprite_vertical_frame_count = 1;
+    int m_sprite_current_frame_index = 0;
+	int m_sprite_update_freq = 1; // 每多少帧更新一次
+    int m_sprite_last_update_frame = 0;
+
     CF_V2 m_prev_position = CF_V2{ 0.0f, 0.0f };
 
     bool m_isColliderRotate = true;
@@ -514,6 +487,7 @@ private:
 	bool m_exclude_with_solid = false;
     CF_Manifold ExclusionWithSolid(const ObjManager::ObjToken& oth, const CF_Manifold& m) noexcept;
     void FindContactPos(CF_V2 current, CF_V2 offset, const BaseObject& other, CF_Manifold& res);
+    std::vector<CF_Manifold> m_collide_manifolds;
 
 	std::unordered_set<std::string> tags;
 

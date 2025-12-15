@@ -1,0 +1,152 @@
+#include "drawing_sequence.h"
+#include "base_object.h"
+#include <algorithm>
+#include <iostream>
+#include <internal/cute_draw_internal.h>
+
+extern std::atomic<int> g_frame_count;
+
+static uint64_t last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
+
+static void PushFrameSprite(const CF_Sprite* spr, int frame_index, int frame_count)
+{
+    CF_Sprite sprite = *spr;
+    if (!sprite.easy_sprite_id) return;
+
+    spritebatch_sprite_t entry = {};
+    entry.image_id = sprite.easy_sprite_id;
+    entry.texture_id = 0;
+    entry.sort_bits = 0;
+    entry.w = sprite.w;
+    entry.h = sprite.h;
+
+    float frame_height_px = static_cast<float>(sprite.h);
+    if (frame_count <= 1 || sprite.h <= 0) {
+        entry.miny = 0.0f;
+        entry.maxy = 1.0f;
+    }
+    else {
+        constexpr float border_pixels = 1.0f;
+        float usable_height_px = std::max(0.0f, static_cast<float>(sprite.h) - border_pixels * 2.0f);
+        frame_height_px = usable_height_px / static_cast<float>(frame_count);
+        float frame_step = frame_height_px / static_cast<float>(sprite.h);
+        float border_uv = border_pixels / static_cast<float>(sprite.h);
+        float epsilon = std::min(border_uv, 1.0f / static_cast<float>(sprite.h));
+        entry.miny = border_uv + frame_step * frame_index;
+        entry.maxy = std::min(1.0f - border_uv, entry.miny + frame_step - epsilon);
+    }
+    constexpr float horizontal_border_pixels = 1.0f;
+    if (sprite.w > 0.0f) {
+        float horizontal_border_uv = horizontal_border_pixels / static_cast<float>(sprite.w);
+        entry.minx = horizontal_border_uv;
+        entry.maxx = 1.0f - horizontal_border_uv;
+    }
+    else {
+        entry.minx = 0.0f;
+        entry.maxx = 1.0f;
+    }
+
+    CF_V2 offset = sprite.offset + (sprite.pivots ? sprite.pivots[sprite.frame_index] : CF_V2{ 0, 0 });
+    CF_V2 p = cf_add(sprite.transform.p, cf_mul(offset, sprite.scale));
+    CF_V2 scale = V2(sprite.scale.x * sprite.w, sprite.scale.y * frame_height_px);
+    CF_V2 quad[4] = {
+        { -0.5f,  0.5f },
+        {  0.5f,  0.5f },
+        {  0.5f, -0.5f },
+        { -0.5f, -0.5f },
+    };
+    for (int i = 0; i < 4; ++i) {
+        float x = quad[i].x * scale.x;
+        float y = quad[i].y * scale.y;
+        float x0 = sprite.transform.r.c * x - sprite.transform.r.s * y;
+        float y0 = sprite.transform.r.s * x + sprite.transform.r.c * y;
+        quad[i] = V2(x0 + p.x, y0 + p.y);
+    }
+
+    CF_M3x2 m = s_draw->mvp;
+    entry.geom.shape[0] = cf_mul(m, quad[0]);
+    entry.geom.shape[1] = cf_mul(m, quad[1]);
+    entry.geom.shape[2] = cf_mul(m, quad[2]);
+    entry.geom.shape[3] = cf_mul(m, quad[3]);
+    entry.geom.type = BATCH_GEOMETRY_TYPE_SPRITE;
+    entry.geom.is_sprite = true;
+    entry.geom.color = cf_pixel_premultiply(cf_pixel_white());
+    entry.geom.alpha = sprite.opacity;
+    entry.geom.user_params = s_draw->user_params.last();
+    entry.geom.fill = false;
+
+    DRAW_PUSH_ITEM(entry);
+}
+
+DrawingSequence& DrawingSequence::Instance() noexcept
+{
+    static DrawingSequence instance;
+    return instance;
+}
+
+void DrawingSequence::Register(BaseObject* obj) noexcept
+{
+    if (!obj) return;
+    std::lock_guard<std::mutex> lock(m_mutex);
+    for (const auto& entry : m_entries) {
+        if (entry->owner == obj) return;
+    }
+    auto new_entry = std::make_unique<Entry>();
+    new_entry->owner = obj;
+    new_entry->reg_index = m_next_reg_index++;
+    m_entries.push_back(std::move(new_entry));
+}
+
+void DrawingSequence::Unregister(BaseObject* obj) noexcept
+{
+    if (!obj) return;
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
+        [obj](const std::unique_ptr<Entry>& entry) {
+            return entry->owner == obj;
+        }), m_entries.end());
+}
+
+void DrawingSequence::DrawAll()
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+	last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
+    // Sort by depth, then by registration order
+    std::sort(m_entries.begin(), m_entries.end(), [](const auto& a, const auto& b) {
+        int depth_a = a->owner->GetDepth();
+        int depth_b = b->owner->GetDepth();
+        if (depth_a != depth_b) {
+            return depth_a < depth_b;
+        }
+        return a->reg_index < b->reg_index;
+    });
+
+    for (const auto& entry : m_entries) {
+        if (entry->owner && entry->owner->IsVisible()) {
+            BaseObject* obj = entry->owner;
+            CF_Sprite sprite = obj->GetSprite();
+            
+            // Update sprite animation
+            cf_sprite_update(&sprite);
+
+            // Set sprite position from BaseObject
+            CF_V2 pos = obj->GetPosition();
+            sprite.transform.p = pos;
+
+            // Draw the sprite
+            PushFrameSprite(&sprite, obj->m_sprite_current_frame_index, obj->m_sprite_vertical_frame_count);
+            //cf_draw_sprite(&sprite);
+            obj->ShapeDraw();
+            if (!obj->m_collide_manifolds.empty()) {
+                for (const CF_Manifold& m : obj->m_collide_manifolds) obj->ManifoldDraw(m);
+            }
+
+            if (obj->m_sprite_update_freq > 0 &&
+                g_frame_count - obj->m_sprite_last_update_frame >= obj->m_sprite_update_freq) 
+            {
+                obj->m_sprite_last_update_frame = g_frame_count;
+                obj->m_sprite_current_frame_index = (obj->m_sprite_current_frame_index + 1) % obj->m_sprite_vertical_frame_count;
+            }
+        }
+    }
+}

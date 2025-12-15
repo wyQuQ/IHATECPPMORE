@@ -17,6 +17,9 @@ public:
             SpriteSetSource("/sprites/block2.png", 1);
         }
         SetPosition(target_position);
+		IsColliderApplyPivot(true);
+		IsColliderRotate(false);
+        SetPivot(-1.0f, -1.0f);
         Scale(0.5f);
         
         // 设置为实体碰撞类型

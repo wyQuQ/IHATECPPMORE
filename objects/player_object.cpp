@@ -19,7 +19,7 @@ void PlayerObject::Start()
     // 统一设置贴图路径、竖排帧数、动画更新频率和绘制深度，并注册到绘制序列
     // 如需要默认值，请使用高粒度的 SetSprite*() 和 Set*() 方法逐一设置非默认值参数
     // 资源路径无默认值，必须手动设置
-    SpriteSetStats("/sprites/idle.png", 3, 6, 0, false);
+    SpriteSetStats("/sprites/idle.png", 3, 6, 0);
 
     // 可选：初始化位置（根据需要调整），例如屏幕中心附近
     SetPosition(cf_v2(0.0f, 0.0f));
@@ -27,7 +27,8 @@ void PlayerObject::Start()
     Scale(0.5f);
 	AddTag("player");
 	ExcludeWithSolids(true);
-    SetCenteredAabb(18.0f, SpriteHeight()); // 设置以贴图中心为基准的碰撞 AABB
+    SetCenteredAabb(18.0f, SpriteHeight() / 2); // 设置以贴图中心为基准的碰撞 AABB
+    IsColliderRotate(false);
 
 	// 初始化跳跃状态
 	double_jump_ready = true;
@@ -140,7 +141,7 @@ void PlayerObject::OnExclusionSolid(const ObjManager::ObjToken& other_token, con
 void Tester::Start()
 {
     // 设置贴图路径、竖排帧数、动画更新频率和绘制深度
-    SpriteSetStats("/sprites/common_square.png", 1, 1, 0);
+    SpriteSetStats("/sprites/common_square_20.png", 20, 6, 0);
     // 初始化位置（根据需要调整）
     SetPosition(cf_v2(-200.0f, 0.0f));
 	tspeed = 4.0f; // 每帧移动速度
@@ -159,10 +160,10 @@ void Tester::Update()
         dir.x += 1;
     }
     if (Input::IsKeyInState(CF_KEY_K, KeyState::Hold)) {
-        dir.y -= 3;
+        dir.y -= 1;
     }
     if (Input::IsKeyInState(CF_KEY_I, KeyState::Hold)) {
-        dir.y += 3;
+        dir.y += 1;
     }
 	SetVelocity(dir * tspeed);
 }

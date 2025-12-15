@@ -117,11 +117,11 @@ void ObjManager::DestroyEntry(uint32_t index) noexcept
     // 增加 generation 使旧 token 失效（保证安全回收）
     ++e.generation;
 
-    // 清理所有指向该真实 index 的 pending -> real 映射，避免悬挂映射与内存增长
+    // 修复：清理 pending -> real 映射时，需同时检查 index 和 generation
     for (auto it = pending_to_real_map_.begin(); it != pending_to_real_map_.end(); ) {
-        if (it->second.index == index) {
+        if (it->second.index == index && it->second.generation == (e.generation - 1)) {
             OUTPUT({"ObjManager"}, "DestroyEntry: removing pending_to_real_map_ entry for pending id=",
-                      it->first, " -> index=", index);
+                      it->first, " -> index=", index, ", gen=", (e.generation - 1));
             it = pending_to_real_map_.erase(it);
         } else {
             ++it;
@@ -355,7 +355,9 @@ void ObjManager::UpdateAll() noexcept
             pending_creates_.erase(it);
         }
     }
+    
 }
+
 
 // 尝试将 pending token 转换为真实 token，若成功则更新 token 并返回 true，否则返回 false
 // - 非 const 版本会修改输入 token（将其替换为真实 token）
@@ -467,7 +469,7 @@ const BaseObject& ObjManager::operator[](const ObjToken& token) const
     return *e.ptr;
 }
 
-// 新增：按 tag 查询对象（需保证该tag只对应一个对象），并返回 token 列表
+// 按 tag 查询对象（找到含有对应Tag的第一个物体），并返回 token
 ObjManager::ObjToken ObjManager::FindTokensByTag(const std::string& tag) const noexcept
 {
     ObjToken out;
@@ -477,6 +479,7 @@ ObjManager::ObjToken ObjManager::FindTokensByTag(const std::string& tag) const n
         // 直接调用 BaseObject::HasTag（noexcept）
         if (e.ptr->HasTag(tag)) {
             out = ObjToken( i, e.generation, true );
+            break;
         }
     }
     return out;
