@@ -21,6 +21,7 @@
 #include "down_move_spike.h"
 #include "spike.h"
 #include "down_spike.h"
+#include "lateral_spike.h"
 #include "checkpoint.h"
 
 // 全局变量：
@@ -73,6 +74,7 @@ int main(int argc, char* argv[])
 	auto down_move_spike_token = objs.Create<DownMoveSpike>();
 	auto standing_spike1_token = objs.Create<Spike>(CF_V2(154.0f, -324.0f));
 	auto standing_down_spike1_token = objs.Create<DownSpike>(CF_V2(200.0f, -324.0f));
+	auto lateral_spike1_token = objs.Create<LateralSpike>(CF_V2(200.0f, -174.0f));
 
 #if TESTER
 	auto tester_token = objs.Create<Tester>();
