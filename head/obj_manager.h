@@ -20,11 +20,11 @@ class BaseObject;
 // ObjManager 为应用提供对象生命周期管理与句柄（token）系统，面向使用者说明：
 // - 提供基于 `ObjToken` 的对象引用与验证机制，避免裸指针悬挂问题。主流用法：
 //     auto tok = objs.Create<MyObject>(...); // 返回 pending token（pending id 存放在 token.index）
-//     // 下一帧 UpdateAll 提交后，token 可能被映射为真实 token（index -> objects_ 槽索引），可使用 TryGetRegisteration / operator[] 访问
-// - 支持延迟创建（CreateEntry 将对象放入 pending_creates_ 并立即调用 Start()，但直到下一帧 UpdateAll 才合并到 objects_）
-//   这样做可以避免在更新循环中动态分配导致迭代器/引用失效的问题。
-// - 支持延迟销毁（DestroyExisting 会将真实 token 入队，实际销毁在下一次 UpdateAll 的安全点执行）
-// - UpdateAll() 是统一的帧更新入口，职责包括：调用每个对象的 FramelyApply、推进 PhysicsSystem、执行对象 Update、处理 pending create/destroy。
+//     // 下一帧 UpdateAll 提交后，pending token 会被升级为真实 token（index -> objects_ 槽索引），可使用 TryGetRegisteration / operator[] 访问
+// - 支持延迟创建（CreateEntry 将对象放入 pending_creates_ 并立即调用 Start()，但直到下一帧 UpdateAll 才合并到 objects_ 且注册到 PhysicsSystem）
+//   这样做可避免在更新循环中动态分配导致迭代器失效，并允许在 pending 阶段提前访问对象（operator[] 直接查找 pending_creates_）。
+// - 支持延迟销毁（DestroyExisting 会将真实 token 入队，实际销毁在下一次 UpdateAll 的安全点执行；DestroyPending 会清理尚未合并的 pending）。
+// - UpdateAll() 是统一的帧更新入口，职责包括：FrameEnterApply、PhysicsSystem::Step、Update、FrameExitApply、处置销毁、提交 pending-create，并支持 skip_update_this_frame 标记跳过当帧更新。
 // 语义契约：
 // - ObjManager 的大部分接口不是线程安全的，应在主线程的游戏循环中使用。
 // - operator[] 在 token 无效时将抛出 std::out_of_range（并写入 std::cerr），调用方应捕获或先使用 IsValid/TryGetRegisteration 检查。
@@ -37,8 +37,8 @@ public:
 
     using ObjToken = ::ObjToken;
 
-    // Create: 立即构造对象并调用 Start()，但对象合并到内部容器并生成真实 ObjToken 会在下一帧 UpdateAll 的提交阶段完成。
-    // 返回 PendingToken 以便调用方追踪 pending 对象，并在合并后通过 ResolvePending/ TryGetRegisteration 获取真实 ObjToken。
+    // Create: 立即构造对象并调用 Start()，但对象会被放入 pending_creates_，直到下一帧 UpdateAll 的提交阶段才合并到 objects_ 并返回真正的 index/generation。
+    // 返回 PendingToken 便于调用者追踪对象。pending token 既可在 pending 阶段通过 operator[] 或 TryGetRegisteration 访问。
     template <typename T, typename... Args>
     ObjToken Create(Args&&... args)
     {
@@ -47,7 +47,7 @@ public:
     }
 
     // Create: 允许在构造后、Start() 前对对象进行初始化的版本，返回 PendingToken。
-    // 将第二个模板限制为只有当 initializer 可用作 `T*` 调用时才会成为可选候选
+    // 将第二个模板限制为只有当 initializer 可用于 `T*` 调用时才会参与重载决议。
     template <typename T, typename Init, typename... Args>
         requires std::is_invocable_v<std::decay_t<Init>, T*>
     ObjToken Create(Init&& initializer, Args&&... args)
@@ -73,6 +73,9 @@ public:
 
 	// 尝试把 token（可能是 pending）解析为已注册的真实 token：
 	// - 非 const 版本会在成功时用真实 token 覆盖输入 token 并返回 true（caller 可继续用该 token 访问对象）
+    // TryGetRegisteration:
+    // - 非 const 版本会修改 pending token，将其替换为真实 token（若已合并），并返回是否有效。
+    // - const 版本仅查询 pending->real 映射或验证已注册 token，不会修改输入。
     bool TryGetRegisteration(ObjToken& token) const noexcept;
     bool TryGetRegisteration(const ObjToken& token) const noexcept;
 
@@ -81,21 +84,24 @@ public:
     void Destroy(const ObjToken& p) noexcept;
 
     // DestroyAll: 立即销毁所有对象并清理所有挂起队列，通常在程序退出或重置时调用。
-    // - 会调用每个对象的 OnDestroy 并反注册物理系统，确保不会留下悬挂资源。
+    // - 会调用每个对象的 OnDestroy、反注册 PhysicsSystem 并让所有 token 失效。
     void DestroyAll() noexcept;
 
     // UpdateAll: 每帧主更新入口，顺序：
     // 1) 为每个活跃对象调用 FrameEnterApply()（物理积分/调试绘制/记录 prev pos）
     // 2) 调用 PhysicsSystem::Step()（碰撞检测与回调）
     // 3) 为每个活跃对象调用 Update()
-    // 4) 执行所有延迟销毁（在安全点处理，避免在遍历中删除）
-    // 5) 提交本帧 pending 创建（将 pending_creates_ 合并到 objects_ 并注册到物理系统）
+    // 4) 为每个活跃对象调用 FrameExitApply()
+    // 5) 执行所有延迟销毁（在安全点处理，避免在遍历中删除）
+    // 6) 提交本帧 pending 创建（将 pending_creates_ 合并到 objects_ 并注册到物理系统）
+    //    支持 skip_update_this_frame 标志以在本帧跳过更新。
     APPLIANCE void UpdateAll() noexcept;
 
     size_t Count() const noexcept { return alive_count_; }
 
     // 标签查询方法
     // 返回所有已合并并带有指定 tag 的 ObjToken（registered tokens）
+    // FindTokensByTag: 返回第一个仍在注册列表中的、拥有指定 tag 的对象 token。
     ObjToken FindTokensByTag(const std::string& tag) const noexcept;
 
 private:

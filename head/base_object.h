@@ -20,10 +20,11 @@
  * - `BaseObject` 将可渲染的 `CF_Sprite` 与物理表示 `BasePhysics` 组合，提供常用的安全公开接口：
  *   - 渲染/精灵控制：设置图片路径、帧率、翻转、缩放、旋转、可见性、深度等；
  *   - 物理控制（受限暴露）：位置/速度/力的安全 getter/setter、应用物理更新（Apply*）等；
- *   - 碰撞回调：`OnCollisionEnter/Stay/Exit` 及 `OnCollisionState`；
- *   - 碰撞形状设置：推荐使用 `SetCentered*` 系列构造常见形状；低级 `SetShape` 等标记为 BARE_SHAPE_API（不推荐，危险）；
+ *   - 帧边界钩子：`FrameEnterApply/StartFrame/EndFrame/FrameExitApply` 负责物理推进、碰撞信息缓存及每帧状态同步；
+ *   - 碰撞回调：`OnCollisionEnter/Stay/Exit`、排斥 Solid 的 `OnExclusionSolid` 以及统一的 `OnCollisionState`；
+ *   - 碰撞形状设置：推荐使用 `SetCentered*` 系列构造常见形状，低级 `SetShape` 等标记为 BARE_SHAPE_API（危险，需自行管理协调）；
  *   - 标签系统：`AddTag/HasTag/RemoveTag` 用于轻量标识对象；
- *   - 生命周期钩子：`Start/Update/EndFrame/OnDestroy`。
+ *   - 生命周期钩子：`Start/Update/OnDestroy`。
  *
  * 安全与使用指导（总体）：
  * - 推荐通过 `SetCenteredAabb/SetCenteredCircle/SetCenteredCapsule/SetCenteredPoly` 来设置碰撞体，
@@ -85,20 +86,21 @@ public:
      * FrameEnterApply
      * 场景主循环中“进入帧物理更新”时调用（框架会在正确时机调用）。
      * 功能：
-     * - 缓存上一帧位置（用于碰撞检测/插值/轨迹计算）
+     * - 清除上一帧收集的 `m_collide_manifolds` 并预留容纳空间，以便携带下一帧的碰撞数据
+     * - 先调用 `StartFrame` 让派生类准备状态，再按顺序应用力与速度
      * - 先应用力（ApplyForce），再应用速度（ApplyVelocity）
      * 注意：
      * - 该方法被标注为 APPLIANCE（弃用提示）——意味着引擎会自动调用，通常不应由用户手动在每帧调用，
      *   除非你确实需要在单帧中进行多次物理子步推进。
      */
-    APPLIANCE void FrameEnterApply() noexcept
-    {
-		m_collide_manifolds.clear();
-        m_collide_manifolds.reserve(4);
-		StartFrame();
-        ApplyForce();
-        ApplyVelocity();
-    }
+     APPLIANCE void FrameEnterApply() noexcept
+     {
+ 		m_collide_manifolds.clear();
+         m_collide_manifolds.reserve(4);
+ 		StartFrame();
+ 		ApplyForce();
+ 		ApplyVelocity();
+     }
 
     // 碰撞回调：派生类按需重载，都是 noexcept，建议不要抛异常
     // - OnCollisionEnter：第一次检测到碰撞时调用（Enter）
@@ -121,13 +123,8 @@ public:
      * FrameExitApply
      * 场景主循环中“退出帧处理”时调用。
      * 功能：
-     * - 如果调用者在本帧对位置使用了缓冲设置（SetPosition(..., buffer=true)），此处会合并目标位置并应用
-     *   （选择与当前坐标差绝对值最大的偏移分别应用到 x/y）。
      * - 调用 EndFrame（供派生类扩展）
-     * - 根据配置绘制调试（DebugDraw）
-     *
-     * 注意：
-     * - 缓冲位置机制用于收集在一帧内的多个目标位置并在帧尾一次性合并应用，避免中途干扰物理求解。
+	 * - 记录当前帧结束时的位置到 m_prev_position，以便下一帧使用。
      */
     APPLIANCE void FrameExitApply() noexcept
     {
@@ -177,7 +174,7 @@ public:
         SetRotation(new_rot);
     }
 
-    // 精灵翻转控制（仅影响渲染，若需要影响碰撞请自行处理）
+    // 精灵翻转控制（影响渲染和碰撞）
     bool SpriteGetFlipX() const { return m_sprite.scale.x < 0; }
     bool SpriteGetFlipY() const { return m_sprite.scale.y < 0; }
     void SpriteFlipX(bool x) {
@@ -186,7 +183,13 @@ public:
     }
     void SpriteFlipY(bool y) {
         float current_scale_y = std::abs(m_sprite.scale.y);
-        m_sprite.scale.y = y ? -current_scale_y : current_scale_y;
+        m_sprite.scale.y = y ? -current_scale_y : current_scale_y; 
+    }
+    void SpriteFlipX() {
+        m_sprite.scale.x = -m_sprite.scale.x; 
+    }
+	void SpriteFlipY() {
+        m_sprite.scale.y = -m_sprite.scale.y; 
     }
 
     // 缩放控制：ScaleX/ScaleY 会同时同步到底层 BasePhysics（影响碰撞形状缩放）
@@ -269,14 +272,6 @@ public:
     const CF_ShapeWrapper& GetShape() const noexcept { return get_shape(); }
     ColliderType GetColliderType() const noexcept { return get_collider_type(); }
 
-    /*
-     * SetPosition
-     * - buffer=false（默认）：立刻设置位置（直接调用 BasePhysics::set_position）
-     * - buffer=true：将位置放入 m_target_position 列表，直到 FrameExitApply 在帧尾统一合并并应用
-     * 场景下的使用建议：
-     * - 若你在一帧内多处逻辑可能设置对象位置，使用 buffer=true 可避免中间状态对碰撞/物理的即时影响，
-     *   框架会在帧尾按策略合并（选择 x/y 上最大的偏移）。
-     */
     void SetPosition(const CF_V2& p) noexcept { set_position(p); }
     void SetVelocity(const CF_V2& v) noexcept { set_velocity(v); }
     void SetVelocityX(float vx) noexcept { set_velocity_x(vx); }
@@ -366,10 +361,11 @@ public:
     BARE_SHAPE_API    void SetCapsule(const CF_Capsule& c) noexcept { set_shape(CF_ShapeWrapper::FromCapsule(c)); }
     BARE_SHAPE_API    void SetPoly(const CF_Poly& p) noexcept { set_shape(CF_ShapeWrapper::FromPoly(p)); }
 
+	// 排斥固体开关：开启后，OnCollisionState 会在与 SOLID 碰撞时调用 ExclusionWithSolid 进行退避处理
 	void ExcludeWithSolids(bool v) noexcept { m_exclude_with_solid = v; }
 
-	// 碰撞检测：检测与另一个对象是否碰撞，若碰撞则输出碰撞信息到 out_m，否则 out_m 置空
-    bool IsCollidedWith(const BaseObject& other, CF_Manifold& out_m) noexcept;
+	// 碰撞检测：直接比较两个对象当前的 shape，若重叠即填充 out_m 并返回 true
+	bool IsCollidedWith(const BaseObject& other, CF_Manifold& out_m) noexcept;
 
 
     // 碰撞相位枚举：用于统一的 OnCollisionState 调用
@@ -380,8 +376,9 @@ public:
      * 统一的碰撞状态分发器，根据相位调用相应的回调函数。
      * 使用建议：
      * - 引擎或管理器会调用此函数；派生类一般只需实现 OnCollisionEnter/Stay/Exit。
+     * - 内部会在处理完排斥（若启用）后将最终的 `CF_Manifold` 缓存到 `m_collide_manifolds`，以便调试和后续查询。
      */
-    APPLIANCE void OnCollisionState(const ObjManager::ObjToken& other, const CF_Manifold& manifold, CollisionPhase phase) noexcept;
+     APPLIANCE void OnCollisionState(const ObjManager::ObjToken& other, const CF_Manifold& manifold, CollisionPhase phase) noexcept;
 
 #if SHAPE_DEBUG
     // 调试绘制：如果启用宏则调用全局调试渲染函数
@@ -476,18 +473,21 @@ private:
     // 新增：用于支持 SpriteSetUpdateFreq
     std::string m_sprite_path;
     int m_sprite_vertical_frame_count = 1;
-    int m_sprite_current_frame_index = 0;
-	int m_sprite_update_freq = 1; // 每多少帧更新一次
-    int m_sprite_last_update_frame = 0;
+    int m_sprite_current_frame_index = 0; // 当前在雪碧图中的帧索引（垂直帧序列）
+	int m_sprite_update_freq = 1; // 每多少帧递增帧索引
+    int m_sprite_last_update_frame = 0; // 上一次实际切换帧的全局帧计数
 
     CF_V2 m_prev_position = CF_V2{ 0.0f, 0.0f };
 
     bool m_isColliderRotate = true;
     bool m_isColliderApplyPivot = true;
-	bool m_exclude_with_solid = false;
-    CF_Manifold ExclusionWithSolid(const ObjManager::ObjToken& oth, const CF_Manifold& m) noexcept;
-    void FindContactPos(CF_V2 current, CF_V2 offset, const BaseObject& other, CF_Manifold& res);
-    std::vector<CF_Manifold> m_collide_manifolds;
+	bool m_exclude_with_solid = false; // OnCollisionState 在检测到 SOLID 后根据该标志决定是否调用 ExclusionWithSolid
+	// 排斥固体的退避逻辑：尝试沿着速度/法线回退，直到不再重叠
+     CF_Manifold ExclusionWithSolid(const ObjManager::ObjToken& oth, const CF_Manifold& m) noexcept;
+	// 二分查找接触点位置，在排斥过程中用于逼近刚好接触的坐标
+     void FindContactPos(CF_V2 current, CF_V2 offset, const BaseObject& other, CF_Manifold& res);
+ 	// 每帧累积的碰撞信息（仅用于调试/后续逻辑），在 FrameEnterApply 开头清空
+     std::vector<CF_Manifold> m_collide_manifolds;
 
 	std::unordered_set<std::string> tags;
 

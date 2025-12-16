@@ -1,51 +1,28 @@
 # ObjManager
 
-## 概述  
-`ObjManager` 提供对象集中管理、生命周期控制与句柄（`ObjToken`）系统，保证在创建、销毁与每帧更新过程中对对象集合的安全操作（避免迭代时修改导致的不一致）。设计采用延迟创建/延迟销毁队列与 (index, generation) token 机制以防止悬挂引用。构造/销毁的实际注册与注销在安全点（`UpdateAll()` 的提交阶段）完成。
+## 概述
+`ObjManager` 维护一个 BaseObject 的单例容器，使用 ObjToken 将延迟创建的 pending 对象与已注册对象区分开来，并通过 UpdateAll 完成每帧的物理/碰撞与生命周期调度。
 
-## 设计要点与契约
-- token 语义：`ObjToken` 使用 `(index, generation)`，当某个 slot 被回收并复用时会增加 generation，从而让旧 token 失效。
-- 延迟创建/销毁：
-  - 创建：`CreateEntry` 会把刚构造的对象放入 `pending_creates_`（pending 区），并会立即调用对象的 `Start()`。真实槽位与最终的 `ObjToken` 会在下一次 `UpdateAll()` 的提交阶段合并（并在 `pending_to_real_map_` 中写回对应关系）。
-  - 销毁：区分 pending 与 existing。`DestroyPending` 可直接销毁尚未合并的 pending 对象；`DestroyExisting` 会将已注册的 token 入队 `pending_destroys_`，实际销毁在 `UpdateAll()` 的安全点执行以避免在遍历期间删除对象。
-- 单线程契约：`ObjManager` 的绝大多数接口非线程安全，应在主线程（游戏循环）使用；跨线程需由调用方自行同步。
+## 接口说明
+- `Create<T>(Args&&...)`：构建派生自 BaseObject 的对象并立即执行 Start()，返回 pending ObjToken（`isRegitsered == false`），对象会被置入 `pending_creates_`，在下一帧 UpdateAll 提交后升级为真实 token 并参与物理系统。
+- `Create<T>(Init&&, Args&&...)`：同上，但可以在 Start 前通过 `initializer(T*)` 调整对象状态；`Init` 仅在可调用时参与重载决议。
+- `IsValid(const ObjToken&)`：验证一个已注册 token 是否仍然指向活跃对象（检查 index、generation 与 alive 标志），不展开 pending token。
+- `operator[](ObjToken&)`：非 const 版在 pending token 情况下直接检索 pending_creates_ 并返回 BaseObject，若已提交则通过 TryGetRegisteration 更新 token 后委托 const 版；抛出异常时会记录到 std::cerr。
+- `operator[](const ObjToken&)`：const 版本仅接受已注册 token，确保 index/generation/alive/pointer 通过后返回 BaseObject&。
+- `TryGetRegisteration(ObjToken&)`：非 const 版本会尝试使用 `pending_to_real_map_` 将 pending token 替换为已注册 token（或验证已有 token），返回是否有效；对 pending 阶段的访问必要时会修改 token。
+- `TryGetRegisteration(const ObjToken&)`：const 版本只查询映射或验证，**不**修改输入 token；常用于需要在只读上下文确认 token 状态时调用。
+- `Destroy(const ObjToken&)`：对 pending token 会走 DestroyPending，立即销毁 pending BaseObject；对已注册 token 会将其入队 `pending_destroys_`，等待 UpdateAll 安全地调用 DestroyEntry、OnDestroy 与 PhysicsSystem::Unregister。
+- `DestroyAll()`：清空 pending 和 registered 所有对象，逐个调用 BaseObject::OnDestroy、让 ObjToken 失效、同时反注册 PhysicsSystem 并重置索引池，适合退出或场景重置时使用。
+- `UpdateAll()`：每帧调度入口，顺序为 FrameEnterApply（可清理 `m_collide_manifolds` 并应用物理）、PhysicsSystem::Step（触发 OnCollisionState）、Update、FrameExitApply、处理 pending 销毁、提交 pending 创建并为新对象注册 PhysicsSystem、支持 skip_update_this_frame 使某些对象在本帧跳过上述调用。
+- `FindTokensByTag(const std::string&)`：遍历 registered `objects_`，返回第一个拥有指定 tag 的对象 token（可用于快速查找 Active BaseObject）。
+- `Count()`：返回包含 pending 的当前 alive 对象数量。
 
-## 每帧流程与 UpdateAll 顺序
-`UpdateAll()`（被标记为 `APPLIANCE`，表示涉及每帧物理更新并由框架自动在正确时机调用）的大致执行顺序：
-1. 为每个已合并且活跃的对象调用 `FrameEnterApply()`（缓存上一帧位置并执行 `ApplyForce()`/`ApplyVelocity()` 等物理子步）。
-2. 调用物理系统步进（例如 `PhysicsSystem::Step()`，负责碰撞检测并触发碰撞回调）。
-3. 为每个已合并对象调用 `Update()`（游戏逻辑/行为）。
-4. 处理 `pending_destroys_` 中的销毁请求（调用 `DestroyEntry` 等内部实现，触发 `OnDestroy()` 并反注册物理系统）。
-5. 提交本帧 `pending_creates_`：为 pending 对象分配 slots、写回真实 `ObjToken`（并更新 `pending_to_real_map_`）、在物理系统中注册对象。  
-注意：条目中存在 `skip_update_this_frame` 标志，合并/注册时可能用到以控制是否跳过本帧的帧级更新。
+## 底层结构要点
+- `pending_creates_` 与 `pending_ptr_to_id_` 保存尚未合并的 BaseObject，Create 立即调用 Start 但只在 UpdateAll 提交后完成物理注册并写入 `pending_to_real_map_`；operator[] 可访问 pending 创建的对象。
+- `objects_` 维护已注册对象条目，带 `generation`、`alive` 与 `skip_update_this_frame` 标志；`free_indices_` 可复用已销毁 slot。
+- `pending_destroys_` 和 `pending_destroy_set_` 避免重复销毁，一旦 UpdateAll 执行 DestroyEntry，就会调用 BaseObject::OnDestroy 并使对应 ObjToken 失效。
+- `object_index_map_` 允许 BaseObject* 反查所在 index，用于物理系统与 DestroyEntry。
 
-## 主要 API（概览与语义）
-- Create：
-  - `template <typename T, ...> ObjToken Create(Args&&... args)`：构造对象并返回 pending token（对象处于 pending 状态且已调用 `Start()`）。
-  - `template <typename T, typename Init, ...> ObjToken Create(Init&& initializer, Args&&... args)`：允许在 `Start()` 前对对象做初始设置；该重载受约束，仅在 `initializer` 可对 `T*` 调用时才参与重载决议。
-- 访问与验证：
-  - `bool IsValid(const ObjToken& token) const noexcept`：检查 token 是否指向当前已合并且仍然存活的对象。
-  - `BaseObject& operator[](ObjToken& token)` / `BaseObject& operator[](const ObjToken& token)` / const 版本：通过 token 获取对象引用。语义：若 token 无效会抛出 `std::out_of_range`（并写入 `std::cerr`）。对于 pending token，实施层会尝试解析 pending（或使用 `TryGetRegisteration` 升级为真实 token）；非 const 版本在成功解析后会修改传入 token（将 pending token 替换为真实 token）。
-  - `bool TryGetRegisteration(ObjToken& token) const noexcept` / `bool TryGetRegisteration(const ObjToken& token) const noexcept`：尝试将可能的 pending token 升级为已注册的真实 token。非 const 版本在成功时会用真实 token 覆盖输入 token 并返回 true，方便后续直接用该 token 访问对象。
-- 销毁：
-  - `void Destroy(const ObjToken& p) noexcept`：智能判断并处理 pending / existing token；对于已注册对象会将其入队延迟销毁，对于 pending 直接销毁 pending 记录。
-  - `void DestroyAll() noexcept`：立即销毁所有对象并清理所有 pending 列表（会调用每个对象的 `OnDestroy()` 并反注册物理系统）。
-- 其它：
-  - `APPLIANCE void UpdateAll() noexcept`：每帧主入口，负责 `FrameEnterApply()`/物理步进/`Update()`/pending 销毁/pending 创建的合并与注册。
-  - `size_t Count() const noexcept`：返回当前活跃对象计数（包含 pending 创建）。
-
-## 内部数据结构说明（对使用者有参考价值）
-- `objects_`：已合并对象槽（vector of Entry），Entry 包含 `unique_ptr<BaseObject>`、`generation`、`alive`、以及 `skip_update_this_frame` 标志。
-- `free_indices_`：空闲槽索引池，用于复用槽位。
-- `object_index_map_`：仅包含已合并对象的从 `BaseObject*` 到 `objects_` 索引的映射，便于快速查找。
-- `pending_creates_`（map：pending id -> PendingCreate）与 `pending_ptr_to_id_`（从 ptr 到 pending id 的快速映射）：保存本帧刚创建但尚未合并的对象。
-- `pending_to_real_map_`：合并完成后记录 pending id -> 真正的 `ObjToken`，便于上层或调用方解析 pending。
-- `pending_destroys_` / `pending_destroy_set_`：延迟销毁队列及其去重集合（用于避免重复入队）。
-- `next_pending_id_` 从 1 开始单调递增用于生成 pending id。
-- `alive_count_`：当前存活对象计数（包含 pending）。
-
-## 实现备注与注意事项（对调用方的建议）
-- Create 后对象会立即执行 `Start()`，但直到下一次 `UpdateAll()` 才会被合并为真正的已注册对象并获得可在 `object_index_map_` 中查找的真实 token。
-- 在遍历/更新循环中不要直接 delete 对象；应使用 `Destroy()` 将销毁请求放入队列或销毁 pending，以确保在安全点完成清理。
-- 若需要在创建后立刻以真实 token 访问对象，调用方应在下一次 `UpdateAll()` 提交后使用 `TryGetRegisteration` 或检查 `pending_to_real_map_`（由 `ObjManager` 写入）来解析真实 token。
-- `ObjManager` 假定在主线程使用；跨线程访问必须由调用方保证同步，否则可能出现数据竞争或不一致行为。
+## 使用约定
+- 以上接口均非线程安全，应在主线程的游戏循环中调用。
+- APPLIANCE 标记的方法（如 UpdateAll）涉及每帧物理/碰撞推进，通常由框架驱动，不要手动在每帧重复调用。
