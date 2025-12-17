@@ -54,6 +54,10 @@ public:
 			objs.Create<BlockObject>(cf_v2(-hw, y), false);
 		}
 		for (float y = -hh; y < hh; y += 36) {
+			objs.Create<BlockObject>(cf_v2(-hw + 72, y), false);
+		}
+
+		for (float y = -hh; y < hh; y += 36) {
 			objs.Create<BlockObject>(cf_v2(hw - 36.0f, y), false);
 		}
 		for (float x = -hw + 36; x < hw - 36; x += 36) {

@@ -6,104 +6,108 @@
 #include "delegate.h"
 #include "cute_coroutine.h"
 
-class BaseObject; // Ç°ÏòÉùÃ÷£¬±ÜÃâÍ·ÎÄ¼şÑ­»·ÒıÓÃ
+class BaseObject; // å‰å‘å£°æ˜ï¼Œé¿å…å¤´æ–‡ä»¶å¾ªç¯å¼•ç”¨
 
 /// <summary>
-/// ActSeq - Ò»¸öÇáÁ¿µÄ¶¯×÷Á´£¨Ö¡Îªµ¥Î»£©Ö´ĞĞÆ÷¡£
+/// ActSeq - ä¸€ä¸ªè½»é‡çš„åŠ¨ä½œé“¾ï¼ˆå¸§ä¸ºå•ä½ï¼‰æ‰§è¡Œå™¨ã€‚
 ///
-/// Éè¼ÆÄ¿±ê£¨Ä£·Â `delegate.h` µÄ·ç¸ñÓë×¢ÊÍÏ°¹ß£©£º
-/// - ´æ´¢Èô¸É°´Ë³ĞòÖ´ĞĞµÄ¶¯×÷£¨Ã¿¸ö¶¯×÷°üº¬³ÖĞøÖ¡ÊıºÍÒªÖ´ĞĞµÄ»Øµ÷£©¡£
-/// - µ±µ÷ÓÃ `play` Ê±£¬ÎªÖ¸¶¨µÄ `BaseObject*` ´´½¨²¢Æô¶¯Ò»¸ö Coroutine£¬°´¶¯×÷Á´Ë³ĞòÖ´ĞĞ¶¯×÷£»Ã¿¸ö¶¯×÷»áÔÚÖ¸¶¨Ö¡ÊıÄÚÃ¿Ö¡µ÷ÓÃ»Øµ÷£¬²¢´«µİ½ø¶ÈĞÅÏ¢£¨µ±Ç°Ö¡/×ÜÖ¡Êı£©¡£
-/// - ¸ÃÊµÏÖ½«Ğ­³ÌµÄ resume ¹¤×÷¹ÒÔØµ½È«¾ÖµÄ `main_thread_on_update`£¨ÀàĞÍ¼û `delegate.h`£©£¬Ã¿Ö¡ÓÉ¸ÃÎ¯ÍĞÇı¶¯Ò»´Î resume£¬Ğ­³Ì½áÊøºó×Ô¶¯´ÓÎ¯ÍĞÒÆ³ı²¢Ïú»ÙĞ­³Ì¼°ÉÏÏÂÎÄÄÚ´æ¡£
-/// - Ïß³Ì°²È«£º¶Ô¶¯×÷Á´µÄĞŞ¸ÄÊÜ»¥³âËø±£»¤£¨`add/clear`£©¡£
+/// è®¾è®¡ç›®æ ‡ï¼ˆæ¨¡ä»¿ `delegate.h` çš„é£æ ¼ä¸æ³¨é‡Šä¹ æƒ¯ï¼‰ï¼š
+/// - å­˜å‚¨è‹¥å¹²æŒ‰é¡ºåºæ‰§è¡Œçš„åŠ¨ä½œï¼ˆæ¯ä¸ªåŠ¨ä½œåŒ…å«æŒç»­å¸§æ•°å’Œè¦æ‰§è¡Œçš„å›è°ƒï¼‰ã€‚
+/// - å½“è°ƒç”¨ `play` æ—¶ï¼Œä¸ºæŒ‡å®šçš„ `BaseObject*` åˆ›å»ºå¹¶å¯åŠ¨ä¸€ä¸ª Coroutineï¼ŒæŒ‰åŠ¨ä½œé“¾é¡ºåºæ‰§è¡ŒåŠ¨ä½œï¼›æ¯ä¸ªåŠ¨ä½œä¼šåœ¨æŒ‡å®šå¸§æ•°å†…æ¯å¸§è°ƒç”¨å›è°ƒï¼Œå¹¶ä¼ é€’è¿›åº¦ä¿¡æ¯ï¼ˆå½“å‰å¸§/æ€»å¸§æ•°ï¼‰ã€‚
+/// - è¯¥å®ç°å°†åç¨‹çš„ resume å·¥ä½œæŒ‚è½½åˆ°å…¨å±€çš„ `main_thread_on_update`ï¼ˆç±»å‹è§ `delegate.h`ï¼‰ï¼Œæ¯å¸§ç”±è¯¥å§”æ‰˜é©±åŠ¨ä¸€æ¬¡ resumeï¼Œåç¨‹ç»“æŸåè‡ªåŠ¨ä»å§”æ‰˜ç§»é™¤å¹¶é”€æ¯åç¨‹åŠä¸Šä¸‹æ–‡å†…å­˜ã€‚
+/// - çº¿ç¨‹å®‰å…¨ï¼šå¯¹åŠ¨ä½œé“¾çš„ä¿®æ”¹å—äº’æ–¥é”ä¿æŠ¤ï¼ˆ`add/clear`ï¼‰ã€‚
 ///
-/// ×¢ÒâÊÂÏî£º
-/// - ³ÖĞøÊ±¼äÊ¹ÓÃ"Ö¡Êı£¨frames£©"µ¥Î»£»µ÷ÓÃ·½Ó¦È·±£ `main_thread_on_update` ÔÚÃ¿Ö¡±»´¥·¢Ò»´Î£¨Í¨³£ÔÚÖ÷Ñ­»·£©¡£
-/// - ¶¯×÷»Øµ÷Ç©ÃûÎª `std::function<void(BaseObject*, int, int)>`£¬²ÎÊıÎª£º¶ÔÏóÖ¸Õë¡¢µ±Ç°Ö¡Ë÷Òı£¨0-based£©¡¢×ÜÖ¡Êı¡£
-/// - Ğ­³Ì×ÊÔ´£º±¾ÀàÔÚ `play` ÄÚ²¿·ÖÅäÒ»¸öÉÏÏÂÎÄÖ¸Õë£¨ÔÚĞ­³Ì½áÊøÊ±ÓÉ update-lambda ÇåÀí£©£¬²¢ÔÚĞ­³ÌËÀÍöÊ±µ÷ÓÃ `Cute::destroy_coroutine` À´ÊÍ·ÅĞ­³Ì¾ä±ú¡£
+/// æ³¨æ„äº‹é¡¹ï¼š
+/// - æŒç»­æ—¶é—´ä½¿ç”¨"å¸§æ•°ï¼ˆframesï¼‰"å•ä½ï¼›è°ƒç”¨æ–¹åº”ç¡®ä¿ `main_thread_on_update` åœ¨æ¯å¸§è¢«è§¦å‘ä¸€æ¬¡ï¼ˆé€šå¸¸åœ¨ä¸»å¾ªç¯ï¼‰ã€‚
+/// - åŠ¨ä½œå›è°ƒç­¾åä¸º `std::function<void(BaseObject*, int, int)>`ï¼Œå‚æ•°ä¸ºï¼šå¯¹è±¡æŒ‡é’ˆã€å½“å‰å¸§ç´¢å¼•ï¼ˆ0-basedï¼‰ã€æ€»å¸§æ•°ã€‚
+/// - åç¨‹èµ„æºï¼šæœ¬ç±»åœ¨ `play` å†…éƒ¨åˆ†é…ä¸€ä¸ªä¸Šä¸‹æ–‡æŒ‡é’ˆï¼ˆåœ¨åç¨‹ç»“æŸæ—¶ç”± update-lambda æ¸…ç†ï¼‰ï¼Œå¹¶åœ¨åç¨‹æ­»äº¡æ—¶è°ƒç”¨ `Cute::destroy_coroutine` æ¥é‡Šæ”¾åç¨‹å¥æŸ„ã€‚
 /// </summary>
 class ActSeq {
 public:
-    using Handler = std::function<void(BaseObject*, int, int)>; // ĞŞ¸Ä£º´«µİµ±Ç°Ö¡ºÍ×ÜÖ¡Êı
+    using Handler = std::function<void(BaseObject*, int, int)>; // ä¿®æ”¹ï¼šä¼ é€’å½“å‰å¸§å’Œæ€»å¸§æ•°
     using Frames = int;
 
     ActSeq() = default;
 
-    // Ìí¼ÓÒ»¸ö¶¯×÷£¬·µ»Ø¸Ã¶¯×÷ÔÚÁ´ÖĞµÄË÷Òı£¨´Ó0¿ªÊ¼£©
+    // æ·»åŠ ä¸€ä¸ªåŠ¨ä½œï¼Œè¿”å›è¯¥åŠ¨ä½œåœ¨é“¾ä¸­çš„ç´¢å¼•ï¼ˆä»0å¼€å§‹ï¼‰
     size_t add(Frames frames, Handler h) {
         std::lock_guard<std::mutex> lg(mutex_);
         steps_.push_back(Step{ frames, std::move(h) });
         return steps_.size() - 1;
     }
 
-    // Çå¿Õ¶¯×÷Á´
+    // æ¸…ç©ºåŠ¨ä½œé“¾
     void clear() {
         std::lock_guard<std::mutex> lg(mutex_);
         steps_.clear();
     }
 
-    // ÊÇ·ñÎª¿Õ
+    // æ˜¯å¦ä¸ºç©º
     bool empty() const {
         std::lock_guard<std::mutex> lg(mutex_);
         return steps_.empty();
     }
 
-    // ²¥·Å¶¯×÷Á´£ºÎªÖ¸¶¨¶ÔÏó´´½¨Ğ­³Ì²¢Á¢¼´¿ªÊ¼£¨ÓÉ main_thread_on_update Çı¶¯£©
-    // ·µ»Ø true ±íÊ¾ÒÑ³É¹¦´´½¨Ğ­³Ì²¢¿ªÊ¼²¥·Å£»·µ»Ø false ±íÊ¾¶¯×÷Á´Îª¿Õ»ò´´½¨Ê§°Ü¡£
-    bool play(BaseObject* obj) {
+    // æ’­æ”¾åŠ¨ä½œé“¾ï¼šä¸ºæŒ‡å®šå¯¹è±¡åˆ›å»ºåç¨‹å¹¶ç«‹å³å¼€å§‹ï¼ˆç”± main_thread_on_update é©±åŠ¨ï¼‰
+    // è¿”å› true è¡¨ç¤ºå·²æˆåŠŸåˆ›å»ºåç¨‹å¹¶å¼€å§‹æ’­æ”¾ï¼›è¿”å› false è¡¨ç¤ºåŠ¨ä½œé“¾ä¸ºç©ºæˆ–åˆ›å»ºå¤±è´¥ã€‚
+    bool play(BaseObject* obj, bool loop = false) {
         CF_Coroutine co;
         {
             std::lock_guard<std::mutex> lg(mutex_);
             if (steps_.empty() || obj == nullptr) return false;
 
-            // ÉÏÏÂÎÄ½á¹¹£¬´«ÈëĞ­³ÌµÄ udata
+            // ä¸Šä¸‹æ–‡ç»“æ„ï¼Œä¼ å…¥åç¨‹çš„ udata
             struct Context {
                 ActSeq const* seq;
                 BaseObject* obj;
                 CF_Coroutine co;
                 std::size_t update_token;
+                bool loop;
             };
 
-            // ·ÖÅäÉÏÏÂÎÄ²¢ÌîÈëĞòÁĞÖ¸ÕëÓë¶ÔÏóÖ¸Õë£»co ´ı»áÉèÖÃ
-            Context* ctx = new Context{ this, obj, CF_Coroutine{0}, 0 };
+            // åˆ†é…ä¸Šä¸‹æ–‡å¹¶å¡«å…¥åºåˆ—æŒ‡é’ˆä¸å¯¹è±¡æŒ‡é’ˆï¼›co å¾…ä¼šè®¾ç½®
+            Context* ctx = new Context{ this, obj, CF_Coroutine{0}, 0, loop };
 
-            // Ğ­³ÌÈë¿Ú£¨C ·ç¸ñº¯ÊıÖ¸Õë£©£¬´Ó udata »ñÈ¡ ctx ²¢°´²½Ö´ĞĞ
+            // åç¨‹å…¥å£ï¼ˆC é£æ ¼å‡½æ•°æŒ‡é’ˆï¼‰ï¼Œä» udata è·å– ctx å¹¶æŒ‰æ­¥æ‰§è¡Œ
             auto coroutine_fn = [](CF_Coroutine co) {
                 Context* c = static_cast<Context*>(Cute::coroutine_get_udata(co));
                 if (!c || !c->seq) return;
                 const ActSeq* seq = c->seq;
 
-                // Öğ²½Ö´ĞĞ¶¯×÷Á´£ºÔÚÖ¸¶¨Ö¡ÊıÄÚÃ¿Ö¡µ÷ÓÃ»Øµ÷
+                // é€æ­¥æ‰§è¡ŒåŠ¨ä½œé“¾ï¼šåœ¨æŒ‡å®šå¸§æ•°å†…æ¯å¸§è°ƒç”¨å›è°ƒ
                 for (size_t i = 0; ; ++i) {
-                    // ¶ÁÈ¡µ±Ç°²½ÖèÏß³Ì°²È«µØ£¨Ö»¶Á·ÃÎÊ£¬ÔÊĞí²¢·¢ĞŞ¸Ä£©
+                    // è¯»å–å½“å‰æ­¥éª¤çº¿ç¨‹å®‰å…¨åœ°ï¼ˆåªè¯»è®¿é—®ï¼Œå…è®¸å¹¶å‘ä¿®æ”¹ï¼‰
                     ActSeq::Step step;
                     {
                         std::lock_guard<std::mutex> lg(seq->mutex_);
-                        if (i >= seq->steps_.size()) break;
-                        step = seq->steps_[i];
+                        if (i >= seq->steps_.size()) {
+                            if (!c->loop) break; // ï¿½ï¿½ï¿½Ã»ï¿½Ğ³ï¿½Ñ­ï¿½ï¿½ï¿½Ë³ï¿½
+                            i = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+                        }
+                        step = seq->steps_[i % seq->steps_.size()];
                     }
 
-                    // ĞŞ¸Ä£ºÔÚÖ¸¶¨Ö¡ÊıÄÚÃ¿Ö¡µ÷ÓÃ»Øµ÷£¬²¢´«µİ½ø¶ÈĞÅÏ¢
+                    // ä¿®æ”¹ï¼šåœ¨æŒ‡å®šå¸§æ•°å†…æ¯å¸§è°ƒç”¨å›è°ƒï¼Œå¹¶ä¼ é€’è¿›åº¦ä¿¡æ¯
                     for (int f = 0; f < step.frames; ++f) {
                         if (step.h) step.h(c->obj, f, step.frames);
                         Cute::coroutine_yield(co);
                     }
                 }
 
-                // Ğ­³Ìº¯Êı·µ»Ø -> ×´Ì¬»á±äÎª DEAD£¬½»ÓÉ update-lambda »ØÊÕ×ÊÔ´£¨¼û play ÖĞµÄ lambda£©
+                // åç¨‹å‡½æ•°è¿”å› -> çŠ¶æ€ä¼šå˜ä¸º DEADï¼Œäº¤ç”± update-lambda å›æ”¶èµ„æºï¼ˆè§ play ä¸­çš„ lambdaï¼‰
             };
 
-            // ´´½¨Ğ­³Ì£¨´«Èë ctx ×÷Îª udata£©
+            // åˆ›å»ºåç¨‹ï¼ˆä¼ å…¥ ctx ä½œä¸º udataï¼‰
             co = Cute::make_coroutine(coroutine_fn, 0, ctx);
             ctx->co = co;
 
-            // ½«Ğ­³ÌµÄ resume ¹ÒÔØµ½È«¾ÖÖ¡¸üĞÂÎ¯ÍĞ£¬¸ºÔğÃ¿Ö¡ resume£¬²¢ÔÚĞ­³Ì½áÊøÊ±ÇåÀí×ÊÔ´
+            // å°†åç¨‹çš„ resume æŒ‚è½½åˆ°å…¨å±€å¸§æ›´æ–°å§”æ‰˜ï¼Œè´Ÿè´£æ¯å¸§ resumeï¼Œå¹¶åœ¨åç¨‹ç»“æŸæ—¶æ¸…ç†èµ„æº
             ctx->update_token = main_thread_on_update.add([ctx]() {
-                // Èç¹ûĞ­³Ì»¹»î×Å£¬Ôò resume£»·ñÔò»ØÊÕ
+                // å¦‚æœåç¨‹è¿˜æ´»ç€ï¼Œåˆ™ resumeï¼›å¦åˆ™å›æ”¶
                 if (Cute::coroutine_state(ctx->co) != CF_COROUTINE_STATE_DEAD) {
                     Cute::coroutine_resume(ctx->co);
                 } else {
-                    // ÒÆ³ı×Ô¼º²¢ÊÍ·Å×ÊÔ´
+                    // ç§»é™¤è‡ªå·±å¹¶é‡Šæ”¾èµ„æº
                     main_thread_on_update.remove(ctx->update_token);
                     Cute::destroy_coroutine(ctx->co);
                     delete ctx;
@@ -111,8 +115,8 @@ public:
             });
         }
 
-        // ¿ªÊ¼µÚÒ»´Î resume£¨¿É²»×ö£¬Ò²¿ÉÒÔÔÚÏÂÒ»Ö¡ÓÉÎ¯ÍĞÇı¶¯£»ÕâÀïÁ¢¼´¿ªÊ¼Ò»´ÎÒÔÂíÉÏ´¥·¢¶¯×÷£©
-        // ÒÆµ½Ëø×÷ÓÃÓòÖ®Íâ£¬±ÜÃâÔÚ³ÖÓĞ mutex_ Ê±µ÷ÓÃĞ­³Ìµ¼ÖÂµİ¹éËø
+        // å¼€å§‹ç¬¬ä¸€æ¬¡ resumeï¼ˆå¯ä¸åšï¼Œä¹Ÿå¯ä»¥åœ¨ä¸‹ä¸€å¸§ç”±å§”æ‰˜é©±åŠ¨ï¼›è¿™é‡Œç«‹å³å¼€å§‹ä¸€æ¬¡ä»¥é©¬ä¸Šè§¦å‘åŠ¨ä½œï¼‰
+        // ç§»åˆ°é”ä½œç”¨åŸŸä¹‹å¤–ï¼Œé¿å…åœ¨æŒæœ‰ mutex_ æ—¶è°ƒç”¨åç¨‹å¯¼è‡´é€’å½’é”
         Cute::coroutine_resume(co);
 
         return true;

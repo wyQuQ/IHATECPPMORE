@@ -22,6 +22,7 @@ void PlayerObject::Start()
     // 资源路径无默认值，必须手动设置
     SpriteSetStats("/sprites/idle.png", 3, 6, 0);
 
+
     // 可选：初始化位置（根据需要调整），例如屏幕中心附近
     SetPosition(respawn_point);
 

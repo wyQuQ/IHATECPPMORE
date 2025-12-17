@@ -21,8 +21,8 @@ private:
 	bool grounded = false;
 	bool double_jump_ready = true;
 	float jump_input_timer = 0.0f;
-	// ¼ÇÂ¼ÉÏÒ»¸öcheckpoint£¨»òÄ¬ÈÏ¸´»îµã) µÄÎ»ÖÃ£¬ÓÃÓÚÍæ¼Ò¸´»î/´«ËÍÊ¹ÓÃ
-	// -µ±Ç°ÏòÁ¿ÎªÄ¬ÈÏÎ»ÖÃ£º
+	// è®°å½•ä¸Šä¸€ä¸ªcheckpointï¼ˆæˆ–é»˜è®¤å¤æ´»ç‚¹) çš„ä½ç½®ï¼Œç”¨äºç©å®¶å¤æ´»/ä¼ é€ä½¿ç”¨
+	// -å½“å‰å‘é‡ä¸ºé»˜è®¤ä½ç½®ï¼š
 	CF_V2 respawn_point;
 };
 
