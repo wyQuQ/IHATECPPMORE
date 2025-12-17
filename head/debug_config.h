@@ -22,7 +22,7 @@
 #define SHAPE_DEBUG MCG_DEBUG
 #endif
 #ifndef TESTER
-#define TESTER MCG_DEBUG
+#define TESTER 0
 #endif
 #ifndef MESSAGE_DEBUG
 #define MESSAGE_DEBUG MCG_DEBUG
