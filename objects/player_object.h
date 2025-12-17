@@ -8,7 +8,7 @@
 
 class PlayerObject : public BaseObject {
 public:
-    PlayerObject() noexcept : BaseObject() {}
+    PlayerObject(const CF_V2& pos) noexcept : BaseObject() , respawn_point(pos) {}
     ~PlayerObject() noexcept {}
 
     void Start() override;
@@ -21,6 +21,9 @@ private:
 	bool grounded = false;
 	bool double_jump_ready = true;
 	float jump_input_timer = 0.0f;
+	// 记录上一个checkpoint（或默认复活点) 的位置，用于玩家复活/传送使用
+	// -当前向量为默认位置：
+	CF_V2 respawn_point;
 };
 
 #if TESTER

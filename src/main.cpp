@@ -116,7 +116,65 @@ int main(int argc, char* argv[])
 		// ---- 你当前的测试绘制（参考方形 / 文本 等） ----
 		DrawUI::TestDraw();
 		// 如果处于 game over 状态，绘制覆盖提示（屏幕中央），放大并居中，行间插分割线
-		if (game_over) { DrawUI::GameOverDraw(); }
+		if (game_over) {
+			const char* title = "GAME OVER";
+			const char* hint = "Press R to continue";
+
+			// 放大倍数（可调）
+			const float scale_mult = 1.8f;
+
+			// 基准字号（像素），根据需要调整
+			const float base_title_size = 48.0f;
+			const float base_hint_size = 20.0f;
+			float title_size = base_title_size * scale_mult;
+			float hint_size = base_hint_size * scale_mult;
+
+			// push font size -> cf_text_size 会使用当前 font size
+			cf_push_font_size(title_size);
+			CF_V2 title_sz = cf_text_size(title, -1);
+			cf_pop_font_size();
+
+			cf_push_font_size(hint_size);
+			CF_V2 hint_sz = cf_text_size(hint, -1);
+			cf_pop_font_size();
+
+			float max_w = std::max(title_sz.x, hint_sz.x);
+			// 行 Y 偏移（以像素为单位，屏幕中心为原点，向上为正）
+			const float title_y = title_sz.y;
+			const float hint_y = -12.0f;
+			const float separator_y = 0;
+
+			// 绘制半透明背景遮罩（提高对比度）
+			cf_draw_push();
+			cf_draw_push_color(cf_color_black());
+			// 绘制稍大矩形作为遮罩
+			CF_Aabb mask = cf_make_aabb(cf_v2(-max_w * 0.6f, hint_y - 40.0f), cf_v2(max_w * 0.6f, title_y + 20.0f));
+			cf_draw_quad_fill(mask, 0.0f);
+			cf_draw_pop_color();
+			cf_draw_pop();
+
+			// 绘制主标题
+			cf_push_font_size(title_size);
+			cf_draw_push_color(cf_color_yellow());
+			cf_draw_text(title, cf_v2(-title_sz.x * 0.5f, title_y), -1);
+			cf_draw_pop_color();
+			cf_pop_font_size();
+
+			// 绘制分割线（使用 draw_line，厚度可调）
+			float line_x0 = -max_w * 0.5f;
+			float line_x1 = max_w * 0.5f;
+			cf_draw_push_color(cf_color_white());
+			cf_draw_line(cf_v2(line_x0, separator_y), cf_v2(line_x1, separator_y), 4.0f);
+			cf_draw_pop_color();
+
+			// 绘制提示文字
+			cf_push_font_size(hint_size);
+			cf_draw_push_color(cf_color_white());
+			cf_draw_text(hint, cf_v2(-hint_sz.x * 0.5f, hint_y), -1);
+			cf_draw_pop_color();
+			cf_pop_font_size();
+		}
+
 		// 退出提示与最终呈现
 		if (esc_was_down) { DrawUI::EscDraw(esc_down_start, esc_hold_threshold); }
 

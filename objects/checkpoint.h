@@ -6,7 +6,7 @@
 // - 作为简单标记对象，不参与物理碰撞（ColliderType::VOID）并可选择性显示静态精灵/调试轮廓。
 class Checkpoint : public BaseObject {
 public:
-    Checkpoint(const CF_V2& pos = CF_V2(0.0f, 0.0f)) noexcept: BaseObject(), position(pos) {}
+    Checkpoint(const CF_V2& pos) noexcept: BaseObject(), position(pos) {}
     ~Checkpoint() noexcept override {}
 
     void Start() override;

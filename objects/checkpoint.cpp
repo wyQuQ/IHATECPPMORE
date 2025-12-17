@@ -2,6 +2,7 @@
 // ´ıÍêÉÆ
 // ---
 #include "checkpoint.h"
+#include "globalplayer.h"
 
 void Checkpoint::Start()
 {

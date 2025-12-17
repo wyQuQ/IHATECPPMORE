@@ -15,6 +15,8 @@
 #include "checkpoint.h"
 #include "lateral_spike.h"
 
+#include "globalplayer.h"
+
 class TestRoom : public BaseRoom {
 public:
 	TestRoom() noexcept {}
@@ -26,9 +28,14 @@ public:
 
 		// 为简短调用创建引用别名
 		auto& objs = ObjManager::Instance();
+		auto& g_player = GlobalPlayer::Instance();
 
-		// 使用 ObjManager 创建对象：现在返回 token（ObjectToken）
-		auto player_token = objs.Create<PlayerObject>();
+		// Ԥ����Ҹ����λ��
+		g_player.SetRespawnPoint(cf_v2(-300.0f, 0.0f));
+
+		// ʹ�� ObjManager �����������ڷ��� token��ObjectToken��
+		g_player.CreatePlayerAtRespawn();
+		auto checkpoint_token = objs.Create<Checkpoint>(CF_V2(-200.0f, -200.0f));
 		auto spike_token = objs.Create<MoveSpike>();
 		auto up_move_spike_token = objs.Create<UpMoveSpike>();
 		auto down_move_spike_token = objs.Create<DownMoveSpike>();
@@ -69,8 +76,12 @@ public:
 
 	// 在这里添加房间更新逻辑
 	void RoomUpdate() override {
-		if (Input::IsKeyInState(CF_KEY_P, KeyState::Down)) {
+		if (Input::IsKeyInState(CF_KEY_N, KeyState::Down)) {
 			RoomLoader::Instance().Load("EmptyRoom");
+		}
+
+		if (Input::IsKeyInState(CF_KEY_R, KeyState::Down)) {
+			RoomLoader::Instance().Load("TestRoom");
 		}
 	}
 
