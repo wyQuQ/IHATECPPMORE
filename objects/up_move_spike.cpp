@@ -24,7 +24,7 @@ void UpMoveSpike::Start() {
 	float move_up_distance = 150.0f;
 
 	m_act_seq.add(
-		static_cast<int>(1.0f * g_frame_rate), // Լ 15 ֡
+		static_cast<int>(1.0f * g_frame_rate), // Լ 60 ֡
 		[initial_pos, move_up_distance]
 		(BaseObject* obj, int current_frame, int total_frames)
 		{

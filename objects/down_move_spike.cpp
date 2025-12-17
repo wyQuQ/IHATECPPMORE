@@ -25,7 +25,7 @@ void DownMoveSpike::Start() {
 
 	//执行下移动作
 	m_act_seq.add(
-		static_cast<int>(1.0f * g_frame_rate), // 约 15 帧
+		static_cast<int>(1.0f * g_frame_rate), // 约 60 帧
 		[initial_pos, move_down_distance]
 		(BaseObject* obj, int current_frame, int total_frames)
 		{

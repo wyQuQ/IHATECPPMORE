@@ -21,6 +21,7 @@ void Spike::Start()
 }
 
 void Spike::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
+
 	//当刺碰到玩家时销毁玩家对象
     if (objs[other_token].HasTag("player")) {
 		objs.Destroy(other_token);
