@@ -56,13 +56,13 @@ void FirstDownMoveSpike::Update() {
 	CF_V2 pos = objs[player].GetPosition();
 
 	float check_x1 = 396.0f;
+	float check_y1 = -288.0f;
 
-	if (pos.x > check_x1 && i == 1) {
+	if (pos.x > check_x1 && i == 1 && pos.y < check_y1) {
 
 		// 播放动作序列
 		m_act_seq.play(this);
 
-		std::cout << "ahh";
 		i--;
 	}
 

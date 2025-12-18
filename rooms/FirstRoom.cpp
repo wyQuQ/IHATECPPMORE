@@ -40,10 +40,10 @@ public:
 		for (float y = -hh; y < hh; y += 36) {
 			objs.Create<BlockObject>(cf_v2(-hw, y), false);
 		}
-		for (float y = -hh; y < hh; y += 36) {
+		for (float y = -hh + 36 * 4; y < hh ; y += 36) {
 			objs.Create<BlockObject>(cf_v2(hw - 36.0f, y), false);
 		}
-		for (float x = -hw + 36; x < hw - 36; x += 36) {
+		for (float x = -hw + 36; x < hw - 36 ; x += 36) {
 			objs.Create<BlockObject>(cf_v2(x, hh - 36.0f), false);
 		}
 		for (float x = -hw + 36; x < hw - 36; x += 36) {
@@ -77,6 +77,7 @@ public:
 		auto down_spike5_token = objs.Create<DownSpike>(CF_V2(-hw + 36 * 28 + 18, -hh + 36 * 4));
 		auto bolck15_token = objs.Create<BlockObject>(cf_v2(-hw + 36 * 29, -hh + 36 * 4), false);
 		auto bolck16_token = objs.Create<BlockObject>(cf_v2(-hw + 36 * 30, -hh + 36 * 4), false);
+		auto bolck18_token = objs.Create<BlockObject>(cf_v2(-hw + 36 * 31, -hh), true);
 
 
 #if TESTER
