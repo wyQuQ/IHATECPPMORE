@@ -9,10 +9,10 @@ void HiddenSpike::Start()
 {
     // 设置默认精灵资源
     SpriteSetSource("/sprites/Obj_Spike.png", 1);
+	SetDepth(-10); // 确保刺被方块遮挡
 
     SetPivot(0, -1);
     SetPosition(position);
-    SetDepth(0);
 
     std::vector<CF_V2> vertices = {
         { -16.0f, -16.0f },
@@ -62,7 +62,9 @@ const float hw = 18.0f;
 
 void HiddenSpike::Update()
 {
-    CF_V2 player_pos = objs[g.Player()].GetPosition();
+	auto player = g.Player();
+    if (!objs.TryGetRegisteration(g.Player())) return;
+    CF_V2 player_pos = objs[player].GetPosition();
     int dir = direction_up ? 1.0f : -1.0f;
     if (once
         && position.x - player_pos.x < hw

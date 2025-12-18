@@ -13,20 +13,27 @@ extern std::atomic<int> g_frame_count;
 
 static uint64_t last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
 
+// 每个批次最多积累的 sprite 数量，超过会立即打包执行一次 Flush
 static constexpr size_t kSpriteChunkSize = 256;
+// 作为临时缓存的 spriteentry 队列，避免直接向 s_draw 发送大量扩容请求
 static std::vector<spritebatch_sprite_t> s_pending_sprites;
 
+// 将当前缓存中的 sprite 条目打包到一个新的 CF_Command 并推送到 s_draw
 static void FlushPendingSprites()
 {
     if (!s_draw) return;
     if (s_pending_sprites.empty()) return;
+    // 构造一个新命令并设置命令状态
     CF_Command& cmd = s_draw->add_cmd();
     for (const auto& entry : s_pending_sprites) {
+        // 将所有缓冲条目写入命令的 items 数组
         cmd.items.add(entry);
     }
+    // 清空缓存，待下一批填充
     s_pending_sprites.clear();
 }
 
+// 从 CF_Sprite 构造 spritebatch 条目并放到缓存中，必要时立即触发 Flush
 static void PushFrameSprite(const CF_Sprite* spr, int frame_index, int frame_count)
 {
     CF_Sprite sprite = *spr;
@@ -95,8 +102,10 @@ static void PushFrameSprite(const CF_Sprite* spr, int frame_index, int frame_cou
     entry.geom.user_params = s_draw->user_params.last();
     entry.geom.fill = false;
 
+    // 推入临时缓存，避免立即修改 s_draw 的命令列表
     s_pending_sprites.push_back(entry);
     if (s_pending_sprites.size() >= kSpriteChunkSize) {
+        // 缓冲满时强制 flush，保持 Cute::Array 大小稳定
         FlushPendingSprites();
         s_pending_sprites.reserve(kSpriteChunkSize);
     }
@@ -159,7 +168,7 @@ void DrawingSequence::DrawAll()
     last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
     s_pending_sprites.clear();
     s_pending_sprites.reserve(kSpriteChunkSize);
-    // Sort by depth, then by registration order
+    // 按深度和注册顺序排序，保证渲染的稳定性
     std::sort(m_entries.begin(), m_entries.end(), [](const auto& a, const auto& b) {
         int depth_a = a->owner->GetDepth();
         int depth_b = b->owner->GetDepth();
@@ -174,10 +183,10 @@ void DrawingSequence::DrawAll()
             BaseObject* obj = entry->owner;
             CF_Sprite& sprite = obj->GetSprite();
 
-            // Update sprite animation
+            // 刷新动画
             cf_sprite_update(&sprite);
 
-            // Set sprite position from BaseObject
+            // 使用对象位置更新 transform
             CF_V2 pos = obj->GetPosition();
             sprite.transform.p = pos;
 
@@ -197,11 +206,12 @@ void DrawingSequence::DrawAll()
                 obj->m_sprite_last_update_frame = g_frame_count;
                 obj->m_sprite_current_frame_index = (obj->m_sprite_current_frame_index + 1) % obj->m_sprite_vertical_frame_count;
             }
-            // Draw the sprite
+            // 推送 sprite 条目到缓存
             PushFrameSprite(&sprite, obj->m_sprite_current_frame_index, obj->m_sprite_vertical_frame_count);
         }
     }
 
+    // 帧末确保剩余条目被提交
     FlushPendingSprites();
 }
 

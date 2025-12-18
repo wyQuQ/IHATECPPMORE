@@ -6,6 +6,7 @@ void HiddenBlock::Start()
     // 设置精灵属性
 
     SpriteSetSource("/sprites/transparent_block_.png", 1);
+	SetDepth(0); // 设置渲染深度
     SetPosition(position);
 
     IsColliderApplyPivot(true);

@@ -16,6 +16,7 @@ public:
         else{
             SpriteSetSource("/sprites/block2.png", 1);
         }
+		SetDepth(0); // 设置渲染深度
         SetPosition(target_position);
 		IsColliderApplyPivot(true);
 		IsColliderRotate(false);

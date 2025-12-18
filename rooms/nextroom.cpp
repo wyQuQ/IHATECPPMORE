@@ -8,11 +8,6 @@
 #include "checkpoint.h"
 #include "block_object.h"
 #include "spike.h"
-//#include "up_move_spike.h"
-//#include "down_move_spike.h"
-//#include "rotate_spike.h"
-//#include "diagonal_move_spike.h"
-//#include "diagonal_move_spike_left.h"
 #include "lateral_spike.h"
 #include "straight_cherry.h"
 #include "hidden_block.h"
@@ -210,8 +205,6 @@ public:
 		objs.Create<HiddenBlock>(cf_v2(-4 * w, 2 * w));
 		objs.Create<HiddenBlock>(cf_v2(-5 * w, 3 * w));
 		objs.Create<HiddenBlock>(cf_v2(-6 * w, 4 * w));
-
-
 
 #if TESTER
 		auto test_token = objs.Create<Tester>();

@@ -5,7 +5,8 @@
 - `BaseObject`：游戏对象基类，整合 `CF_Sprite`（渲染）与 `BasePhysics`（物理），并提供帧级物理入口 `FrameEnterApply()` / `FrameExitApply()`、生命周期钩子与碰撞回调。
 - `BasePhysics`：位置/速度/力 与 local↔world 形状转换与 world-shape 缓存。
 - `PhysicsSystem`：broadphase/narrowphase、碰撞检测与 Enter/Stay/Exit 回调分发。
-- `DrawingSequence`：渲染上传流水线，负责收集所有可见 `BaseObject` 并按深度/注册顺序推送到渲染批次。
+- `DrawingSequence`：渲染上传流水线，负责收集所有可见 `BaseObject` 并按深度/注册顺序推送到渲染批次，内部使用缓存批量提交 `CF_Command` 以抑制瞬时大量 `spritebatch` 条目导致的 `Cute::Array` 容量爆炸。
+- `GlobalPlayer`：全局玩家状态管理，包括复活点/出现点记录、实体创建与 `Hurt` 血迹生成等，供主循环、重生逻辑与 UI 查询。
 
 ## 典型帧流程（推荐顺序）
 1. `ObjManager::UpdateAll()`（每帧主更新入口，含物理推进与 pending 合并）  
@@ -16,14 +17,12 @@
    - 处理延迟销毁队列（调用对象 `OnDestroy()` 并从物理系统注销）；`skip_update_this_frame` 标志可用来让对象在本帧跳过以上更新/物理调用。  
    - 提交并合并本帧的 `pending_creates_`：为 pending 对象分配槽位、在物理系统注册、写回真实 `ObjToken`，并在注册后开始参与下一帧的 UpdateAll 调用。  
 
-2. `DrawingSequence::DrawAll()`（上传阶段）  
-   - 在 `DrawingSequence` 内部锁住列表，按 `BaseObject::GetDepth()` 与注册顺序排序。  
-   - 对每个可见对象：复制其 `CF_Sprite`、调用 `cf_sprite_update`、设置 sprite 位置与 transform、通过 `PushFrameSprite` 提交到批次、调用 `ShapeDraw()`（若启用 debug）以及遍历 `m_collide_manifolds` 执行 `ManifoldDraw()`。  
-   - 根据 `m_sprite_update_freq` 与全局帧计数更新 `m_sprite_current_frame_index`，实现垂直雪碧图的动画帧。
-   - 不再有单独的 `BlitAll()`：`DrawingSequence::DrawAll()` 直接在内部准备好提交数据，最终由渲染管线在合适阶段消费。
-
-3. 渲染阶段（由底层渲染器/引擎继续处理）  
-   - 引擎按 `DrawingSequence` 汇总的批次在 GPU/画布上绘制所有纹理，无需文档中描述具体接口。  
+2. `DrawingSequence::DrawAll()`（帧图资源上传与渲染准备）  
+   - `DrawAll()` 先加锁、重置 `last_image_id` 及 `s_pending_sprites` 缓存，确保每帧上下文干净。  
+   - 按深度 + `reg_index` 对活跃对象排序，保持渲染顺序确定性。  
+   - 每个可见对象：更新动画、同步位置、触发 UI 形状/碰撞回调，并调用 `PushFrameSprite()` 生成 `spritebatch_sprite_t`。  `PushFrameSprite` 使用当前 `s_draw->mvp` 计算几何，累积到 `s_pending_sprites`，当缓存达到 `kSpriteChunkSize` 时就通过 `FlushPendingSprites()` 封装为一个新的 `CF_Command`。  
+   - `FlushPendingSprites()` 会在 `s_pending_sprites` 非空时创建 `CF_Command`、将条目逐个写入 `cmd.items`，然后清空缓存，为下一帧或下一个批次做好准备。  
+   - 帧遍历完毕后再次调用 `FlushPendingSprites()`，确保残留条目被提交；最终，`app_draw_onto_screen` 会读取 `s_draw->cmds`，由 Cute 渲染管线遍历 `cmd.items` 并最终向屏幕提交图元。  
 
 ## 房间管理与对象生命周期
 - `RoomLoader` 负责房间的加载/卸载逻辑，主程序通过该管理器与房间系统解耦，仅需告知 `StartRoom()` 所需房间名即可进行初始化。  
