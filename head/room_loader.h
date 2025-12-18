@@ -4,6 +4,8 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <cstddef>
 #include "debug_config.h"
 #include "delegate.h"
 #include "obj_manager.h"
@@ -130,7 +132,14 @@ public:
 		return initial_room_ ? &initial_room_->get() : nullptr;
 	}
 
-private:
+	size_t GetEstimatedMemoryUsageBytes() const noexcept {
+		size_t total = 0;
+		total += rooms_.bucket_count() * sizeof(decltype(rooms_)::value_type);
+		total += rooms_.size() * sizeof(std::pair<const std::string, std::unique_ptr<BaseRoom>>);
+		return total;
+	}
+
+ private:
 	// 已注册的房间映射
 	std::unordered_map<std::string, std::unique_ptr<BaseRoom>> rooms_;
 	// 当前加载的房间

@@ -1,0 +1,1168 @@
+[18`12``44.706] [RoomLoader::RegisterRoom] Registered initial room: FirstRoom
+[18`12``44.931] [Main] ----------Program Start----------
+[18`12``44.933] [Main] MCG_DEBUG = 1  MCG_DEBUG_LEVEL = 2
+[18`12``50.916] [VFS] Mounting content directory: D:/Schoolworks/C++/out/build/x64-debug/content -> virtual root ""
+[18`12``50.917] [FirstRoom] RoomLoad called.
+[18`12``51.094] [DrawingSequence] Registered obj= 000001D43E200E30 table_index= 0 reg_index= 1
+[18`12``51.096] [ObjManager] CreateEntry: created pending object at 000001D43E200E30  (pending id = 1 , commit next-frame)
+[18`12``51.099] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 1 reg_index= 2
+[18`12``51.100] [ObjManager] CreateEntry: created pending object at 000001D43E2D2DA0  (pending id = 2 , commit next-frame)
+[18`12``51.102] [DrawingSequence] Registered obj= 000001D43E2D4310 table_index= 2 reg_index= 3
+[18`12``51.102] [ObjManager] CreateEntry: created pending object at 000001D43E2D4310  (pending id = 3 , commit next-frame)
+[18`12``51.105] [DrawingSequence] Registered obj= 000001D43E2D2160 table_index= 3 reg_index= 4
+[18`12``51.105] [ObjManager] CreateEntry: created pending object at 000001D43E2D2160  (pending id = 4 , commit next-frame)
+[18`12``51.107] [DrawingSequence] Registered obj= 000001D43E2D5B90 table_index= 4 reg_index= 5
+[18`12``51.107] [ObjManager] CreateEntry: created pending object at 000001D43E2D5B90  (pending id = 5 , commit next-frame)
+[18`12``51.109] [DrawingSequence] Registered obj= 000001D43E2D30B0 table_index= 5 reg_index= 6
+[18`12``51.110] [ObjManager] CreateEntry: created pending object at 000001D43E2D30B0  (pending id = 6 , commit next-frame)
+[18`12``51.112] [DrawingSequence] Registered obj= 000001D43E2D36D0 table_index= 6 reg_index= 7
+[18`12``51.112] [ObjManager] CreateEntry: created pending object at 000001D43E2D36D0  (pending id = 7 , commit next-frame)
+[18`12``51.114] [DrawingSequence] Registered obj= 000001D43E2D4620 table_index= 7 reg_index= 8
+[18`12``51.114] [ObjManager] CreateEntry: created pending object at 000001D43E2D4620  (pending id = 8 , commit next-frame)
+[18`12``51.116] [DrawingSequence] Registered obj= 000001D43E2D4C40 table_index= 8 reg_index= 9
+[18`12``51.117] [ObjManager] CreateEntry: created pending object at 000001D43E2D4C40  (pending id = 9 , commit next-frame)
+[18`12``51.119] [DrawingSequence] Registered obj= 000001D43E2D4F50 table_index= 9 reg_index= 10
+[18`12``51.119] [ObjManager] CreateEntry: created pending object at 000001D43E2D4F50  (pending id = 10 , commit next-frame)
+[18`12``51.121] [DrawingSequence] Registered obj= 000001D43E4D4770 table_index= 10 reg_index= 11
+[18`12``51.121] [ObjManager] CreateEntry: created pending object at 000001D43E4D4770  (pending id = 11 , commit next-frame)
+[18`12``51.123] [DrawingSequence] Registered obj= 000001D43E4D4A80 table_index= 11 reg_index= 12
+[18`12``51.124] [ObjManager] CreateEntry: created pending object at 000001D43E4D4A80  (pending id = 12 , commit next-frame)
+[18`12``51.126] [DrawingSequence] Registered obj= 000001D43E4D3B30 table_index= 12 reg_index= 13
+[18`12``51.126] [ObjManager] CreateEntry: created pending object at 000001D43E4D3B30  (pending id = 13 , commit next-frame)
+[18`12``51.128] [DrawingSequence] Registered obj= 000001D43E4D4D90 table_index= 13 reg_index= 14
+[18`12``51.128] [ObjManager] CreateEntry: created pending object at 000001D43E4D4D90  (pending id = 14 , commit next-frame)
+[18`12``51.130] [DrawingSequence] Registered obj= 000001D43E4D5FF0 table_index= 14 reg_index= 15
+[18`12``51.130] [ObjManager] CreateEntry: created pending object at 000001D43E4D5FF0  (pending id = 15 , commit next-frame)
+[18`12``51.133] [DrawingSequence] Registered obj= 000001D43E4D59D0 table_index= 15 reg_index= 16
+[18`12``51.133] [ObjManager] CreateEntry: created pending object at 000001D43E4D59D0  (pending id = 16 , commit next-frame)
+[18`12``51.135] [DrawingSequence] Registered obj= 000001D43E4D53B0 table_index= 16 reg_index= 17
+[18`12``51.135] [ObjManager] CreateEntry: created pending object at 000001D43E4D53B0  (pending id = 17 , commit next-frame)
+[18`12``51.137] [DrawingSequence] Registered obj= 000001D43E4D4150 table_index= 17 reg_index= 18
+[18`12``51.138] [ObjManager] CreateEntry: created pending object at 000001D43E4D4150  (pending id = 18 , commit next-frame)
+[18`12``51.140] [DrawingSequence] Registered obj= 000001D43E4D50A0 table_index= 18 reg_index= 19
+[18`12``51.140] [ObjManager] CreateEntry: created pending object at 000001D43E4D50A0  (pending id = 19 , commit next-frame)
+[18`12``51.142] [DrawingSequence] Registered obj= 000001D43E4D5CE0 table_index= 19 reg_index= 20
+[18`12``51.142] [ObjManager] CreateEntry: created pending object at 000001D43E4D5CE0  (pending id = 20 , commit next-frame)
+[18`12``51.144] [DrawingSequence] Registered obj= 000001D43E4D56C0 table_index= 20 reg_index= 21
+[18`12``51.145] [ObjManager] CreateEntry: created pending object at 000001D43E4D56C0  (pending id = 21 , commit next-frame)
+[18`12``51.147] [DrawingSequence] Registered obj= 000001D43E4D3E40 table_index= 21 reg_index= 22
+[18`12``51.147] [ObjManager] CreateEntry: created pending object at 000001D43E4D3E40  (pending id = 22 , commit next-frame)
+[18`12``51.149] [DrawingSequence] Registered obj= 000001D43E4D3820 table_index= 22 reg_index= 23
+[18`12``51.149] [ObjManager] CreateEntry: created pending object at 000001D43E4D3820  (pending id = 23 , commit next-frame)
+[18`12``51.151] [DrawingSequence] Registered obj= 000001D43E4D6300 table_index= 23 reg_index= 24
+[18`12``51.152] [ObjManager] CreateEntry: created pending object at 000001D43E4D6300  (pending id = 24 , commit next-frame)
+[18`12``51.154] [DrawingSequence] Registered obj= 000001D43E4D4460 table_index= 24 reg_index= 25
+[18`12``51.154] [ObjManager] CreateEntry: created pending object at 000001D43E4D4460  (pending id = 25 , commit next-frame)
+[18`12``51.156] [DrawingSequence] Registered obj= 000001D43E4D28D0 table_index= 25 reg_index= 26
+[18`12``51.156] [ObjManager] CreateEntry: created pending object at 000001D43E4D28D0  (pending id = 26 , commit next-frame)
+[18`12``51.159] [DrawingSequence] Registered obj= 000001D43E4D2BE0 table_index= 26 reg_index= 27
+[18`12``51.159] [ObjManager] CreateEntry: created pending object at 000001D43E4D2BE0  (pending id = 27 , commit next-frame)
+[18`12``51.161] [DrawingSequence] Registered obj= 000001D43E4D2EF0 table_index= 27 reg_index= 28
+[18`12``51.161] [ObjManager] CreateEntry: created pending object at 000001D43E4D2EF0  (pending id = 28 , commit next-frame)
+[18`12``51.163] [DrawingSequence] Registered obj= 000001D43E4D3200 table_index= 28 reg_index= 29
+[18`12``51.163] [ObjManager] CreateEntry: created pending object at 000001D43E4D3200  (pending id = 29 , commit next-frame)
+[18`12``51.165] [DrawingSequence] Registered obj= 000001D43E4D3510 table_index= 29 reg_index= 30
+[18`12``51.166] [ObjManager] CreateEntry: created pending object at 000001D43E4D3510  (pending id = 30 , commit next-frame)
+[18`12``51.168] [DrawingSequence] Registered obj= 000001D45224DF60 table_index= 30 reg_index= 31
+[18`12``51.168] [ObjManager] CreateEntry: created pending object at 000001D45224DF60  (pending id = 31 , commit next-frame)
+[18`12``51.170] [DrawingSequence] Registered obj= 000001D45224E270 table_index= 31 reg_index= 32
+[18`12``51.170] [ObjManager] CreateEntry: created pending object at 000001D45224E270  (pending id = 32 , commit next-frame)
+[18`12``51.173] [DrawingSequence] Registered obj= 000001D45224D010 table_index= 32 reg_index= 33
+[18`12``51.173] [ObjManager] CreateEntry: created pending object at 000001D45224D010  (pending id = 33 , commit next-frame)
+[18`12``51.175] [DrawingSequence] Registered obj= 000001D45224F1C0 table_index= 33 reg_index= 34
+[18`12``51.175] [ObjManager] CreateEntry: created pending object at 000001D45224F1C0  (pending id = 34 , commit next-frame)
+[18`12``51.177] [DrawingSequence] Registered obj= 000001D45224D630 table_index= 34 reg_index= 35
+[18`12``51.178] [ObjManager] CreateEntry: created pending object at 000001D45224D630  (pending id = 35 , commit next-frame)
+[18`12``51.180] [DrawingSequence] Registered obj= 000001D45224D940 table_index= 35 reg_index= 36
+[18`12``51.180] [ObjManager] CreateEntry: created pending object at 000001D45224D940  (pending id = 36 , commit next-frame)
+[18`12``51.182] [DrawingSequence] Registered obj= 000001D45224C6E0 table_index= 36 reg_index= 37
+[18`12``51.182] [ObjManager] CreateEntry: created pending object at 000001D45224C6E0  (pending id = 37 , commit next-frame)
+[18`12``51.184] [DrawingSequence] Registered obj= 000001D45224D320 table_index= 37 reg_index= 38
+[18`12``51.185] [ObjManager] CreateEntry: created pending object at 000001D45224D320  (pending id = 38 , commit next-frame)
+[18`12``51.187] [DrawingSequence] Registered obj= 000001D45224EBA0 table_index= 38 reg_index= 39
+[18`12``51.187] [ObjManager] CreateEntry: created pending object at 000001D45224EBA0  (pending id = 39 , commit next-frame)
+[18`12``51.189] [DrawingSequence] Registered obj= 000001D45224DC50 table_index= 39 reg_index= 40
+[18`12``51.189] [ObjManager] CreateEntry: created pending object at 000001D45224DC50  (pending id = 40 , commit next-frame)
+[18`12``51.192] [DrawingSequence] Registered obj= 000001D45224E890 table_index= 40 reg_index= 41
+[18`12``51.192] [ObjManager] CreateEntry: created pending object at 000001D45224E890  (pending id = 41 , commit next-frame)
+[18`12``51.194] [DrawingSequence] Registered obj= 000001D45224CD00 table_index= 41 reg_index= 42
+[18`12``51.195] [ObjManager] CreateEntry: created pending object at 000001D45224CD00  (pending id = 42 , commit next-frame)
+[18`12``51.197] [DrawingSequence] Registered obj= 000001D45224EEB0 table_index= 42 reg_index= 43
+[18`12``51.197] [ObjManager] CreateEntry: created pending object at 000001D45224EEB0  (pending id = 43 , commit next-frame)
+[18`12``51.199] [DrawingSequence] Registered obj= 000001D45224E580 table_index= 43 reg_index= 44
+[18`12``51.199] [ObjManager] CreateEntry: created pending object at 000001D45224E580  (pending id = 44 , commit next-frame)
+[18`12``51.201] [DrawingSequence] Registered obj= 000001D45224F4D0 table_index= 44 reg_index= 45
+[18`12``51.202] [ObjManager] CreateEntry: created pending object at 000001D45224F4D0  (pending id = 45 , commit next-frame)
+[18`12``51.204] [DrawingSequence] Registered obj= 000001D45224F7E0 table_index= 45 reg_index= 46
+[18`12``51.204] [ObjManager] CreateEntry: created pending object at 000001D45224F7E0  (pending id = 46 , commit next-frame)
+[18`12``51.206] [DrawingSequence] Registered obj= 000001D45224FAF0 table_index= 46 reg_index= 47
+[18`12``51.207] [ObjManager] CreateEntry: created pending object at 000001D45224FAF0  (pending id = 47 , commit next-frame)
+[18`12``51.209] [DrawingSequence] Registered obj= 000001D45224C0C0 table_index= 47 reg_index= 48
+[18`12``51.209] [ObjManager] CreateEntry: created pending object at 000001D45224C0C0  (pending id = 48 , commit next-frame)
+[18`12``51.211] [DrawingSequence] Registered obj= 000001D45224C9F0 table_index= 48 reg_index= 49
+[18`12``51.212] [ObjManager] CreateEntry: created pending object at 000001D45224C9F0  (pending id = 49 , commit next-frame)
+[18`12``51.214] [DrawingSequence] Registered obj= 000001D45224C3D0 table_index= 49 reg_index= 50
+[18`12``51.214] [ObjManager] CreateEntry: created pending object at 000001D45224C3D0  (pending id = 50 , commit next-frame)
+[18`12``51.216] [DrawingSequence] Registered obj= 000001D44FEE9060 table_index= 50 reg_index= 51
+[18`12``51.216] [ObjManager] CreateEntry: created pending object at 000001D44FEE9060  (pending id = 51 , commit next-frame)
+[18`12``51.218] [DrawingSequence] Registered obj= 000001D44FEE8110 table_index= 51 reg_index= 52
+[18`12``51.219] [ObjManager] CreateEntry: created pending object at 000001D44FEE8110  (pending id = 52 , commit next-frame)
+[18`12``51.221] [DrawingSequence] Registered obj= 000001D44FEEABF0 table_index= 52 reg_index= 53
+[18`12``51.221] [ObjManager] CreateEntry: created pending object at 000001D44FEEABF0  (pending id = 53 , commit next-frame)
+[18`12``51.223] [DrawingSequence] Registered obj= 000001D44FEEAF00 table_index= 53 reg_index= 54
+[18`12``51.224] [ObjManager] CreateEntry: created pending object at 000001D44FEEAF00  (pending id = 54 , commit next-frame)
+[18`12``51.226] [DrawingSequence] Registered obj= 000001D44FEE7AF0 table_index= 54 reg_index= 55
+[18`12``51.226] [ObjManager] CreateEntry: created pending object at 000001D44FEE7AF0  (pending id = 55 , commit next-frame)
+[18`12``51.228] [DrawingSequence] Registered obj= 000001D44FEE9370 table_index= 55 reg_index= 56
+[18`12``51.228] [ObjManager] CreateEntry: created pending object at 000001D44FEE9370  (pending id = 56 , commit next-frame)
+[18`12``51.231] [DrawingSequence] Registered obj= 000001D44FEE74D0 table_index= 56 reg_index= 57
+[18`12``51.231] [ObjManager] CreateEntry: created pending object at 000001D44FEE74D0  (pending id = 57 , commit next-frame)
+[18`12``51.233] [DrawingSequence] Registered obj= 000001D44FEE9680 table_index= 57 reg_index= 58
+[18`12``51.233] [ObjManager] CreateEntry: created pending object at 000001D44FEE9680  (pending id = 58 , commit next-frame)
+[18`12``51.235] [DrawingSequence] Registered obj= 000001D44FEEA8E0 table_index= 58 reg_index= 59
+[18`12``51.235] [ObjManager] CreateEntry: created pending object at 000001D44FEEA8E0  (pending id = 59 , commit next-frame)
+[18`12``51.237] [DrawingSequence] Registered obj= 000001D44FEE9FB0 table_index= 59 reg_index= 60
+[18`12``51.237] [ObjManager] CreateEntry: created pending object at 000001D44FEE9FB0  (pending id = 60 , commit next-frame)
+[18`12``51.240] [DrawingSequence] Registered obj= 000001D44FEE8D50 table_index= 60 reg_index= 61
+[18`12``51.240] [ObjManager] CreateEntry: created pending object at 000001D44FEE8D50  (pending id = 61 , commit next-frame)
+[18`12``51.242] [DrawingSequence] Registered obj= 000001D44FEE7E00 table_index= 61 reg_index= 62
+[18`12``51.242] [ObjManager] CreateEntry: created pending object at 000001D44FEE7E00  (pending id = 62 , commit next-frame)
+[18`12``51.244] [DrawingSequence] Registered obj= 000001D44FEE8420 table_index= 62 reg_index= 63
+[18`12``51.245] [ObjManager] CreateEntry: created pending object at 000001D44FEE8420  (pending id = 63 , commit next-frame)
+[18`12``51.247] [DrawingSequence] Registered obj= 000001D44FEE77E0 table_index= 63 reg_index= 64
+[18`12``51.247] [ObjManager] CreateEntry: created pending object at 000001D44FEE77E0  (pending id = 64 , commit next-frame)
+[18`12``51.249] [DrawingSequence] Registered obj= 000001D44FEE8730 table_index= 64 reg_index= 65
+[18`12``51.249] [ObjManager] CreateEntry: created pending object at 000001D44FEE8730  (pending id = 65 , commit next-frame)
+[18`12``51.251] [DrawingSequence] Registered obj= 000001D44FEE8A40 table_index= 65 reg_index= 66
+[18`12``51.252] [ObjManager] CreateEntry: created pending object at 000001D44FEE8A40  (pending id = 66 , commit next-frame)
+[18`12``51.254] [DrawingSequence] Registered obj= 000001D44FEEA2C0 table_index= 66 reg_index= 67
+[18`12``51.254] [ObjManager] CreateEntry: created pending object at 000001D44FEEA2C0  (pending id = 67 , commit next-frame)
+[18`12``51.256] [DrawingSequence] Registered obj= 000001D44FEEA5D0 table_index= 67 reg_index= 68
+[18`12``51.257] [ObjManager] CreateEntry: created pending object at 000001D44FEEA5D0  (pending id = 68 , commit next-frame)
+[18`12``51.259] [DrawingSequence] Registered obj= 000001D44FEE9990 table_index= 68 reg_index= 69
+[18`12``51.259] [ObjManager] CreateEntry: created pending object at 000001D44FEE9990  (pending id = 69 , commit next-frame)
+[18`12``51.261] [DrawingSequence] Registered obj= 000001D44FEE9CA0 table_index= 69 reg_index= 70
+[18`12``51.261] [ObjManager] CreateEntry: created pending object at 000001D44FEE9CA0  (pending id = 70 , commit next-frame)
+[18`12``51.263] [DrawingSequence] Registered obj= 000001D43E81BEF0 table_index= 70 reg_index= 71
+[18`12``51.264] [ObjManager] CreateEntry: created pending object at 000001D43E81BEF0  (pending id = 71 , commit next-frame)
+[18`12``51.266] [DrawingSequence] Registered obj= 000001D43E81B5C0 table_index= 71 reg_index= 72
+[18`12``51.266] [ObjManager] CreateEntry: created pending object at 000001D43E81B5C0  (pending id = 72 , commit next-frame)
+[18`12``51.268] [DrawingSequence] Registered obj= 000001D43E81B2B0 table_index= 72 reg_index= 73
+[18`12``51.269] [ObjManager] CreateEntry: created pending object at 000001D43E81B2B0  (pending id = 73 , commit next-frame)
+[18`12``51.271] [DrawingSequence] Registered obj= 000001D43E81B8D0 table_index= 73 reg_index= 74
+[18`12``51.271] [ObjManager] CreateEntry: created pending object at 000001D43E81B8D0  (pending id = 74 , commit next-frame)
+[18`12``51.273] [DrawingSequence] Registered obj= 000001D43E81BBE0 table_index= 74 reg_index= 75
+[18`12``51.274] [ObjManager] CreateEntry: created pending object at 000001D43E81BBE0  (pending id = 75 , commit next-frame)
+[18`12``51.276] [DrawingSequence] Registered obj= 000001D43E81C820 table_index= 75 reg_index= 76
+[18`12``51.276] [ObjManager] CreateEntry: created pending object at 000001D43E81C820  (pending id = 76 , commit next-frame)
+[18`12``51.278] [DrawingSequence] Registered obj= 000001D43E81C200 table_index= 76 reg_index= 77
+[18`12``51.278] [ObjManager] CreateEntry: created pending object at 000001D43E81C200  (pending id = 77 , commit next-frame)
+[18`12``51.280] [DrawingSequence] Registered obj= 000001D43E81C510 table_index= 77 reg_index= 78
+[18`12``51.280] [ObjManager] CreateEntry: created pending object at 000001D43E81C510  (pending id = 78 , commit next-frame)
+[18`12``51.282] [DrawingSequence] Registered obj= 000001D43E81E3B0 table_index= 78 reg_index= 79
+[18`12``51.283] [ObjManager] CreateEntry: created pending object at 000001D43E81E3B0  (pending id = 79 , commit next-frame)
+[18`12``51.285] [DrawingSequence] Registered obj= 000001D43E81E6C0 table_index= 79 reg_index= 80
+[18`12``51.285] [ObjManager] CreateEntry: created pending object at 000001D43E81E6C0  (pending id = 80 , commit next-frame)
+[18`12``51.287] [DrawingSequence] Registered obj= 000001D43E81E0A0 table_index= 80 reg_index= 81
+[18`12``51.288] [ObjManager] CreateEntry: created pending object at 000001D43E81E0A0  (pending id = 81 , commit next-frame)
+[18`12``51.291] [DrawingSequence] Registered obj= 000001D43E81DA80 table_index= 81 reg_index= 82
+[18`12``51.291] [ObjManager] CreateEntry: created pending object at 000001D43E81DA80  (pending id = 82 , commit next-frame)
+[18`12``51.294] [DrawingSequence] Registered obj= 000001D43E81D150 table_index= 82 reg_index= 83
+[18`12``51.295] [ObjManager] CreateEntry: created pending object at 000001D43E81D150  (pending id = 83 , commit next-frame)
+[18`12``51.298] [DrawingSequence] Registered obj= 000001D43E81AC90 table_index= 83 reg_index= 84
+[18`12``51.298] [ObjManager] CreateEntry: created pending object at 000001D43E81AC90  (pending id = 84 , commit next-frame)
+[18`12``51.301] [DrawingSequence] Registered obj= 000001D43E81D460 table_index= 84 reg_index= 85
+[18`12``51.301] [ObjManager] CreateEntry: created pending object at 000001D43E81D460  (pending id = 85 , commit next-frame)
+[18`12``51.303] [DrawingSequence] Registered obj= 000001D43E81CB30 table_index= 85 reg_index= 86
+[18`12``51.303] [ObjManager] CreateEntry: created pending object at 000001D43E81CB30  (pending id = 86 , commit next-frame)
+[18`12``51.306] [DrawingSequence] Registered obj= 000001D43E81CE40 table_index= 86 reg_index= 87
+[18`12``51.306] [ObjManager] CreateEntry: created pending object at 000001D43E81CE40  (pending id = 87 , commit next-frame)
+[18`12``51.308] [DrawingSequence] Registered obj= 000001D43E81DD90 table_index= 87 reg_index= 88
+[18`12``51.308] [ObjManager] CreateEntry: created pending object at 000001D43E81DD90  (pending id = 88 , commit next-frame)
+[18`12``51.311] [DrawingSequence] Registered obj= 000001D43E81AFA0 table_index= 88 reg_index= 89
+[18`12``51.311] [ObjManager] CreateEntry: created pending object at 000001D43E81AFA0  (pending id = 89 , commit next-frame)
+[18`12``51.313] [DrawingSequence] Registered obj= 000001D43E81D770 table_index= 89 reg_index= 90
+[18`12``51.313] [ObjManager] CreateEntry: created pending object at 000001D43E81D770  (pending id = 90 , commit next-frame)
+[18`12``51.315] [DrawingSequence] Registered obj= 000001D44E0CE8B0 table_index= 90 reg_index= 91
+[18`12``51.316] [ObjManager] CreateEntry: created pending object at 000001D44E0CE8B0  (pending id = 91 , commit next-frame)
+[18`12``51.318] [DrawingSequence] Registered obj= 000001D44E0D0750 table_index= 91 reg_index= 92
+[18`12``51.318] [ObjManager] CreateEntry: created pending object at 000001D44E0D0750  (pending id = 92 , commit next-frame)
+[18`12``51.320] [DrawingSequence] Registered obj= 000001D44E0CEBC0 table_index= 92 reg_index= 93
+[18`12``51.320] [ObjManager] CreateEntry: created pending object at 000001D44E0CEBC0  (pending id = 93 , commit next-frame)
+[18`12``51.323] [DrawingSequence] Registered obj= 000001D44E0CD960 table_index= 93 reg_index= 94
+[18`12``51.323] [ObjManager] CreateEntry: created pending object at 000001D44E0CD960  (pending id = 94 , commit next-frame)
+[18`12``51.325] [DrawingSequence] Registered obj= 000001D44E0CFB10 table_index= 94 reg_index= 95
+[18`12``51.325] [ObjManager] CreateEntry: created pending object at 000001D44E0CFB10  (pending id = 95 , commit next-frame)
+[18`12``51.327] [DrawingSequence] Registered obj= 000001D44E0CFE20 table_index= 95 reg_index= 96
+[18`12``51.328] [ObjManager] CreateEntry: created pending object at 000001D44E0CFE20  (pending id = 96 , commit next-frame)
+[18`12``51.330] [DrawingSequence] Registered obj= 000001D44E0CE290 table_index= 96 reg_index= 97
+[18`12``51.330] [ObjManager] CreateEntry: created pending object at 000001D44E0CE290  (pending id = 97 , commit next-frame)
+[18`12``51.332] [DrawingSequence] Registered obj= 000001D44E0CDC70 table_index= 97 reg_index= 98
+[18`12``51.332] [ObjManager] CreateEntry: created pending object at 000001D44E0CDC70  (pending id = 98 , commit next-frame)
+[18`12``51.335] [DrawingSequence] Registered obj= 000001D44E0CF800 table_index= 98 reg_index= 99
+[18`12``51.335] [ObjManager] CreateEntry: created pending object at 000001D44E0CF800  (pending id = 99 , commit next-frame)
+[18`12``51.337] [DrawingSequence] Registered obj= 000001D44E0CDF80 table_index= 99 reg_index= 100
+[18`12``51.337] [ObjManager] CreateEntry: created pending object at 000001D44E0CDF80  (pending id = 100 , commit next-frame)
+[18`12``51.339] [DrawingSequence] Registered obj= 000001D44E0CE5A0 table_index= 100 reg_index= 101
+[18`12``51.340] [ObjManager] CreateEntry: created pending object at 000001D44E0CE5A0  (pending id = 101 , commit next-frame)
+[18`12``51.342] [DrawingSequence] Registered obj= 000001D44E0D0130 table_index= 101 reg_index= 102
+[18`12``51.342] [ObjManager] CreateEntry: created pending object at 000001D44E0D0130  (pending id = 102 , commit next-frame)
+[18`12``51.344] [DrawingSequence] Registered obj= 000001D44E0D1080 table_index= 102 reg_index= 103
+[18`12``51.344] [ObjManager] CreateEntry: created pending object at 000001D44E0D1080  (pending id = 103 , commit next-frame)
+[18`12``51.347] [DrawingSequence] Registered obj= 000001D44E0CEED0 table_index= 103 reg_index= 104
+[18`12``51.347] [ObjManager] CreateEntry: created pending object at 000001D44E0CEED0  (pending id = 104 , commit next-frame)
+[18`12``51.349] [DrawingSequence] Registered obj= 000001D44E0CF1E0 table_index= 104 reg_index= 105
+[18`12``51.349] [ObjManager] CreateEntry: created pending object at 000001D44E0CF1E0  (pending id = 105 , commit next-frame)
+[18`12``51.351] [DrawingSequence] Registered obj= 000001D44E0D0440 table_index= 105 reg_index= 106
+[18`12``51.351] [ObjManager] CreateEntry: created pending object at 000001D44E0D0440  (pending id = 106 , commit next-frame)
+[18`12``51.354] [DrawingSequence] Registered obj= 000001D44E0D1390 table_index= 106 reg_index= 107
+[18`12``51.354] [ObjManager] CreateEntry: created pending object at 000001D44E0D1390  (pending id = 107 , commit next-frame)
+[18`12``51.356] [DrawingSequence] Registered obj= 000001D44E0CF4F0 table_index= 107 reg_index= 108
+[18`12``51.356] [ObjManager] CreateEntry: created pending object at 000001D44E0CF4F0  (pending id = 108 , commit next-frame)
+[18`12``51.358] [DrawingSequence] Registered obj= 000001D44E0D0A60 table_index= 108 reg_index= 109
+[18`12``51.359] [ObjManager] CreateEntry: created pending object at 000001D44E0D0A60  (pending id = 109 , commit next-frame)
+[18`12``51.361] [DrawingSequence] Registered obj= 000001D44E0D0D70 table_index= 109 reg_index= 110
+[18`12``51.361] [ObjManager] CreateEntry: created pending object at 000001D44E0D0D70  (pending id = 110 , commit next-frame)
+[18`12``51.362] [DrawingSequence] Registered obj= 000001D43E6C2340 table_index= 110 reg_index= 111
+[18`12``51.363] [ObjManager] CreateEntry: created pending object at 000001D43E6C2340  (pending id = 111 , commit next-frame)
+[18`12``51.365] [DrawingSequence] Registered obj= 000001D4500FB980 table_index= 111 reg_index= 112
+[18`12``51.365] [ObjManager] CreateEntry: created pending object at 000001D4500FB980  (pending id = 112 , commit next-frame)
+[18`12``51.367] [DrawingSequence] Registered obj= 000001D4500FC5C0 table_index= 112 reg_index= 113
+[18`12``51.368] [ObjManager] CreateEntry: created pending object at 000001D4500FC5C0  (pending id = 113 , commit next-frame)
+[18`12``51.370] [DrawingSequence] Registered obj= 000001D4500FA720 table_index= 113 reg_index= 114
+[18`12``51.370] [ObjManager] CreateEntry: created pending object at 000001D4500FA720  (pending id = 114 , commit next-frame)
+[18`12``51.372] [DrawingSequence] Registered obj= 000001D4500FB050 table_index= 114 reg_index= 115
+[18`12``51.372] [ObjManager] CreateEntry: created pending object at 000001D4500FB050  (pending id = 115 , commit next-frame)
+[18`12``51.375] [DrawingSequence] Registered obj= 000001D4500FCEF0 table_index= 115 reg_index= 116
+[18`12``51.375] [ObjManager] CreateEntry: created pending object at 000001D4500FCEF0  (pending id = 116 , commit next-frame)
+[18`12``51.377] [DrawingSequence] Registered obj= 000001D4500FD510 table_index= 116 reg_index= 117
+[18`12``51.377] [ObjManager] CreateEntry: created pending object at 000001D4500FD510  (pending id = 117 , commit next-frame)
+[18`12``51.379] [DrawingSequence] Registered obj= 000001D43E200B30 table_index= 117 reg_index= 118
+[18`12``51.379] [ObjManager] CreateEntry: created pending object at 000001D43E200B30  (pending id = 118 , commit next-frame)
+[18`12``51.380] [DrawingSequence] Registered obj= 000001D43E201130 table_index= 118 reg_index= 119
+[18`12``51.380] [ObjManager] CreateEntry: created pending object at 000001D43E201130  (pending id = 119 , commit next-frame)
+[18`12``51.383] [DrawingSequence] Registered obj= 000001D4500FAD40 table_index= 119 reg_index= 120
+[18`12``51.383] [ObjManager] CreateEntry: created pending object at 000001D4500FAD40  (pending id = 120 , commit next-frame)
+[18`12``51.385] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 120 reg_index= 121
+[18`12``51.385] [ObjManager] CreateEntry: created pending object at 000001D4500FB360  (pending id = 121 , commit next-frame)
+[18`12``51.387] [DrawingSequence] Registered obj= 000001D4500FBFA0 table_index= 121 reg_index= 122
+[18`12``51.388] [ObjManager] CreateEntry: created pending object at 000001D4500FBFA0  (pending id = 122 , commit next-frame)
+[18`12``51.389] [DrawingSequence] Registered obj= 000001D43E200830 table_index= 122 reg_index= 123
+[18`12``51.389] [ObjManager] CreateEntry: created pending object at 000001D43E200830  (pending id = 123 , commit next-frame)
+[18`12``51.391] [DrawingSequence] Registered obj= 000001D4500FB670 table_index= 123 reg_index= 124
+[18`12``51.392] [ObjManager] CreateEntry: created pending object at 000001D4500FB670  (pending id = 124 , commit next-frame)
+[18`12``51.393] [DrawingSequence] Registered obj= 000001D4501382D0 table_index= 124 reg_index= 125
+[18`12``51.393] [ObjManager] CreateEntry: created pending object at 000001D4501382D0  (pending id = 125 , commit next-frame)
+[18`12``51.395] [DrawingSequence] Registered obj= 000001D4500FC2B0 table_index= 125 reg_index= 126
+[18`12``51.396] [ObjManager] CreateEntry: created pending object at 000001D4500FC2B0  (pending id = 126 , commit next-frame)
+[18`12``51.397] [DrawingSequence] Registered obj= 000001D4501355D0 table_index= 126 reg_index= 127
+[18`12``51.397] [ObjManager] CreateEntry: created pending object at 000001D4501355D0  (pending id = 127 , commit next-frame)
+[18`12``51.400] [DrawingSequence] Registered obj= 000001D4500FD200 table_index= 127 reg_index= 128
+[18`12``51.401] [ObjManager] CreateEntry: created pending object at 000001D4500FD200  (pending id = 128 , commit next-frame)
+[18`12``51.402] [DrawingSequence] Registered obj= 000001D4501376D0 table_index= 128 reg_index= 129
+[18`12``51.402] [ObjManager] CreateEntry: created pending object at 000001D4501376D0  (pending id = 129 , commit next-frame)
+[18`12``51.405] [DrawingSequence] Registered obj= 000001D4500FC8D0 table_index= 129 reg_index= 130
+[18`12``51.405] [ObjManager] CreateEntry: created pending object at 000001D4500FC8D0  (pending id = 130 , commit next-frame)
+[18`12``51.407] [DrawingSequence] Registered obj= 000001D450137CD0 table_index= 130 reg_index= 131
+[18`12``51.407] [ObjManager] CreateEntry: created pending object at 000001D450137CD0  (pending id = 131 , commit next-frame)
+[18`12``51.409] [DrawingSequence] Registered obj= 000001D4500FBC90 table_index= 131 reg_index= 132
+[18`12``51.409] [ObjManager] CreateEntry: created pending object at 000001D4500FBC90  (pending id = 132 , commit next-frame)
+[18`12``51.411] [DrawingSequence] Registered obj= 000001D4500FCBE0 table_index= 132 reg_index= 133
+[18`12``51.411] [ObjManager] CreateEntry: created pending object at 000001D4500FCBE0  (pending id = 133 , commit next-frame)
+[18`12``51.415] [DrawingSequence] Registered obj= 000001D4501388D0 table_index= 133 reg_index= 134
+[18`12``51.416] [ObjManager] CreateEntry: created pending object at 000001D4501388D0  (pending id = 134 , commit next-frame)
+[18`12``51.416] [LOOP] app_update OK, current frame rate: 50
+[18`12``51.426] [ObjManager] UpdateAll: committed pending object at 000001D43E200E30  (type:  class Backgroud , pending id = 1 , index = 0 , gen = 1 )
+[18`12``51.426] [ObjManager] UpdateAll: committed pending object at 000001D43E2D2DA0  (type:  class PlayerObject , pending id = 2 , index = 1 , gen = 1 )
+[18`12``51.426] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4310  (type:  class BlockObject , pending id = 3 , index = 2 , gen = 1 )
+[18`12``51.427] [ObjManager] UpdateAll: committed pending object at 000001D43E2D2160  (type:  class BlockObject , pending id = 4 , index = 3 , gen = 1 )
+[18`12``51.427] [ObjManager] UpdateAll: committed pending object at 000001D43E2D5B90  (type:  class BlockObject , pending id = 5 , index = 4 , gen = 1 )
+[18`12``51.427] [ObjManager] UpdateAll: committed pending object at 000001D43E2D30B0  (type:  class BlockObject , pending id = 6 , index = 5 , gen = 1 )
+[18`12``51.427] [ObjManager] UpdateAll: committed pending object at 000001D43E2D36D0  (type:  class BlockObject , pending id = 7 , index = 6 , gen = 1 )
+[18`12``51.427] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4620  (type:  class BlockObject , pending id = 8 , index = 7 , gen = 1 )
+[18`12``51.428] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4C40  (type:  class BlockObject , pending id = 9 , index = 8 , gen = 1 )
+[18`12``51.428] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4F50  (type:  class BlockObject , pending id = 10 , index = 9 , gen = 1 )
+[18`12``51.429] [ObjManager] UpdateAll: committed pending object at 000001D43E4D4770  (type:  class BlockObject , pending id = 11 , index = 10 , gen = 1 )
+[18`12``51.429] [ObjManager] UpdateAll: committed pending object at 000001D43E4D4A80  (type:  class BlockObject , pending id = 12 , index = 11 , gen = 1 )
+[18`12``51.429] [ObjManager] UpdateAll: committed pending object at 000001D43E4D3B30  (type:  class BlockObject , pending id = 13 , index = 12 , gen = 1 )
+[18`12``51.430] [ObjManager] UpdateAll: committed pending object at 000001D43E4D4D90  (type:  class BlockObject , pending id = 14 , index = 13 , gen = 1 )
+[18`12``51.430] [ObjManager] UpdateAll: committed pending object at 000001D43E4D5FF0  (type:  class BlockObject , pending id = 15 , index = 14 , gen = 1 )
+[18`12``51.430] [ObjManager] UpdateAll: committed pending object at 000001D43E4D59D0  (type:  class BlockObject , pending id = 16 , index = 15 , gen = 1 )
+[18`12``51.431] [ObjManager] UpdateAll: committed pending object at 000001D43E4D53B0  (type:  class BlockObject , pending id = 17 , index = 16 , gen = 1 )
+[18`12``51.431] [ObjManager] UpdateAll: committed pending object at 000001D43E4D4150  (type:  class BlockObject , pending id = 18 , index = 17 , gen = 1 )
+[18`12``51.432] [ObjManager] UpdateAll: committed pending object at 000001D43E4D50A0  (type:  class BlockObject , pending id = 19 , index = 18 , gen = 1 )
+[18`12``51.432] [ObjManager] UpdateAll: committed pending object at 000001D43E4D5CE0  (type:  class BlockObject , pending id = 20 , index = 19 , gen = 1 )
+[18`12``51.432] [ObjManager] UpdateAll: committed pending object at 000001D43E4D56C0  (type:  class BlockObject , pending id = 21 , index = 20 , gen = 1 )
+[18`12``51.432] [ObjManager] UpdateAll: committed pending object at 000001D43E4D3E40  (type:  class BlockObject , pending id = 22 , index = 21 , gen = 1 )
+[18`12``51.433] [ObjManager] UpdateAll: committed pending object at 000001D43E4D3820  (type:  class BlockObject , pending id = 23 , index = 22 , gen = 1 )
+[18`12``51.433] [ObjManager] UpdateAll: committed pending object at 000001D43E4D6300  (type:  class BlockObject , pending id = 24 , index = 23 , gen = 1 )
+[18`12``51.433] [ObjManager] UpdateAll: committed pending object at 000001D43E4D4460  (type:  class BlockObject , pending id = 25 , index = 24 , gen = 1 )
+[18`12``51.433] [ObjManager] UpdateAll: committed pending object at 000001D43E4D28D0  (type:  class BlockObject , pending id = 26 , index = 25 , gen = 1 )
+[18`12``51.433] [ObjManager] UpdateAll: committed pending object at 000001D43E4D2BE0  (type:  class BlockObject , pending id = 27 , index = 26 , gen = 1 )
+[18`12``51.434] [ObjManager] UpdateAll: committed pending object at 000001D43E4D2EF0  (type:  class BlockObject , pending id = 28 , index = 27 , gen = 1 )
+[18`12``51.434] [ObjManager] UpdateAll: committed pending object at 000001D43E4D3200  (type:  class BlockObject , pending id = 29 , index = 28 , gen = 1 )
+[18`12``51.434] [ObjManager] UpdateAll: committed pending object at 000001D43E4D3510  (type:  class BlockObject , pending id = 30 , index = 29 , gen = 1 )
+[18`12``51.435] [ObjManager] UpdateAll: committed pending object at 000001D45224DF60  (type:  class BlockObject , pending id = 31 , index = 30 , gen = 1 )
+[18`12``51.435] [ObjManager] UpdateAll: committed pending object at 000001D45224E270  (type:  class BlockObject , pending id = 32 , index = 31 , gen = 1 )
+[18`12``51.435] [ObjManager] UpdateAll: committed pending object at 000001D45224D010  (type:  class BlockObject , pending id = 33 , index = 32 , gen = 1 )
+[18`12``51.436] [ObjManager] UpdateAll: committed pending object at 000001D45224F1C0  (type:  class BlockObject , pending id = 34 , index = 33 , gen = 1 )
+[18`12``51.436] [ObjManager] UpdateAll: committed pending object at 000001D45224D630  (type:  class BlockObject , pending id = 35 , index = 34 , gen = 1 )
+[18`12``51.436] [ObjManager] UpdateAll: committed pending object at 000001D45224D940  (type:  class BlockObject , pending id = 36 , index = 35 , gen = 1 )
+[18`12``51.436] [ObjManager] UpdateAll: committed pending object at 000001D45224C6E0  (type:  class BlockObject , pending id = 37 , index = 36 , gen = 1 )
+[18`12``51.437] [ObjManager] UpdateAll: committed pending object at 000001D45224D320  (type:  class BlockObject , pending id = 38 , index = 37 , gen = 1 )
+[18`12``51.437] [ObjManager] UpdateAll: committed pending object at 000001D45224EBA0  (type:  class BlockObject , pending id = 39 , index = 38 , gen = 1 )
+[18`12``51.437] [ObjManager] UpdateAll: committed pending object at 000001D45224DC50  (type:  class BlockObject , pending id = 40 , index = 39 , gen = 1 )
+[18`12``51.438] [ObjManager] UpdateAll: committed pending object at 000001D45224E890  (type:  class BlockObject , pending id = 41 , index = 40 , gen = 1 )
+[18`12``51.438] [ObjManager] UpdateAll: committed pending object at 000001D45224CD00  (type:  class BlockObject , pending id = 42 , index = 41 , gen = 1 )
+[18`12``51.438] [ObjManager] UpdateAll: committed pending object at 000001D45224EEB0  (type:  class BlockObject , pending id = 43 , index = 42 , gen = 1 )
+[18`12``51.438] [ObjManager] UpdateAll: committed pending object at 000001D45224E580  (type:  class BlockObject , pending id = 44 , index = 43 , gen = 1 )
+[18`12``51.439] [ObjManager] UpdateAll: committed pending object at 000001D45224F4D0  (type:  class BlockObject , pending id = 45 , index = 44 , gen = 1 )
+[18`12``51.440] [ObjManager] UpdateAll: committed pending object at 000001D45224F7E0  (type:  class BlockObject , pending id = 46 , index = 45 , gen = 1 )
+[18`12``51.440] [ObjManager] UpdateAll: committed pending object at 000001D45224FAF0  (type:  class BlockObject , pending id = 47 , index = 46 , gen = 1 )
+[18`12``51.441] [ObjManager] UpdateAll: committed pending object at 000001D45224C0C0  (type:  class BlockObject , pending id = 48 , index = 47 , gen = 1 )
+[18`12``51.441] [ObjManager] UpdateAll: committed pending object at 000001D45224C9F0  (type:  class BlockObject , pending id = 49 , index = 48 , gen = 1 )
+[18`12``51.441] [ObjManager] UpdateAll: committed pending object at 000001D45224C3D0  (type:  class BlockObject , pending id = 50 , index = 49 , gen = 1 )
+[18`12``51.442] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9060  (type:  class BlockObject , pending id = 51 , index = 50 , gen = 1 )
+[18`12``51.442] [ObjManager] UpdateAll: committed pending object at 000001D44FEE8110  (type:  class BlockObject , pending id = 52 , index = 51 , gen = 1 )
+[18`12``51.442] [ObjManager] UpdateAll: committed pending object at 000001D44FEEABF0  (type:  class BlockObject , pending id = 53 , index = 52 , gen = 1 )
+[18`12``51.442] [ObjManager] UpdateAll: committed pending object at 000001D44FEEAF00  (type:  class BlockObject , pending id = 54 , index = 53 , gen = 1 )
+[18`12``51.443] [ObjManager] UpdateAll: committed pending object at 000001D44FEE7AF0  (type:  class BlockObject , pending id = 55 , index = 54 , gen = 1 )
+[18`12``51.443] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9370  (type:  class BlockObject , pending id = 56 , index = 55 , gen = 1 )
+[18`12``51.444] [ObjManager] UpdateAll: committed pending object at 000001D44FEE74D0  (type:  class BlockObject , pending id = 57 , index = 56 , gen = 1 )
+[18`12``51.444] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9680  (type:  class BlockObject , pending id = 58 , index = 57 , gen = 1 )
+[18`12``51.444] [ObjManager] UpdateAll: committed pending object at 000001D44FEEA8E0  (type:  class BlockObject , pending id = 59 , index = 58 , gen = 1 )
+[18`12``51.445] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9FB0  (type:  class BlockObject , pending id = 60 , index = 59 , gen = 1 )
+[18`12``51.445] [ObjManager] UpdateAll: committed pending object at 000001D44FEE8D50  (type:  class BlockObject , pending id = 61 , index = 60 , gen = 1 )
+[18`12``51.445] [ObjManager] UpdateAll: committed pending object at 000001D44FEE7E00  (type:  class BlockObject , pending id = 62 , index = 61 , gen = 1 )
+[18`12``51.445] [ObjManager] UpdateAll: committed pending object at 000001D44FEE8420  (type:  class BlockObject , pending id = 63 , index = 62 , gen = 1 )
+[18`12``51.446] [ObjManager] UpdateAll: committed pending object at 000001D44FEE77E0  (type:  class BlockObject , pending id = 64 , index = 63 , gen = 1 )
+[18`12``51.446] [ObjManager] UpdateAll: committed pending object at 000001D44FEE8730  (type:  class BlockObject , pending id = 65 , index = 64 , gen = 1 )
+[18`12``51.446] [ObjManager] UpdateAll: committed pending object at 000001D44FEE8A40  (type:  class BlockObject , pending id = 66 , index = 65 , gen = 1 )
+[18`12``51.447] [ObjManager] UpdateAll: committed pending object at 000001D44FEEA2C0  (type:  class BlockObject , pending id = 67 , index = 66 , gen = 1 )
+[18`12``51.447] [ObjManager] UpdateAll: committed pending object at 000001D44FEEA5D0  (type:  class BlockObject , pending id = 68 , index = 67 , gen = 1 )
+[18`12``51.447] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9990  (type:  class BlockObject , pending id = 69 , index = 68 , gen = 1 )
+[18`12``51.448] [ObjManager] UpdateAll: committed pending object at 000001D44FEE9CA0  (type:  class BlockObject , pending id = 70 , index = 69 , gen = 1 )
+[18`12``51.448] [ObjManager] UpdateAll: committed pending object at 000001D43E81BEF0  (type:  class BlockObject , pending id = 71 , index = 70 , gen = 1 )
+[18`12``51.448] [ObjManager] UpdateAll: committed pending object at 000001D43E81B5C0  (type:  class BlockObject , pending id = 72 , index = 71 , gen = 1 )
+[18`12``51.449] [ObjManager] UpdateAll: committed pending object at 000001D43E81B2B0  (type:  class BlockObject , pending id = 73 , index = 72 , gen = 1 )
+[18`12``51.449] [ObjManager] UpdateAll: committed pending object at 000001D43E81B8D0  (type:  class BlockObject , pending id = 74 , index = 73 , gen = 1 )
+[18`12``51.449] [ObjManager] UpdateAll: committed pending object at 000001D43E81BBE0  (type:  class BlockObject , pending id = 75 , index = 74 , gen = 1 )
+[18`12``51.449] [ObjManager] UpdateAll: committed pending object at 000001D43E81C820  (type:  class BlockObject , pending id = 76 , index = 75 , gen = 1 )
+[18`12``51.450] [ObjManager] UpdateAll: committed pending object at 000001D43E81C200  (type:  class BlockObject , pending id = 77 , index = 76 , gen = 1 )
+[18`12``51.450] [ObjManager] UpdateAll: committed pending object at 000001D43E81C510  (type:  class BlockObject , pending id = 78 , index = 77 , gen = 1 )
+[18`12``51.450] [ObjManager] UpdateAll: committed pending object at 000001D43E81E3B0  (type:  class BlockObject , pending id = 79 , index = 78 , gen = 1 )
+[18`12``51.450] [ObjManager] UpdateAll: committed pending object at 000001D43E81E6C0  (type:  class BlockObject , pending id = 80 , index = 79 , gen = 1 )
+[18`12``51.451] [ObjManager] UpdateAll: committed pending object at 000001D43E81E0A0  (type:  class BlockObject , pending id = 81 , index = 80 , gen = 1 )
+[18`12``51.451] [ObjManager] UpdateAll: committed pending object at 000001D43E81DA80  (type:  class BlockObject , pending id = 82 , index = 81 , gen = 1 )
+[18`12``51.451] [ObjManager] UpdateAll: committed pending object at 000001D43E81D150  (type:  class BlockObject , pending id = 83 , index = 82 , gen = 1 )
+[18`12``51.452] [ObjManager] UpdateAll: committed pending object at 000001D43E81AC90  (type:  class BlockObject , pending id = 84 , index = 83 , gen = 1 )
+[18`12``51.452] [ObjManager] UpdateAll: committed pending object at 000001D43E81D460  (type:  class BlockObject , pending id = 85 , index = 84 , gen = 1 )
+[18`12``51.452] [ObjManager] UpdateAll: committed pending object at 000001D43E81CB30  (type:  class BlockObject , pending id = 86 , index = 85 , gen = 1 )
+[18`12``51.453] [ObjManager] UpdateAll: committed pending object at 000001D43E81CE40  (type:  class BlockObject , pending id = 87 , index = 86 , gen = 1 )
+[18`12``51.453] [ObjManager] UpdateAll: committed pending object at 000001D43E81DD90  (type:  class BlockObject , pending id = 88 , index = 87 , gen = 1 )
+[18`12``51.453] [ObjManager] UpdateAll: committed pending object at 000001D43E81AFA0  (type:  class BlockObject , pending id = 89 , index = 88 , gen = 1 )
+[18`12``51.454] [ObjManager] UpdateAll: committed pending object at 000001D43E81D770  (type:  class BlockObject , pending id = 90 , index = 89 , gen = 1 )
+[18`12``51.454] [ObjManager] UpdateAll: committed pending object at 000001D44E0CE8B0  (type:  class BlockObject , pending id = 91 , index = 90 , gen = 1 )
+[18`12``51.454] [ObjManager] UpdateAll: committed pending object at 000001D44E0D0750  (type:  class BlockObject , pending id = 92 , index = 91 , gen = 1 )
+[18`12``51.454] [ObjManager] UpdateAll: committed pending object at 000001D44E0CEBC0  (type:  class BlockObject , pending id = 93 , index = 92 , gen = 1 )
+[18`12``51.455] [ObjManager] UpdateAll: committed pending object at 000001D44E0CD960  (type:  class BlockObject , pending id = 94 , index = 93 , gen = 1 )
+[18`12``51.455] [ObjManager] UpdateAll: committed pending object at 000001D44E0CFB10  (type:  class BlockObject , pending id = 95 , index = 94 , gen = 1 )
+[18`12``51.456] [ObjManager] UpdateAll: committed pending object at 000001D44E0CFE20  (type:  class BlockObject , pending id = 96 , index = 95 , gen = 1 )
+[18`12``51.457] [ObjManager] UpdateAll: committed pending object at 000001D44E0CE290  (type:  class BlockObject , pending id = 97 , index = 96 , gen = 1 )
+[18`12``51.457] [ObjManager] UpdateAll: committed pending object at 000001D44E0CDC70  (type:  class BlockObject , pending id = 98 , index = 97 , gen = 1 )
+[18`12``51.457] [ObjManager] UpdateAll: committed pending object at 000001D44E0CF800  (type:  class BlockObject , pending id = 99 , index = 98 , gen = 1 )
+[18`12``51.458] [ObjManager] UpdateAll: committed pending object at 000001D44E0CDF80  (type:  class BlockObject , pending id = 100 , index = 99 , gen = 1 )
+[18`12``51.458] [ObjManager] UpdateAll: committed pending object at 000001D44E0CE5A0  (type:  class BlockObject , pending id = 101 , index = 100 , gen = 1 )
+[18`12``51.458] [ObjManager] UpdateAll: committed pending object at 000001D44E0D0130  (type:  class BlockObject , pending id = 102 , index = 101 , gen = 1 )
+[18`12``51.459] [ObjManager] UpdateAll: committed pending object at 000001D44E0D1080  (type:  class BlockObject , pending id = 103 , index = 102 , gen = 1 )
+[18`12``51.459] [ObjManager] UpdateAll: committed pending object at 000001D44E0CEED0  (type:  class BlockObject , pending id = 104 , index = 103 , gen = 1 )
+[18`12``51.459] [ObjManager] UpdateAll: committed pending object at 000001D44E0CF1E0  (type:  class BlockObject , pending id = 105 , index = 104 , gen = 1 )
+[18`12``51.460] [ObjManager] UpdateAll: committed pending object at 000001D44E0D0440  (type:  class BlockObject , pending id = 106 , index = 105 , gen = 1 )
+[18`12``51.460] [ObjManager] UpdateAll: committed pending object at 000001D44E0D1390  (type:  class BlockObject , pending id = 107 , index = 106 , gen = 1 )
+[18`12``51.460] [ObjManager] UpdateAll: committed pending object at 000001D44E0CF4F0  (type:  class BlockObject , pending id = 108 , index = 107 , gen = 1 )
+[18`12``51.461] [ObjManager] UpdateAll: committed pending object at 000001D44E0D0A60  (type:  class BlockObject , pending id = 109 , index = 108 , gen = 1 )
+[18`12``51.461] [ObjManager] UpdateAll: committed pending object at 000001D44E0D0D70  (type:  class BlockObject , pending id = 110 , index = 109 , gen = 1 )
+[18`12``51.461] [ObjManager] UpdateAll: committed pending object at 000001D43E6C2340  (type:  class Checkpoint , pending id = 111 , index = 110 , gen = 1 )
+[18`12``51.461] [ObjManager] UpdateAll: committed pending object at 000001D4500FB980  (type:  class BlockObject , pending id = 112 , index = 111 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D4500FC5C0  (type:  class BlockObject , pending id = 113 , index = 112 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D4500FA720  (type:  class BlockObject , pending id = 114 , index = 113 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D4500FB050  (type:  class BlockObject , pending id = 115 , index = 114 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D4500FCEF0  (type:  class BlockObject , pending id = 116 , index = 115 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D4500FD510  (type:  class BlockObject , pending id = 117 , index = 116 , gen = 1 )
+[18`12``51.462] [ObjManager] UpdateAll: committed pending object at 000001D43E200B30  (type:  class Spike , pending id = 118 , index = 117 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D43E201130  (type:  class Spike , pending id = 119 , index = 118 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D4500FAD40  (type:  class BlockObject , pending id = 120 , index = 119 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D4500FB360  (type:  class BlockObject , pending id = 121 , index = 120 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D4500FBFA0  (type:  class BlockObject , pending id = 122 , index = 121 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D43E200830  (type:  class DownSpike , pending id = 123 , index = 122 , gen = 1 )
+[18`12``51.463] [ObjManager] UpdateAll: committed pending object at 000001D4500FB670  (type:  class BlockObject , pending id = 124 , index = 123 , gen = 1 )
+[18`12``51.464] [ObjManager] UpdateAll: committed pending object at 000001D4501382D0  (type:  class DownSpike , pending id = 125 , index = 124 , gen = 1 )
+[18`12``51.464] [ObjManager] UpdateAll: committed pending object at 000001D4500FC2B0  (type:  class BlockObject , pending id = 126 , index = 125 , gen = 1 )
+[18`12``51.464] [ObjManager] UpdateAll: committed pending object at 000001D4501355D0  (type:  class DownSpike , pending id = 127 , index = 126 , gen = 1 )
+[18`12``51.464] [ObjManager] UpdateAll: committed pending object at 000001D4500FD200  (type:  class BlockObject , pending id = 128 , index = 127 , gen = 1 )
+[18`12``51.464] [ObjManager] UpdateAll: committed pending object at 000001D4501376D0  (type:  class DownSpike , pending id = 129 , index = 128 , gen = 1 )
+[18`12``51.465] [ObjManager] UpdateAll: committed pending object at 000001D4500FC8D0  (type:  class BlockObject , pending id = 130 , index = 129 , gen = 1 )
+[18`12``51.465] [ObjManager] UpdateAll: committed pending object at 000001D450137CD0  (type:  class DownSpike , pending id = 131 , index = 130 , gen = 1 )
+[18`12``51.465] [ObjManager] UpdateAll: committed pending object at 000001D4500FBC90  (type:  class BlockObject , pending id = 132 , index = 131 , gen = 1 )
+[18`12``51.465] [ObjManager] UpdateAll: committed pending object at 000001D4500FCBE0  (type:  class BlockObject , pending id = 133 , index = 132 , gen = 1 )
+[18`12``51.465] [ObjManager] UpdateAll: committed pending object at 000001D4501388D0  (type:  class Tester , pending id = 134 , index = 133 , gen = 1 )
+[18`12``51.490] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 2 reg_index= 2
+[18`12``51.492] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 135
+[18`12``51.712] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 135
+[18`12``51.714] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 136
+[18`12``52.552] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 136
+[18`12``52.554] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 137
+[18`12``52.611] [Physics] Collision EXIT: a = 1 b = 80
+[18`12``52.691] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 137
+[18`12``52.693] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 138
+[18`12``52.710] [Physics] Collision EXIT: a = 1 b = 81
+[18`12``52.710] [Physics] Collision EXIT: a = 1 b = 82
+[18`12``52.970] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 138
+[18`12``52.972] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 139
+[18`12``53.372] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 139
+[18`12``53.374] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 140
+[18`12``53.390] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 140
+[18`12``53.392] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 141
+[18`12``53.434] [Physics] Collision EXIT: a = 1 b = 85
+[18`12``53.537] [DrawingSequence] Registered obj= 000001D450138BD0 table_index= 134 reg_index= 142
+[18`12``53.538] [ObjManager] CreateEntry: created pending object at 000001D450138BD0  (pending id = 135 , commit next-frame)
+[18`12``53.538] [ObjManager] operator[]: accessing pending object at 000001D450138BD0
+[18`12``53.538] [ObjManager] operator[]: accessing pending object at 000001D450138BD0
+[18`12``53.538] [ObjManager] operator[]: accessing pending object at 000001D450138BD0
+[18`12``53.538] [ObjManager] UpdateAll: committed pending object at 000001D450138BD0  (type:  class Bullet , pending id = 135 , index = 134 , gen = 1 )
+[18`12``53.556] [DrawingSequence] Unregistered obj= 000001D43E6C2340 table_index= 1 reg_index= 111
+[18`12``53.558] [DrawingSequence] Registered obj= 000001D43E6C2340 table_index= 134 reg_index= 143
+[18`12``53.587] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 141
+[18`12``53.589] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 134 reg_index= 144
+[18`12``53.617] [Physics] Collision EXIT: a = 110 b = 134
+[18`12``53.797] [ObjManager] DestroyExisting: enqueued destroy for index = 134  gen= 1
+[18`12``53.797] [ObjManager] UpdateAll: executing destroy for object at index = 134  gen = 1  (type:  class Bullet )
+[18`12``53.798] [ObjManager] DestroyEntry: destroying object at 000001D450138BD0 (type: class Bullet , index = 134 , gen = 1 )
+[18`12``53.798] [DrawingSequence] Unregistered obj= 000001D450138BD0 table_index= 133 reg_index= 142
+[18`12``53.798] [ObjManager] DestroyEntry: removing pending_to_real_map_ entry for pending id = 135 -> index= 134 , gen= 1
+[18`12``53.998] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 144
+[18`12``54.000] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 145
+[18`12``54.060] [DrawingSequence] Unregistered obj= 000001D43E6C2340 table_index= 1 reg_index= 143
+[18`12``54.062] [DrawingSequence] Registered obj= 000001D43E6C2340 table_index= 133 reg_index= 146
+[18`12``54.066] [Physics] Collision EXIT: a = 1 b = 110
+[18`12``54.083] [Physics] Collision EXIT: a = 1 b = 83
+[18`12``54.143] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 145
+[18`12``54.145] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 147
+[18`12``54.161] [Physics] Collision EXIT: a = 1 b = 84
+[18`12``54.462] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 147
+[18`12``54.464] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 148
+[18`12``54.562] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 148
+[18`12``54.564] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 149
+[18`12``54.722] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 149
+[18`12``54.724] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 150
+[18`12``54.742] [Physics] Collision EXIT: a = 1 b = 112
+[18`12``55.122] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 150
+[18`12``55.123] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 151
+[18`12``55.262] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 151
+[18`12``55.264] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 152
+[18`12``55.343] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 152
+[18`12``55.345] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 133 reg_index= 153
+[18`12``59.819] [Tester] Test: DestroyAll
+[18`12``59.821] [ObjManager] DestroyAll: destroying all objects ( 134 )
+[18`12``59.822] [DrawingSequence] Unregistered obj= 000001D43E200E30 table_index= 0 reg_index= 1
+[18`12``59.822] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 132 reg_index= 153
+[18`12``59.822] [DrawingSequence] Unregistered obj= 000001D43E2D4310 table_index= 1 reg_index= 3
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D2160 table_index= 1 reg_index= 4
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D5B90 table_index= 1 reg_index= 5
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D30B0 table_index= 1 reg_index= 6
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D36D0 table_index= 1 reg_index= 7
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D4620 table_index= 1 reg_index= 8
+[18`12``59.823] [DrawingSequence] Unregistered obj= 000001D43E2D4C40 table_index= 1 reg_index= 9
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E2D4F50 table_index= 1 reg_index= 10
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D4770 table_index= 1 reg_index= 11
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D4A80 table_index= 1 reg_index= 12
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D3B30 table_index= 1 reg_index= 13
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D4D90 table_index= 1 reg_index= 14
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D5FF0 table_index= 1 reg_index= 15
+[18`12``59.824] [DrawingSequence] Unregistered obj= 000001D43E4D59D0 table_index= 1 reg_index= 16
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D53B0 table_index= 1 reg_index= 17
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D4150 table_index= 1 reg_index= 18
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D50A0 table_index= 1 reg_index= 19
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D5CE0 table_index= 1 reg_index= 20
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D56C0 table_index= 1 reg_index= 21
+[18`12``59.825] [DrawingSequence] Unregistered obj= 000001D43E4D3E40 table_index= 1 reg_index= 22
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D3820 table_index= 1 reg_index= 23
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D6300 table_index= 1 reg_index= 24
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D4460 table_index= 1 reg_index= 25
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D28D0 table_index= 1 reg_index= 26
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D2BE0 table_index= 1 reg_index= 27
+[18`12``59.826] [DrawingSequence] Unregistered obj= 000001D43E4D2EF0 table_index= 1 reg_index= 28
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D43E4D3200 table_index= 1 reg_index= 29
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D43E4D3510 table_index= 1 reg_index= 30
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D45224DF60 table_index= 1 reg_index= 31
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D45224E270 table_index= 1 reg_index= 32
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D45224D010 table_index= 1 reg_index= 33
+[18`12``59.827] [DrawingSequence] Unregistered obj= 000001D45224F1C0 table_index= 1 reg_index= 34
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224D630 table_index= 1 reg_index= 35
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224D940 table_index= 1 reg_index= 36
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224C6E0 table_index= 1 reg_index= 37
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224D320 table_index= 1 reg_index= 38
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224EBA0 table_index= 1 reg_index= 39
+[18`12``59.828] [DrawingSequence] Unregistered obj= 000001D45224DC50 table_index= 1 reg_index= 40
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224E890 table_index= 1 reg_index= 41
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224CD00 table_index= 1 reg_index= 42
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224EEB0 table_index= 1 reg_index= 43
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224E580 table_index= 1 reg_index= 44
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224F4D0 table_index= 1 reg_index= 45
+[18`12``59.829] [DrawingSequence] Unregistered obj= 000001D45224F7E0 table_index= 1 reg_index= 46
+[18`12``59.830] [DrawingSequence] Unregistered obj= 000001D45224FAF0 table_index= 1 reg_index= 47
+[18`12``59.830] [DrawingSequence] Unregistered obj= 000001D45224C0C0 table_index= 1 reg_index= 48
+[18`12``59.830] [DrawingSequence] Unregistered obj= 000001D45224C9F0 table_index= 1 reg_index= 49
+[18`12``59.830] [DrawingSequence] Unregistered obj= 000001D45224C3D0 table_index= 1 reg_index= 50
+[18`12``59.830] [DrawingSequence] Unregistered obj= 000001D44FEE9060 table_index= 1 reg_index= 51
+[18`12``59.831] [DrawingSequence] Unregistered obj= 000001D44FEE8110 table_index= 1 reg_index= 52
+[18`12``59.831] [DrawingSequence] Unregistered obj= 000001D44FEEABF0 table_index= 1 reg_index= 53
+[18`12``59.831] [DrawingSequence] Unregistered obj= 000001D44FEEAF00 table_index= 1 reg_index= 54
+[18`12``59.831] [DrawingSequence] Unregistered obj= 000001D44FEE7AF0 table_index= 1 reg_index= 55
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE9370 table_index= 1 reg_index= 56
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE74D0 table_index= 1 reg_index= 57
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE9680 table_index= 1 reg_index= 58
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEEA8E0 table_index= 1 reg_index= 59
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE9FB0 table_index= 1 reg_index= 60
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE8D50 table_index= 1 reg_index= 61
+[18`12``59.832] [DrawingSequence] Unregistered obj= 000001D44FEE7E00 table_index= 1 reg_index= 62
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEE8420 table_index= 1 reg_index= 63
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEE77E0 table_index= 1 reg_index= 64
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEE8730 table_index= 1 reg_index= 65
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEE8A40 table_index= 1 reg_index= 66
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEEA2C0 table_index= 1 reg_index= 67
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEEA5D0 table_index= 1 reg_index= 68
+[18`12``59.833] [DrawingSequence] Unregistered obj= 000001D44FEE9990 table_index= 1 reg_index= 69
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D44FEE9CA0 table_index= 1 reg_index= 70
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D43E81BEF0 table_index= 1 reg_index= 71
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D43E81B5C0 table_index= 1 reg_index= 72
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D43E81B2B0 table_index= 1 reg_index= 73
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D43E81B8D0 table_index= 1 reg_index= 74
+[18`12``59.834] [DrawingSequence] Unregistered obj= 000001D43E81BBE0 table_index= 1 reg_index= 75
+[18`12``59.835] [DrawingSequence] Unregistered obj= 000001D43E81C820 table_index= 1 reg_index= 76
+[18`12``59.835] [DrawingSequence] Unregistered obj= 000001D43E81C200 table_index= 1 reg_index= 77
+[18`12``59.835] [DrawingSequence] Unregistered obj= 000001D43E81C510 table_index= 1 reg_index= 78
+[18`12``59.835] [DrawingSequence] Unregistered obj= 000001D43E81E3B0 table_index= 1 reg_index= 79
+[18`12``59.836] [DrawingSequence] Unregistered obj= 000001D43E81E6C0 table_index= 1 reg_index= 80
+[18`12``59.836] [DrawingSequence] Unregistered obj= 000001D43E81E0A0 table_index= 1 reg_index= 81
+[18`12``59.836] [DrawingSequence] Unregistered obj= 000001D43E81DA80 table_index= 1 reg_index= 82
+[18`12``59.836] [DrawingSequence] Unregistered obj= 000001D43E81D150 table_index= 1 reg_index= 83
+[18`12``59.836] [DrawingSequence] Unregistered obj= 000001D43E81AC90 table_index= 1 reg_index= 84
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81D460 table_index= 1 reg_index= 85
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81CB30 table_index= 1 reg_index= 86
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81CE40 table_index= 1 reg_index= 87
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81DD90 table_index= 1 reg_index= 88
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81AFA0 table_index= 1 reg_index= 89
+[18`12``59.837] [DrawingSequence] Unregistered obj= 000001D43E81D770 table_index= 1 reg_index= 90
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0CE8B0 table_index= 1 reg_index= 91
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0D0750 table_index= 1 reg_index= 92
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0CEBC0 table_index= 1 reg_index= 93
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0CD960 table_index= 1 reg_index= 94
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0CFB10 table_index= 1 reg_index= 95
+[18`12``59.838] [DrawingSequence] Unregistered obj= 000001D44E0CFE20 table_index= 1 reg_index= 96
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0CE290 table_index= 1 reg_index= 97
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0CDC70 table_index= 1 reg_index= 98
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0CF800 table_index= 1 reg_index= 99
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0CDF80 table_index= 1 reg_index= 100
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0CE5A0 table_index= 1 reg_index= 101
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0D0130 table_index= 1 reg_index= 102
+[18`12``59.839] [DrawingSequence] Unregistered obj= 000001D44E0D1080 table_index= 1 reg_index= 103
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0CEED0 table_index= 1 reg_index= 104
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0CF1E0 table_index= 1 reg_index= 105
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0D0440 table_index= 1 reg_index= 106
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0D1390 table_index= 1 reg_index= 107
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0CF4F0 table_index= 1 reg_index= 108
+[18`12``59.840] [DrawingSequence] Unregistered obj= 000001D44E0D0A60 table_index= 1 reg_index= 109
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D44E0D0D70 table_index= 1 reg_index= 110
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D43E6C2340 table_index= 0 reg_index= 146
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D4500FB980 table_index= 0 reg_index= 112
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D4500FC5C0 table_index= 0 reg_index= 113
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D4500FA720 table_index= 0 reg_index= 114
+[18`12``59.841] [DrawingSequence] Unregistered obj= 000001D4500FB050 table_index= 0 reg_index= 115
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D4500FCEF0 table_index= 0 reg_index= 116
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D4500FD510 table_index= 0 reg_index= 117
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D43E200B30 table_index= 0 reg_index= 118
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D43E201130 table_index= 0 reg_index= 119
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D4500FAD40 table_index= 0 reg_index= 120
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 0 reg_index= 121
+[18`12``59.842] [DrawingSequence] Unregistered obj= 000001D4500FBFA0 table_index= 0 reg_index= 122
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D43E200830 table_index= 0 reg_index= 123
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4500FB670 table_index= 0 reg_index= 124
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4501382D0 table_index= 0 reg_index= 125
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4500FC2B0 table_index= 0 reg_index= 126
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4501355D0 table_index= 0 reg_index= 127
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4500FD200 table_index= 0 reg_index= 128
+[18`12``59.843] [DrawingSequence] Unregistered obj= 000001D4501376D0 table_index= 0 reg_index= 129
+[18`12``59.844] [DrawingSequence] Unregistered obj= 000001D4500FC8D0 table_index= 0 reg_index= 130
+[18`12``59.844] [DrawingSequence] Unregistered obj= 000001D450137CD0 table_index= 0 reg_index= 131
+[18`12``59.844] [DrawingSequence] Unregistered obj= 000001D4500FBC90 table_index= 0 reg_index= 132
+[18`12``59.844] [DrawingSequence] Unregistered obj= 000001D4500FCBE0 table_index= 0 reg_index= 133
+[18`12``59.844] [DrawingSequence] Unregistered obj= 000001D4501388D0 table_index= 0 reg_index= 134
+[18`13``01.694] [Main] R Pressed, start respawn process
+[18`13``01.695] [Memory] BeforeRespawn DrawingSequence bytes= 1128 ObjManager bytes= 35568 RoomLoader bytes= 528
+[18`13``01.695] [FirstRoom] RoomUnload called.
+[18`13``01.695] [ObjManager] DestroyAll: destroying all objects ( 0 )
+[18`13``01.695] [FirstRoom] RoomLoad called.
+[18`13``01.857] [DrawingSequence] Registered obj= 000001D43E200B30 table_index= 0 reg_index= 154
+[18`13``01.858] [ObjManager] CreateEntry: created pending object at 000001D43E200B30  (pending id = 136 , commit next-frame)
+[18`13``01.860] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 1 reg_index= 155
+[18`13``01.860] [ObjManager] CreateEntry: created pending object at 000001D4500FB360  (pending id = 137 , commit next-frame)
+[18`13``01.862] [DrawingSequence] Registered obj= 000001D4500FBFA0 table_index= 2 reg_index= 156
+[18`13``01.863] [ObjManager] CreateEntry: created pending object at 000001D4500FBFA0  (pending id = 138 , commit next-frame)
+[18`13``01.865] [DrawingSequence] Registered obj= 000001D4500FA720 table_index= 3 reg_index= 157
+[18`13``01.865] [ObjManager] CreateEntry: created pending object at 000001D4500FA720  (pending id = 139 , commit next-frame)
+[18`13``01.867] [DrawingSequence] Registered obj= 000001D4500FAD40 table_index= 4 reg_index= 158
+[18`13``01.867] [ObjManager] CreateEntry: created pending object at 000001D4500FAD40  (pending id = 140 , commit next-frame)
+[18`13``01.870] [DrawingSequence] Registered obj= 000001D4500FB050 table_index= 5 reg_index= 159
+[18`13``01.870] [ObjManager] CreateEntry: created pending object at 000001D4500FB050  (pending id = 141 , commit next-frame)
+[18`13``01.872] [DrawingSequence] Registered obj= 000001D4500FB670 table_index= 6 reg_index= 160
+[18`13``01.872] [ObjManager] CreateEntry: created pending object at 000001D4500FB670  (pending id = 142 , commit next-frame)
+[18`13``01.874] [DrawingSequence] Registered obj= 000001D4500FD510 table_index= 7 reg_index= 161
+[18`13``01.875] [ObjManager] CreateEntry: created pending object at 000001D4500FD510  (pending id = 143 , commit next-frame)
+[18`13``01.877] [DrawingSequence] Registered obj= 000001D4500FC2B0 table_index= 8 reg_index= 162
+[18`13``01.877] [ObjManager] CreateEntry: created pending object at 000001D4500FC2B0  (pending id = 144 , commit next-frame)
+[18`13``01.879] [DrawingSequence] Registered obj= 000001D4500FC5C0 table_index= 9 reg_index= 163
+[18`13``01.879] [ObjManager] CreateEntry: created pending object at 000001D4500FC5C0  (pending id = 145 , commit next-frame)
+[18`13``01.881] [DrawingSequence] Registered obj= 000001D4500FB980 table_index= 10 reg_index= 164
+[18`13``01.882] [ObjManager] CreateEntry: created pending object at 000001D4500FB980  (pending id = 146 , commit next-frame)
+[18`13``01.884] [DrawingSequence] Registered obj= 000001D4500FC8D0 table_index= 11 reg_index= 165
+[18`13``01.884] [ObjManager] CreateEntry: created pending object at 000001D4500FC8D0  (pending id = 147 , commit next-frame)
+[18`13``01.886] [DrawingSequence] Registered obj= 000001D4500FCBE0 table_index= 12 reg_index= 166
+[18`13``01.887] [ObjManager] CreateEntry: created pending object at 000001D4500FCBE0  (pending id = 148 , commit next-frame)
+[18`13``01.889] [DrawingSequence] Registered obj= 000001D4500FCEF0 table_index= 13 reg_index= 167
+[18`13``01.889] [ObjManager] CreateEntry: created pending object at 000001D4500FCEF0  (pending id = 149 , commit next-frame)
+[18`13``01.892] [DrawingSequence] Registered obj= 000001D4500FBC90 table_index= 14 reg_index= 168
+[18`13``01.892] [ObjManager] CreateEntry: created pending object at 000001D4500FBC90  (pending id = 150 , commit next-frame)
+[18`13``01.895] [DrawingSequence] Registered obj= 000001D4500FD200 table_index= 15 reg_index= 169
+[18`13``01.895] [ObjManager] CreateEntry: created pending object at 000001D4500FD200  (pending id = 151 , commit next-frame)
+[18`13``01.898] [DrawingSequence] Registered obj= 000001D44D3B36E0 table_index= 16 reg_index= 170
+[18`13``01.898] [ObjManager] CreateEntry: created pending object at 000001D44D3B36E0  (pending id = 152 , commit next-frame)
+[18`13``01.900] [DrawingSequence] Registered obj= 000001D44D3B4630 table_index= 17 reg_index= 171
+[18`13``01.900] [ObjManager] CreateEntry: created pending object at 000001D44D3B4630  (pending id = 153 , commit next-frame)
+[18`13``01.902] [DrawingSequence] Registered obj= 000001D44D3B1530 table_index= 18 reg_index= 172
+[18`13``01.903] [ObjManager] CreateEntry: created pending object at 000001D44D3B1530  (pending id = 154 , commit next-frame)
+[18`13``01.905] [DrawingSequence] Registered obj= 000001D44D3B2790 table_index= 19 reg_index= 173
+[18`13``01.905] [ObjManager] CreateEntry: created pending object at 000001D44D3B2790  (pending id = 155 , commit next-frame)
+[18`13``01.907] [DrawingSequence] Registered obj= 000001D44D3B2170 table_index= 20 reg_index= 174
+[18`13``01.907] [ObjManager] CreateEntry: created pending object at 000001D44D3B2170  (pending id = 156 , commit next-frame)
+[18`13``01.910] [DrawingSequence] Registered obj= 000001D44D3B39F0 table_index= 21 reg_index= 175
+[18`13``01.910] [ObjManager] CreateEntry: created pending object at 000001D44D3B39F0  (pending id = 157 , commit next-frame)
+[18`13``01.912] [DrawingSequence] Registered obj= 000001D44D3B1840 table_index= 22 reg_index= 176
+[18`13``01.912] [ObjManager] CreateEntry: created pending object at 000001D44D3B1840  (pending id = 158 , commit next-frame)
+[18`13``01.915] [DrawingSequence] Registered obj= 000001D44D3B3D00 table_index= 23 reg_index= 177
+[18`13``01.915] [ObjManager] CreateEntry: created pending object at 000001D44D3B3D00  (pending id = 159 , commit next-frame)
+[18`13``01.917] [DrawingSequence] Registered obj= 000001D44D3B1B50 table_index= 24 reg_index= 178
+[18`13``01.917] [ObjManager] CreateEntry: created pending object at 000001D44D3B1B50  (pending id = 160 , commit next-frame)
+[18`13``01.919] [DrawingSequence] Registered obj= 000001D44D3B1E60 table_index= 25 reg_index= 179
+[18`13``01.920] [ObjManager] CreateEntry: created pending object at 000001D44D3B1E60  (pending id = 161 , commit next-frame)
+[18`13``01.922] [DrawingSequence] Registered obj= 000001D44D3B2480 table_index= 26 reg_index= 180
+[18`13``01.922] [ObjManager] CreateEntry: created pending object at 000001D44D3B2480  (pending id = 162 , commit next-frame)
+[18`13``01.924] [DrawingSequence] Registered obj= 000001D44D3B30C0 table_index= 27 reg_index= 181
+[18`13``01.925] [ObjManager] CreateEntry: created pending object at 000001D44D3B30C0  (pending id = 163 , commit next-frame)
+[18`13``01.927] [DrawingSequence] Registered obj= 000001D43E2D4310 table_index= 28 reg_index= 182
+[18`13``01.927] [ObjManager] CreateEntry: created pending object at 000001D43E2D4310  (pending id = 164 , commit next-frame)
+[18`13``01.929] [DrawingSequence] Registered obj= 000001D43E2D4620 table_index= 29 reg_index= 183
+[18`13``01.930] [ObjManager] CreateEntry: created pending object at 000001D43E2D4620  (pending id = 165 , commit next-frame)
+[18`13``01.932] [DrawingSequence] Registered obj= 000001D43E2D36D0 table_index= 30 reg_index= 184
+[18`13``01.932] [ObjManager] CreateEntry: created pending object at 000001D43E2D36D0  (pending id = 166 , commit next-frame)
+[18`13``01.935] [DrawingSequence] Registered obj= 000001D43E2D5B90 table_index= 31 reg_index= 185
+[18`13``01.935] [ObjManager] CreateEntry: created pending object at 000001D43E2D5B90  (pending id = 167 , commit next-frame)
+[18`13``01.937] [DrawingSequence] Registered obj= 000001D43E2D4C40 table_index= 32 reg_index= 186
+[18`13``01.938] [ObjManager] CreateEntry: created pending object at 000001D43E2D4C40  (pending id = 168 , commit next-frame)
+[18`13``01.940] [DrawingSequence] Registered obj= 000001D43E2D4F50 table_index= 33 reg_index= 187
+[18`13``01.940] [ObjManager] CreateEntry: created pending object at 000001D43E2D4F50  (pending id = 169 , commit next-frame)
+[18`13``01.942] [DrawingSequence] Registered obj= 000001D43E2D2DA0 table_index= 34 reg_index= 188
+[18`13``01.942] [ObjManager] CreateEntry: created pending object at 000001D43E2D2DA0  (pending id = 170 , commit next-frame)
+[18`13``01.945] [DrawingSequence] Registered obj= 000001D43E2D30B0 table_index= 35 reg_index= 189
+[18`13``01.945] [ObjManager] CreateEntry: created pending object at 000001D43E2D30B0  (pending id = 171 , commit next-frame)
+[18`13``01.947] [DrawingSequence] Registered obj= 000001D43E2D2160 table_index= 36 reg_index= 190
+[18`13``01.947] [ObjManager] CreateEntry: created pending object at 000001D43E2D2160  (pending id = 172 , commit next-frame)
+[18`13``01.949] [DrawingSequence] Registered obj= 000001D450137470 table_index= 37 reg_index= 191
+[18`13``01.950] [ObjManager] CreateEntry: created pending object at 000001D450137470  (pending id = 173 , commit next-frame)
+[18`13``01.952] [DrawingSequence] Registered obj= 000001D450135F00 table_index= 38 reg_index= 192
+[18`13``01.952] [ObjManager] CreateEntry: created pending object at 000001D450135F00  (pending id = 174 , commit next-frame)
+[18`13``01.954] [DrawingSequence] Registered obj= 000001D4501358E0 table_index= 39 reg_index= 193
+[18`13``01.954] [ObjManager] CreateEntry: created pending object at 000001D4501358E0  (pending id = 175 , commit next-frame)
+[18`13``01.957] [DrawingSequence] Registered obj= 000001D450137780 table_index= 40 reg_index= 194
+[18`13``01.957] [ObjManager] CreateEntry: created pending object at 000001D450137780  (pending id = 176 , commit next-frame)
+[18`13``01.959] [DrawingSequence] Registered obj= 000001D450136E50 table_index= 41 reg_index= 195
+[18`13``01.959] [ObjManager] CreateEntry: created pending object at 000001D450136E50  (pending id = 177 , commit next-frame)
+[18`13``01.961] [DrawingSequence] Registered obj= 000001D450136210 table_index= 42 reg_index= 196
+[18`13``01.962] [ObjManager] CreateEntry: created pending object at 000001D450136210  (pending id = 178 , commit next-frame)
+[18`13``01.964] [DrawingSequence] Registered obj= 000001D450137A90 table_index= 43 reg_index= 197
+[18`13``01.964] [ObjManager] CreateEntry: created pending object at 000001D450137A90  (pending id = 179 , commit next-frame)
+[18`13``01.967] [DrawingSequence] Registered obj= 000001D450137DA0 table_index= 44 reg_index= 198
+[18`13``01.967] [ObjManager] CreateEntry: created pending object at 000001D450137DA0  (pending id = 180 , commit next-frame)
+[18`13``01.969] [DrawingSequence] Registered obj= 000001D450136830 table_index= 45 reg_index= 199
+[18`13``01.969] [ObjManager] CreateEntry: created pending object at 000001D450136830  (pending id = 181 , commit next-frame)
+[18`13``01.971] [DrawingSequence] Registered obj= 000001D450136B40 table_index= 46 reg_index= 200
+[18`13``01.972] [ObjManager] CreateEntry: created pending object at 000001D450136B40  (pending id = 182 , commit next-frame)
+[18`13``01.974] [DrawingSequence] Registered obj= 000001D450137160 table_index= 47 reg_index= 201
+[18`13``01.974] [ObjManager] CreateEntry: created pending object at 000001D450137160  (pending id = 183 , commit next-frame)
+[18`13``01.976] [DrawingSequence] Registered obj= 000001D4501355D0 table_index= 48 reg_index= 202
+[18`13``01.976] [ObjManager] CreateEntry: created pending object at 000001D4501355D0  (pending id = 184 , commit next-frame)
+[18`13``01.979] [DrawingSequence] Registered obj= 000001D4501380B0 table_index= 49 reg_index= 203
+[18`13``01.979] [ObjManager] CreateEntry: created pending object at 000001D4501380B0  (pending id = 185 , commit next-frame)
+[18`13``01.982] [DrawingSequence] Registered obj= 000001D4501383C0 table_index= 50 reg_index= 204
+[18`13``01.982] [ObjManager] CreateEntry: created pending object at 000001D4501383C0  (pending id = 186 , commit next-frame)
+[18`13``01.984] [DrawingSequence] Registered obj= 000001D4501386D0 table_index= 51 reg_index= 205
+[18`13``01.984] [ObjManager] CreateEntry: created pending object at 000001D4501386D0  (pending id = 187 , commit next-frame)
+[18`13``01.986] [DrawingSequence] Registered obj= 000001D4501389E0 table_index= 52 reg_index= 206
+[18`13``01.987] [ObjManager] CreateEntry: created pending object at 000001D4501389E0  (pending id = 188 , commit next-frame)
+[18`13``01.989] [DrawingSequence] Registered obj= 000001D450135BF0 table_index= 53 reg_index= 207
+[18`13``01.989] [ObjManager] CreateEntry: created pending object at 000001D450135BF0  (pending id = 189 , commit next-frame)
+[18`13``01.991] [DrawingSequence] Registered obj= 000001D450138CF0 table_index= 54 reg_index= 208
+[18`13``01.991] [ObjManager] CreateEntry: created pending object at 000001D450138CF0  (pending id = 190 , commit next-frame)
+[18`13``01.994] [DrawingSequence] Registered obj= 000001D450139000 table_index= 55 reg_index= 209
+[18`13``01.995] [ObjManager] CreateEntry: created pending object at 000001D450139000  (pending id = 191 , commit next-frame)
+[18`13``01.997] [DrawingSequence] Registered obj= 000001D450136520 table_index= 56 reg_index= 210
+[18`13``01.998] [ObjManager] CreateEntry: created pending object at 000001D450136520  (pending id = 192 , commit next-frame)
+[18`13``02.000] [DrawingSequence] Registered obj= 000001D44E248820 table_index= 57 reg_index= 211
+[18`13``02.000] [ObjManager] CreateEntry: created pending object at 000001D44E248820  (pending id = 193 , commit next-frame)
+[18`13``02.002] [DrawingSequence] Registered obj= 000001D44E248200 table_index= 58 reg_index= 212
+[18`13``02.003] [ObjManager] CreateEntry: created pending object at 000001D44E248200  (pending id = 194 , commit next-frame)
+[18`13``02.005] [DrawingSequence] Registered obj= 000001D44E249460 table_index= 59 reg_index= 213
+[18`13``02.005] [ObjManager] CreateEntry: created pending object at 000001D44E249460  (pending id = 195 , commit next-frame)
+[18`13``02.007] [DrawingSequence] Registered obj= 000001D44E249D90 table_index= 60 reg_index= 214
+[18`13``02.008] [ObjManager] CreateEntry: created pending object at 000001D44E249D90  (pending id = 196 , commit next-frame)
+[18`13``02.011] [DrawingSequence] Registered obj= 000001D44E247EF0 table_index= 61 reg_index= 215
+[18`13``02.011] [ObjManager] CreateEntry: created pending object at 000001D44E247EF0  (pending id = 197 , commit next-frame)
+[18`13``02.013] [DrawingSequence] Registered obj= 000001D44E249770 table_index= 62 reg_index= 216
+[18`13``02.014] [ObjManager] CreateEntry: created pending object at 000001D44E249770  (pending id = 198 , commit next-frame)
+[18`13``02.016] [DrawingSequence] Registered obj= 000001D44E24A0A0 table_index= 63 reg_index= 217
+[18`13``02.017] [ObjManager] CreateEntry: created pending object at 000001D44E24A0A0  (pending id = 199 , commit next-frame)
+[18`13``02.020] [DrawingSequence] Registered obj= 000001D44E249A80 table_index= 64 reg_index= 218
+[18`13``02.022] [ObjManager] CreateEntry: created pending object at 000001D44E249A80  (pending id = 200 , commit next-frame)
+[18`13``02.025] [DrawingSequence] Registered obj= 000001D44E24A3B0 table_index= 65 reg_index= 219
+[18`13``02.026] [ObjManager] CreateEntry: created pending object at 000001D44E24A3B0  (pending id = 201 , commit next-frame)
+[18`13``02.028] [DrawingSequence] Registered obj= 000001D44E24A6C0 table_index= 66 reg_index= 220
+[18`13``02.028] [ObjManager] CreateEntry: created pending object at 000001D44E24A6C0  (pending id = 202 , commit next-frame)
+[18`13``02.031] [DrawingSequence] Registered obj= 000001D44E2478D0 table_index= 67 reg_index= 221
+[18`13``02.031] [ObjManager] CreateEntry: created pending object at 000001D44E2478D0  (pending id = 203 , commit next-frame)
+[18`13``02.033] [DrawingSequence] Registered obj= 000001D44E246C90 table_index= 68 reg_index= 222
+[18`13``02.034] [ObjManager] CreateEntry: created pending object at 000001D44E246C90  (pending id = 204 , commit next-frame)
+[18`13``02.036] [DrawingSequence] Registered obj= 000001D44E246FA0 table_index= 69 reg_index= 223
+[18`13``02.036] [ObjManager] CreateEntry: created pending object at 000001D44E246FA0  (pending id = 205 , commit next-frame)
+[18`13``02.038] [DrawingSequence] Registered obj= 000001D44E2472B0 table_index= 70 reg_index= 224
+[18`13``02.039] [ObjManager] CreateEntry: created pending object at 000001D44E2472B0  (pending id = 206 , commit next-frame)
+[18`13``02.041] [DrawingSequence] Registered obj= 000001D44E2475C0 table_index= 71 reg_index= 225
+[18`13``02.041] [ObjManager] CreateEntry: created pending object at 000001D44E2475C0  (pending id = 207 , commit next-frame)
+[18`13``02.043] [DrawingSequence] Registered obj= 000001D44E247BE0 table_index= 72 reg_index= 226
+[18`13``02.044] [ObjManager] CreateEntry: created pending object at 000001D44E247BE0  (pending id = 208 , commit next-frame)
+[18`13``02.046] [DrawingSequence] Registered obj= 000001D44E249150 table_index= 73 reg_index= 227
+[18`13``02.046] [ObjManager] CreateEntry: created pending object at 000001D44E249150  (pending id = 209 , commit next-frame)
+[18`13``02.048] [DrawingSequence] Registered obj= 000001D44E248B30 table_index= 74 reg_index= 228
+[18`13``02.049] [ObjManager] CreateEntry: created pending object at 000001D44E248B30  (pending id = 210 , commit next-frame)
+[18`13``02.051] [DrawingSequence] Registered obj= 000001D44E248510 table_index= 75 reg_index= 229
+[18`13``02.051] [ObjManager] CreateEntry: created pending object at 000001D44E248510  (pending id = 211 , commit next-frame)
+[18`13``02.053] [DrawingSequence] Registered obj= 000001D44E248E40 table_index= 76 reg_index= 230
+[18`13``02.053] [ObjManager] CreateEntry: created pending object at 000001D44E248E40  (pending id = 212 , commit next-frame)
+[18`13``02.056] [DrawingSequence] Registered obj= 000001D450293600 table_index= 77 reg_index= 231
+[18`13``02.056] [ObjManager] CreateEntry: created pending object at 000001D450293600  (pending id = 213 , commit next-frame)
+[18`13``02.059] [DrawingSequence] Registered obj= 000001D450294550 table_index= 78 reg_index= 232
+[18`13``02.059] [ObjManager] CreateEntry: created pending object at 000001D450294550  (pending id = 214 , commit next-frame)
+[18`13``02.061] [DrawingSequence] Registered obj= 000001D450294860 table_index= 79 reg_index= 233
+[18`13``02.061] [ObjManager] CreateEntry: created pending object at 000001D450294860  (pending id = 215 , commit next-frame)
+[18`13``02.063] [DrawingSequence] Registered obj= 000001D450293910 table_index= 80 reg_index= 234
+[18`13``02.064] [ObjManager] CreateEntry: created pending object at 000001D450293910  (pending id = 216 , commit next-frame)
+[18`13``02.066] [DrawingSequence] Registered obj= 000001D450294B70 table_index= 81 reg_index= 235
+[18`13``02.066] [ObjManager] CreateEntry: created pending object at 000001D450294B70  (pending id = 217 , commit next-frame)
+[18`13``02.068] [DrawingSequence] Registered obj= 000001D450294E80 table_index= 82 reg_index= 236
+[18`13``02.068] [ObjManager] CreateEntry: created pending object at 000001D450294E80  (pending id = 218 , commit next-frame)
+[18`13``02.071] [DrawingSequence] Registered obj= 000001D450293F30 table_index= 83 reg_index= 237
+[18`13``02.071] [ObjManager] CreateEntry: created pending object at 000001D450293F30  (pending id = 219 , commit next-frame)
+[18`13``02.073] [DrawingSequence] Registered obj= 000001D450293C20 table_index= 84 reg_index= 238
+[18`13``02.073] [ObjManager] CreateEntry: created pending object at 000001D450293C20  (pending id = 220 , commit next-frame)
+[18`13``02.075] [DrawingSequence] Registered obj= 000001D450295190 table_index= 85 reg_index= 239
+[18`13``02.075] [ObjManager] CreateEntry: created pending object at 000001D450295190  (pending id = 221 , commit next-frame)
+[18`13``02.078] [DrawingSequence] Registered obj= 000001D450294240 table_index= 86 reg_index= 240
+[18`13``02.078] [ObjManager] CreateEntry: created pending object at 000001D450294240  (pending id = 222 , commit next-frame)
+[18`13``02.080] [DrawingSequence] Registered obj= 000001D44E18B580 table_index= 87 reg_index= 241
+[18`13``02.080] [ObjManager] CreateEntry: created pending object at 000001D44E18B580  (pending id = 223 , commit next-frame)
+[18`13``02.082] [DrawingSequence] Registered obj= 000001D44E18C1C0 table_index= 88 reg_index= 242
+[18`13``02.082] [ObjManager] CreateEntry: created pending object at 000001D44E18C1C0  (pending id = 224 , commit next-frame)
+[18`13``02.085] [DrawingSequence] Registered obj= 000001D44E18A320 table_index= 89 reg_index= 243
+[18`13``02.085] [ObjManager] CreateEntry: created pending object at 000001D44E18A320  (pending id = 225 , commit next-frame)
+[18`13``02.087] [DrawingSequence] Registered obj= 000001D44E1896E0 table_index= 90 reg_index= 244
+[18`13``02.088] [ObjManager] CreateEntry: created pending object at 000001D44E1896E0  (pending id = 226 , commit next-frame)
+[18`13``02.090] [DrawingSequence] Registered obj= 000001D44E189D00 table_index= 91 reg_index= 245
+[18`13``02.090] [ObjManager] CreateEntry: created pending object at 000001D44E189D00  (pending id = 227 , commit next-frame)
+[18`13``02.092] [DrawingSequence] Registered obj= 000001D44E18C7E0 table_index= 92 reg_index= 246
+[18`13``02.092] [ObjManager] CreateEntry: created pending object at 000001D44E18C7E0  (pending id = 228 , commit next-frame)
+[18`13``02.094] [DrawingSequence] Registered obj= 000001D44E1899F0 table_index= 93 reg_index= 247
+[18`13``02.095] [ObjManager] CreateEntry: created pending object at 000001D44E1899F0  (pending id = 229 , commit next-frame)
+[18`13``02.097] [DrawingSequence] Registered obj= 000001D44E18B890 table_index= 94 reg_index= 248
+[18`13``02.097] [ObjManager] CreateEntry: created pending object at 000001D44E18B890  (pending id = 230 , commit next-frame)
+[18`13``02.099] [DrawingSequence] Registered obj= 000001D44E18C4D0 table_index= 95 reg_index= 249
+[18`13``02.099] [ObjManager] CreateEntry: created pending object at 000001D44E18C4D0  (pending id = 231 , commit next-frame)
+[18`13``02.101] [DrawingSequence] Registered obj= 000001D44E18B270 table_index= 96 reg_index= 250
+[18`13``02.102] [ObjManager] CreateEntry: created pending object at 000001D44E18B270  (pending id = 232 , commit next-frame)
+[18`13``02.104] [DrawingSequence] Registered obj= 000001D44E1893D0 table_index= 97 reg_index= 251
+[18`13``02.104] [ObjManager] CreateEntry: created pending object at 000001D44E1893D0  (pending id = 233 , commit next-frame)
+[18`13``02.107] [DrawingSequence] Registered obj= 000001D44E18A010 table_index= 98 reg_index= 252
+[18`13``02.107] [ObjManager] CreateEntry: created pending object at 000001D44E18A010  (pending id = 234 , commit next-frame)
+[18`13``02.109] [DrawingSequence] Registered obj= 000001D44E18A630 table_index= 99 reg_index= 253
+[18`13``02.110] [ObjManager] CreateEntry: created pending object at 000001D44E18A630  (pending id = 235 , commit next-frame)
+[18`13``02.112] [DrawingSequence] Registered obj= 000001D44E18A940 table_index= 100 reg_index= 254
+[18`13``02.112] [ObjManager] CreateEntry: created pending object at 000001D44E18A940  (pending id = 236 , commit next-frame)
+[18`13``02.114] [DrawingSequence] Registered obj= 000001D44E188DB0 table_index= 101 reg_index= 255
+[18`13``02.114] [ObjManager] CreateEntry: created pending object at 000001D44E188DB0  (pending id = 237 , commit next-frame)
+[18`13``02.117] [DrawingSequence] Registered obj= 000001D44E18AC50 table_index= 102 reg_index= 256
+[18`13``02.117] [ObjManager] CreateEntry: created pending object at 000001D44E18AC50  (pending id = 238 , commit next-frame)
+[18`13``02.120] [DrawingSequence] Registered obj= 000001D44E1890C0 table_index= 103 reg_index= 257
+[18`13``02.120] [ObjManager] CreateEntry: created pending object at 000001D44E1890C0  (pending id = 239 , commit next-frame)
+[18`13``02.122] [DrawingSequence] Registered obj= 000001D44E18AF60 table_index= 104 reg_index= 258
+[18`13``02.123] [ObjManager] CreateEntry: created pending object at 000001D44E18AF60  (pending id = 240 , commit next-frame)
+[18`13``02.125] [DrawingSequence] Registered obj= 000001D44E18BBA0 table_index= 105 reg_index= 259
+[18`13``02.125] [ObjManager] CreateEntry: created pending object at 000001D44E18BBA0  (pending id = 241 , commit next-frame)
+[18`13``02.127] [DrawingSequence] Registered obj= 000001D44E18BEB0 table_index= 106 reg_index= 260
+[18`13``02.127] [ObjManager] CreateEntry: created pending object at 000001D44E18BEB0  (pending id = 242 , commit next-frame)
+[18`13``02.129] [DrawingSequence] Registered obj= 000001D4501DA5D0 table_index= 107 reg_index= 261
+[18`13``02.130] [ObjManager] CreateEntry: created pending object at 000001D4501DA5D0  (pending id = 243 , commit next-frame)
+[18`13``02.132] [DrawingSequence] Registered obj= 000001D4501DC160 table_index= 108 reg_index= 262
+[18`13``02.132] [ObjManager] CreateEntry: created pending object at 000001D4501DC160  (pending id = 244 , commit next-frame)
+[18`13``02.134] [DrawingSequence] Registered obj= 000001D4501DB520 table_index= 109 reg_index= 263
+[18`13``02.135] [ObjManager] CreateEntry: created pending object at 000001D4501DB520  (pending id = 245 , commit next-frame)
+[18`13``02.136] [DrawingSequence] Registered obj= 000001D43E6C1FD0 table_index= 110 reg_index= 264
+[18`13``02.136] [ObjManager] CreateEntry: created pending object at 000001D43E6C1FD0  (pending id = 246 , commit next-frame)
+[18`13``02.138] [DrawingSequence] Registered obj= 000001D4501D9FB0 table_index= 111 reg_index= 265
+[18`13``02.139] [ObjManager] CreateEntry: created pending object at 000001D4501D9FB0  (pending id = 247 , commit next-frame)
+[18`13``02.141] [DrawingSequence] Registered obj= 000001D4501DB830 table_index= 112 reg_index= 266
+[18`13``02.141] [ObjManager] CreateEntry: created pending object at 000001D4501DB830  (pending id = 248 , commit next-frame)
+[18`13``02.143] [DrawingSequence] Registered obj= 000001D4501DCDA0 table_index= 113 reg_index= 267
+[18`13``02.143] [ObjManager] CreateEntry: created pending object at 000001D4501DCDA0  (pending id = 249 , commit next-frame)
+[18`13``02.145] [DrawingSequence] Registered obj= 000001D4501DB210 table_index= 114 reg_index= 268
+[18`13``02.146] [ObjManager] CreateEntry: created pending object at 000001D4501DB210  (pending id = 250 , commit next-frame)
+[18`13``02.148] [DrawingSequence] Registered obj= 000001D4501DD0B0 table_index= 115 reg_index= 269
+[18`13``02.148] [ObjManager] CreateEntry: created pending object at 000001D4501DD0B0  (pending id = 251 , commit next-frame)
+[18`13``02.150] [DrawingSequence] Registered obj= 000001D4501DBB40 table_index= 116 reg_index= 270
+[18`13``02.150] [ObjManager] CreateEntry: created pending object at 000001D4501DBB40  (pending id = 252 , commit next-frame)
+[18`13``02.151] [DrawingSequence] Registered obj= 000001D43E201130 table_index= 117 reg_index= 271
+[18`13``02.152] [ObjManager] CreateEntry: created pending object at 000001D43E201130  (pending id = 253 , commit next-frame)
+[18`13``02.153] [DrawingSequence] Registered obj= 000001D43E200E30 table_index= 118 reg_index= 272
+[18`13``02.153] [ObjManager] CreateEntry: created pending object at 000001D43E200E30  (pending id = 254 , commit next-frame)
+[18`13``02.155] [DrawingSequence] Registered obj= 000001D4501DD6D0 table_index= 119 reg_index= 273
+[18`13``02.156] [ObjManager] CreateEntry: created pending object at 000001D4501DD6D0  (pending id = 255 , commit next-frame)
+[18`13``02.158] [DrawingSequence] Registered obj= 000001D4501DD3C0 table_index= 120 reg_index= 274
+[18`13``02.158] [ObjManager] CreateEntry: created pending object at 000001D4501DD3C0  (pending id = 256 , commit next-frame)
+[18`13``02.160] [DrawingSequence] Registered obj= 000001D4501DD9E0 table_index= 121 reg_index= 275
+[18`13``02.160] [ObjManager] CreateEntry: created pending object at 000001D4501DD9E0  (pending id = 257 , commit next-frame)
+[18`13``02.161] [DrawingSequence] Registered obj= 000001D43E200830 table_index= 122 reg_index= 276
+[18`13``02.162] [ObjManager] CreateEntry: created pending object at 000001D43E200830  (pending id = 258 , commit next-frame)
+[18`13``02.164] [DrawingSequence] Registered obj= 000001D4501DBE50 table_index= 123 reg_index= 277
+[18`13``02.164] [ObjManager] CreateEntry: created pending object at 000001D4501DBE50  (pending id = 259 , commit next-frame)
+[18`13``02.165] [DrawingSequence] Registered obj= 000001D44FEEC730 table_index= 124 reg_index= 278
+[18`13``02.166] [ObjManager] CreateEntry: created pending object at 000001D44FEEC730  (pending id = 260 , commit next-frame)
+[18`13``02.168] [DrawingSequence] Registered obj= 000001D4501DC470 table_index= 125 reg_index= 279
+[18`13``02.168] [ObjManager] CreateEntry: created pending object at 000001D4501DC470  (pending id = 261 , commit next-frame)
+[18`13``02.169] [DrawingSequence] Registered obj= 000001D44FEECA30 table_index= 126 reg_index= 280
+[18`13``02.169] [ObjManager] CreateEntry: created pending object at 000001D44FEECA30  (pending id = 262 , commit next-frame)
+[18`13``02.171] [DrawingSequence] Registered obj= 000001D4501DC780 table_index= 127 reg_index= 281
+[18`13``02.172] [ObjManager] CreateEntry: created pending object at 000001D4501DC780  (pending id = 263 , commit next-frame)
+[18`13``02.173] [DrawingSequence] Registered obj= 000001D44FEEFD30 table_index= 128 reg_index= 282
+[18`13``02.173] [ObjManager] CreateEntry: created pending object at 000001D44FEEFD30  (pending id = 264 , commit next-frame)
+[18`13``02.175] [DrawingSequence] Registered obj= 000001D4501DCA90 table_index= 129 reg_index= 283
+[18`13``02.176] [ObjManager] CreateEntry: created pending object at 000001D4501DCA90  (pending id = 265 , commit next-frame)
+[18`13``02.177] [DrawingSequence] Registered obj= 000001D44FEECD30 table_index= 130 reg_index= 284
+[18`13``02.177] [ObjManager] CreateEntry: created pending object at 000001D44FEECD30  (pending id = 266 , commit next-frame)
+[18`13``02.179] [DrawingSequence] Registered obj= 000001D4501DDCF0 table_index= 131 reg_index= 285
+[18`13``02.179] [ObjManager] CreateEntry: created pending object at 000001D4501DDCF0  (pending id = 267 , commit next-frame)
+[18`13``02.181] [DrawingSequence] Registered obj= 000001D4501DE000 table_index= 132 reg_index= 286
+[18`13``02.182] [ObjManager] CreateEntry: created pending object at 000001D4501DE000  (pending id = 268 , commit next-frame)
+[18`13``02.185] [DrawingSequence] Registered obj= 000001D44FEEF430 table_index= 133 reg_index= 287
+[18`13``02.186] [ObjManager] CreateEntry: created pending object at 000001D44FEEF430  (pending id = 269 , commit next-frame)
+[18`13``02.186] [Memory] AfterRespawn DrawingSequence bytes= 3272 ObjManager bytes= 35568 RoomLoader bytes= 528
+[18`13``02.446] [ObjManager] UpdateAll: committed pending object at 000001D43E200B30  (type:  class Backgroud , pending id = 136 , index = 0 , gen = 1 )
+[18`13``02.447] [ObjManager] UpdateAll: committed pending object at 000001D43E200830  (type:  class DownSpike , pending id = 258 , index = 1 , gen = 1 )
+[18`13``02.447] [ObjManager] UpdateAll: committed pending object at 000001D4500FB360  (type:  class PlayerObject , pending id = 137 , index = 2 , gen = 1 )
+[18`13``02.447] [ObjManager] UpdateAll: committed pending object at 000001D4500FBFA0  (type:  class BlockObject , pending id = 138 , index = 3 , gen = 1 )
+[18`13``02.448] [ObjManager] UpdateAll: committed pending object at 000001D4501DE000  (type:  class BlockObject , pending id = 268 , index = 4 , gen = 1 )
+[18`13``02.448] [ObjManager] UpdateAll: committed pending object at 000001D4500FA720  (type:  class BlockObject , pending id = 139 , index = 5 , gen = 1 )
+[18`13``02.448] [ObjManager] UpdateAll: committed pending object at 000001D4500FAD40  (type:  class BlockObject , pending id = 140 , index = 6 , gen = 1 )
+[18`13``02.448] [ObjManager] UpdateAll: committed pending object at 000001D44FEECA30  (type:  class DownSpike , pending id = 262 , index = 7 , gen = 1 )
+[18`13``02.449] [ObjManager] UpdateAll: committed pending object at 000001D4500FB050  (type:  class BlockObject , pending id = 141 , index = 8 , gen = 1 )
+[18`13``02.449] [ObjManager] UpdateAll: committed pending object at 000001D4500FB670  (type:  class BlockObject , pending id = 142 , index = 9 , gen = 1 )
+[18`13``02.449] [ObjManager] UpdateAll: committed pending object at 000001D4501DD3C0  (type:  class BlockObject , pending id = 256 , index = 10 , gen = 1 )
+[18`13``02.449] [ObjManager] UpdateAll: committed pending object at 000001D4500FD510  (type:  class BlockObject , pending id = 143 , index = 11 , gen = 1 )
+[18`13``02.449] [ObjManager] UpdateAll: committed pending object at 000001D4500FC2B0  (type:  class BlockObject , pending id = 144 , index = 12 , gen = 1 )
+[18`13``02.450] [ObjManager] UpdateAll: committed pending object at 000001D44FEECD30  (type:  class DownSpike , pending id = 266 , index = 13 , gen = 1 )
+[18`13``02.450] [ObjManager] UpdateAll: committed pending object at 000001D4500FC5C0  (type:  class BlockObject , pending id = 145 , index = 14 , gen = 1 )
+[18`13``02.450] [ObjManager] UpdateAll: committed pending object at 000001D4500FB980  (type:  class BlockObject , pending id = 146 , index = 15 , gen = 1 )
+[18`13``02.450] [ObjManager] UpdateAll: committed pending object at 000001D4500FC8D0  (type:  class BlockObject , pending id = 147 , index = 16 , gen = 1 )
+[18`13``02.450] [ObjManager] UpdateAll: committed pending object at 000001D4500FCBE0  (type:  class BlockObject , pending id = 148 , index = 17 , gen = 1 )
+[18`13``02.451] [ObjManager] UpdateAll: committed pending object at 000001D4500FCEF0  (type:  class BlockObject , pending id = 149 , index = 18 , gen = 1 )
+[18`13``02.451] [ObjManager] UpdateAll: committed pending object at 000001D4500FBC90  (type:  class BlockObject , pending id = 150 , index = 19 , gen = 1 )
+[18`13``02.451] [ObjManager] UpdateAll: committed pending object at 000001D44FEEFD30  (type:  class DownSpike , pending id = 264 , index = 20 , gen = 1 )
+[18`13``02.451] [ObjManager] UpdateAll: committed pending object at 000001D4500FD200  (type:  class BlockObject , pending id = 151 , index = 21 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B36E0  (type:  class BlockObject , pending id = 152 , index = 22 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B4630  (type:  class BlockObject , pending id = 153 , index = 23 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B1530  (type:  class BlockObject , pending id = 154 , index = 24 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B2790  (type:  class BlockObject , pending id = 155 , index = 25 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B2170  (type:  class BlockObject , pending id = 156 , index = 26 , gen = 1 )
+[18`13``02.452] [ObjManager] UpdateAll: committed pending object at 000001D44D3B39F0  (type:  class BlockObject , pending id = 157 , index = 27 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B1840  (type:  class BlockObject , pending id = 158 , index = 28 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B3D00  (type:  class BlockObject , pending id = 159 , index = 29 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B1B50  (type:  class BlockObject , pending id = 160 , index = 30 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B1E60  (type:  class BlockObject , pending id = 161 , index = 31 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B2480  (type:  class BlockObject , pending id = 162 , index = 32 , gen = 1 )
+[18`13``02.453] [ObjManager] UpdateAll: committed pending object at 000001D44D3B30C0  (type:  class BlockObject , pending id = 163 , index = 33 , gen = 1 )
+[18`13``02.454] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4310  (type:  class BlockObject , pending id = 164 , index = 34 , gen = 1 )
+[18`13``02.454] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4620  (type:  class BlockObject , pending id = 165 , index = 35 , gen = 1 )
+[18`13``02.454] [ObjManager] UpdateAll: committed pending object at 000001D43E2D36D0  (type:  class BlockObject , pending id = 166 , index = 36 , gen = 1 )
+[18`13``02.454] [ObjManager] UpdateAll: committed pending object at 000001D43E2D5B90  (type:  class BlockObject , pending id = 167 , index = 37 , gen = 1 )
+[18`13``02.454] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4C40  (type:  class BlockObject , pending id = 168 , index = 38 , gen = 1 )
+[18`13``02.455] [ObjManager] UpdateAll: committed pending object at 000001D43E2D4F50  (type:  class BlockObject , pending id = 169 , index = 39 , gen = 1 )
+[18`13``02.455] [ObjManager] UpdateAll: committed pending object at 000001D43E2D2DA0  (type:  class BlockObject , pending id = 170 , index = 40 , gen = 1 )
+[18`13``02.455] [ObjManager] UpdateAll: committed pending object at 000001D43E2D30B0  (type:  class BlockObject , pending id = 171 , index = 41 , gen = 1 )
+[18`13``02.455] [ObjManager] UpdateAll: committed pending object at 000001D43E2D2160  (type:  class BlockObject , pending id = 172 , index = 42 , gen = 1 )
+[18`13``02.455] [ObjManager] UpdateAll: committed pending object at 000001D450137470  (type:  class BlockObject , pending id = 173 , index = 43 , gen = 1 )
+[18`13``02.456] [ObjManager] UpdateAll: committed pending object at 000001D450135F00  (type:  class BlockObject , pending id = 174 , index = 44 , gen = 1 )
+[18`13``02.456] [ObjManager] UpdateAll: committed pending object at 000001D4501358E0  (type:  class BlockObject , pending id = 175 , index = 45 , gen = 1 )
+[18`13``02.456] [ObjManager] UpdateAll: committed pending object at 000001D450137780  (type:  class BlockObject , pending id = 176 , index = 46 , gen = 1 )
+[18`13``02.456] [ObjManager] UpdateAll: committed pending object at 000001D450136E50  (type:  class BlockObject , pending id = 177 , index = 47 , gen = 1 )
+[18`13``02.456] [ObjManager] UpdateAll: committed pending object at 000001D450136210  (type:  class BlockObject , pending id = 178 , index = 48 , gen = 1 )
+[18`13``02.457] [ObjManager] UpdateAll: committed pending object at 000001D450137A90  (type:  class BlockObject , pending id = 179 , index = 49 , gen = 1 )
+[18`13``02.457] [ObjManager] UpdateAll: committed pending object at 000001D450137DA0  (type:  class BlockObject , pending id = 180 , index = 50 , gen = 1 )
+[18`13``02.457] [ObjManager] UpdateAll: committed pending object at 000001D450136830  (type:  class BlockObject , pending id = 181 , index = 51 , gen = 1 )
+[18`13``02.457] [ObjManager] UpdateAll: committed pending object at 000001D450136B40  (type:  class BlockObject , pending id = 182 , index = 52 , gen = 1 )
+[18`13``02.457] [ObjManager] UpdateAll: committed pending object at 000001D450137160  (type:  class BlockObject , pending id = 183 , index = 53 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D4501355D0  (type:  class BlockObject , pending id = 184 , index = 54 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D4501380B0  (type:  class BlockObject , pending id = 185 , index = 55 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D4501383C0  (type:  class BlockObject , pending id = 186 , index = 56 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D4501386D0  (type:  class BlockObject , pending id = 187 , index = 57 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D4501389E0  (type:  class BlockObject , pending id = 188 , index = 58 , gen = 1 )
+[18`13``02.458] [ObjManager] UpdateAll: committed pending object at 000001D450135BF0  (type:  class BlockObject , pending id = 189 , index = 59 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D450138CF0  (type:  class BlockObject , pending id = 190 , index = 60 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D450139000  (type:  class BlockObject , pending id = 191 , index = 61 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D450136520  (type:  class BlockObject , pending id = 192 , index = 62 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D44E248820  (type:  class BlockObject , pending id = 193 , index = 63 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D44E248200  (type:  class BlockObject , pending id = 194 , index = 64 , gen = 1 )
+[18`13``02.459] [ObjManager] UpdateAll: committed pending object at 000001D44E249460  (type:  class BlockObject , pending id = 195 , index = 65 , gen = 1 )
+[18`13``02.460] [ObjManager] UpdateAll: committed pending object at 000001D44E249D90  (type:  class BlockObject , pending id = 196 , index = 66 , gen = 1 )
+[18`13``02.460] [ObjManager] UpdateAll: committed pending object at 000001D44E247EF0  (type:  class BlockObject , pending id = 197 , index = 67 , gen = 1 )
+[18`13``02.460] [ObjManager] UpdateAll: committed pending object at 000001D44E249770  (type:  class BlockObject , pending id = 198 , index = 68 , gen = 1 )
+[18`13``02.460] [ObjManager] UpdateAll: committed pending object at 000001D44E24A0A0  (type:  class BlockObject , pending id = 199 , index = 69 , gen = 1 )
+[18`13``02.461] [ObjManager] UpdateAll: committed pending object at 000001D44E249A80  (type:  class BlockObject , pending id = 200 , index = 70 , gen = 1 )
+[18`13``02.461] [ObjManager] UpdateAll: committed pending object at 000001D44E24A3B0  (type:  class BlockObject , pending id = 201 , index = 71 , gen = 1 )
+[18`13``02.461] [ObjManager] UpdateAll: committed pending object at 000001D44E24A6C0  (type:  class BlockObject , pending id = 202 , index = 72 , gen = 1 )
+[18`13``02.461] [ObjManager] UpdateAll: committed pending object at 000001D44E2478D0  (type:  class BlockObject , pending id = 203 , index = 73 , gen = 1 )
+[18`13``02.461] [ObjManager] UpdateAll: committed pending object at 000001D44E246C90  (type:  class BlockObject , pending id = 204 , index = 74 , gen = 1 )
+[18`13``02.462] [ObjManager] UpdateAll: committed pending object at 000001D44E246FA0  (type:  class BlockObject , pending id = 205 , index = 75 , gen = 1 )
+[18`13``02.462] [ObjManager] UpdateAll: committed pending object at 000001D44E2472B0  (type:  class BlockObject , pending id = 206 , index = 76 , gen = 1 )
+[18`13``02.462] [ObjManager] UpdateAll: committed pending object at 000001D44E2475C0  (type:  class BlockObject , pending id = 207 , index = 77 , gen = 1 )
+[18`13``02.462] [ObjManager] UpdateAll: committed pending object at 000001D44E247BE0  (type:  class BlockObject , pending id = 208 , index = 78 , gen = 1 )
+[18`13``02.462] [ObjManager] UpdateAll: committed pending object at 000001D44E249150  (type:  class BlockObject , pending id = 209 , index = 79 , gen = 1 )
+[18`13``02.463] [ObjManager] UpdateAll: committed pending object at 000001D44E248B30  (type:  class BlockObject , pending id = 210 , index = 80 , gen = 1 )
+[18`13``02.463] [ObjManager] UpdateAll: committed pending object at 000001D44E248510  (type:  class BlockObject , pending id = 211 , index = 81 , gen = 1 )
+[18`13``02.463] [ObjManager] UpdateAll: committed pending object at 000001D44E248E40  (type:  class BlockObject , pending id = 212 , index = 82 , gen = 1 )
+[18`13``02.463] [ObjManager] UpdateAll: committed pending object at 000001D450293600  (type:  class BlockObject , pending id = 213 , index = 83 , gen = 1 )
+[18`13``02.464] [ObjManager] UpdateAll: committed pending object at 000001D450294550  (type:  class BlockObject , pending id = 214 , index = 84 , gen = 1 )
+[18`13``02.464] [ObjManager] UpdateAll: committed pending object at 000001D450294860  (type:  class BlockObject , pending id = 215 , index = 85 , gen = 1 )
+[18`13``02.464] [ObjManager] UpdateAll: committed pending object at 000001D450293910  (type:  class BlockObject , pending id = 216 , index = 86 , gen = 1 )
+[18`13``02.464] [ObjManager] UpdateAll: committed pending object at 000001D450294B70  (type:  class BlockObject , pending id = 217 , index = 87 , gen = 1 )
+[18`13``02.464] [ObjManager] UpdateAll: committed pending object at 000001D450294E80  (type:  class BlockObject , pending id = 218 , index = 88 , gen = 1 )
+[18`13``02.465] [ObjManager] UpdateAll: committed pending object at 000001D450293F30  (type:  class BlockObject , pending id = 219 , index = 89 , gen = 1 )
+[18`13``02.465] [ObjManager] UpdateAll: committed pending object at 000001D450293C20  (type:  class BlockObject , pending id = 220 , index = 90 , gen = 1 )
+[18`13``02.465] [ObjManager] UpdateAll: committed pending object at 000001D450295190  (type:  class BlockObject , pending id = 221 , index = 91 , gen = 1 )
+[18`13``02.465] [ObjManager] UpdateAll: committed pending object at 000001D450294240  (type:  class BlockObject , pending id = 222 , index = 92 , gen = 1 )
+[18`13``02.465] [ObjManager] UpdateAll: committed pending object at 000001D44E18B580  (type:  class BlockObject , pending id = 223 , index = 93 , gen = 1 )
+[18`13``02.466] [ObjManager] UpdateAll: committed pending object at 000001D44E18C1C0  (type:  class BlockObject , pending id = 224 , index = 94 , gen = 1 )
+[18`13``02.466] [ObjManager] UpdateAll: committed pending object at 000001D44E18A320  (type:  class BlockObject , pending id = 225 , index = 95 , gen = 1 )
+[18`13``02.466] [ObjManager] UpdateAll: committed pending object at 000001D44E1896E0  (type:  class BlockObject , pending id = 226 , index = 96 , gen = 1 )
+[18`13``02.466] [ObjManager] UpdateAll: committed pending object at 000001D44E189D00  (type:  class BlockObject , pending id = 227 , index = 97 , gen = 1 )
+[18`13``02.466] [ObjManager] UpdateAll: committed pending object at 000001D44E18C7E0  (type:  class BlockObject , pending id = 228 , index = 98 , gen = 1 )
+[18`13``02.467] [ObjManager] UpdateAll: committed pending object at 000001D44E1899F0  (type:  class BlockObject , pending id = 229 , index = 99 , gen = 1 )
+[18`13``02.467] [ObjManager] UpdateAll: committed pending object at 000001D44E18B890  (type:  class BlockObject , pending id = 230 , index = 100 , gen = 1 )
+[18`13``02.467] [ObjManager] UpdateAll: committed pending object at 000001D44E18C4D0  (type:  class BlockObject , pending id = 231 , index = 101 , gen = 1 )
+[18`13``02.467] [ObjManager] UpdateAll: committed pending object at 000001D44E18B270  (type:  class BlockObject , pending id = 232 , index = 102 , gen = 1 )
+[18`13``02.467] [ObjManager] UpdateAll: committed pending object at 000001D44E1893D0  (type:  class BlockObject , pending id = 233 , index = 103 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E18A010  (type:  class BlockObject , pending id = 234 , index = 104 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E18A630  (type:  class BlockObject , pending id = 235 , index = 105 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E18A940  (type:  class BlockObject , pending id = 236 , index = 106 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E188DB0  (type:  class BlockObject , pending id = 237 , index = 107 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E18AC50  (type:  class BlockObject , pending id = 238 , index = 108 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E1890C0  (type:  class BlockObject , pending id = 239 , index = 109 , gen = 1 )
+[18`13``02.468] [ObjManager] UpdateAll: committed pending object at 000001D44E18AF60  (type:  class BlockObject , pending id = 240 , index = 110 , gen = 1 )
+[18`13``02.469] [ObjManager] UpdateAll: committed pending object at 000001D44E18BBA0  (type:  class BlockObject , pending id = 241 , index = 111 , gen = 1 )
+[18`13``02.469] [ObjManager] UpdateAll: committed pending object at 000001D44E18BEB0  (type:  class BlockObject , pending id = 242 , index = 112 , gen = 1 )
+[18`13``02.469] [ObjManager] UpdateAll: committed pending object at 000001D4501DA5D0  (type:  class BlockObject , pending id = 243 , index = 113 , gen = 1 )
+[18`13``02.469] [ObjManager] UpdateAll: committed pending object at 000001D4501DC160  (type:  class BlockObject , pending id = 244 , index = 114 , gen = 1 )
+[18`13``02.469] [ObjManager] UpdateAll: committed pending object at 000001D4501DB520  (type:  class BlockObject , pending id = 245 , index = 115 , gen = 1 )
+[18`13``02.470] [ObjManager] UpdateAll: committed pending object at 000001D43E6C1FD0  (type:  class Checkpoint , pending id = 246 , index = 116 , gen = 1 )
+[18`13``02.470] [ObjManager] UpdateAll: committed pending object at 000001D4501D9FB0  (type:  class BlockObject , pending id = 247 , index = 117 , gen = 1 )
+[18`13``02.470] [ObjManager] UpdateAll: committed pending object at 000001D4501DB830  (type:  class BlockObject , pending id = 248 , index = 118 , gen = 1 )
+[18`13``02.470] [ObjManager] UpdateAll: committed pending object at 000001D4501DCDA0  (type:  class BlockObject , pending id = 249 , index = 119 , gen = 1 )
+[18`13``02.470] [ObjManager] UpdateAll: committed pending object at 000001D4501DB210  (type:  class BlockObject , pending id = 250 , index = 120 , gen = 1 )
+[18`13``02.471] [ObjManager] UpdateAll: committed pending object at 000001D4501DD0B0  (type:  class BlockObject , pending id = 251 , index = 121 , gen = 1 )
+[18`13``02.471] [ObjManager] UpdateAll: committed pending object at 000001D4501DBB40  (type:  class BlockObject , pending id = 252 , index = 122 , gen = 1 )
+[18`13``02.471] [ObjManager] UpdateAll: committed pending object at 000001D43E201130  (type:  class Spike , pending id = 253 , index = 123 , gen = 1 )
+[18`13``02.471] [ObjManager] UpdateAll: committed pending object at 000001D43E200E30  (type:  class Spike , pending id = 254 , index = 124 , gen = 1 )
+[18`13``02.471] [ObjManager] UpdateAll: committed pending object at 000001D4501DD6D0  (type:  class BlockObject , pending id = 255 , index = 125 , gen = 1 )
+[18`13``02.472] [ObjManager] UpdateAll: committed pending object at 000001D4501DD9E0  (type:  class BlockObject , pending id = 257 , index = 126 , gen = 1 )
+[18`13``02.472] [ObjManager] UpdateAll: committed pending object at 000001D4501DBE50  (type:  class BlockObject , pending id = 259 , index = 127 , gen = 1 )
+[18`13``02.472] [ObjManager] UpdateAll: committed pending object at 000001D44FEEC730  (type:  class DownSpike , pending id = 260 , index = 128 , gen = 1 )
+[18`13``02.472] [ObjManager] UpdateAll: committed pending object at 000001D4501DC470  (type:  class BlockObject , pending id = 261 , index = 129 , gen = 1 )
+[18`13``02.473] [ObjManager] UpdateAll: committed pending object at 000001D4501DC780  (type:  class BlockObject , pending id = 263 , index = 130 , gen = 1 )
+[18`13``02.473] [ObjManager] UpdateAll: committed pending object at 000001D4501DCA90  (type:  class BlockObject , pending id = 265 , index = 131 , gen = 1 )
+[18`13``02.473] [ObjManager] UpdateAll: committed pending object at 000001D4501DDCF0  (type:  class BlockObject , pending id = 267 , index = 132 , gen = 1 )
+[18`13``02.473] [ObjManager] UpdateAll: committed pending object at 000001D44FEEF430  (type:  class Tester , pending id = 269 , index = 133 , gen = 1 )
+[18`13``02.854] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 2 reg_index= 155
+[18`13``02.857] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 288
+[18`13``03.396] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 288
+[18`13``03.399] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 289
+[18`13``03.721] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 289
+[18`13``03.723] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 290
+[18`13``03.861] [Physics] Collision EXIT: a = 2 b = 116
+[18`13``03.861] [Physics] Collision EXIT: a = 2 b = 89
+[18`13``03.921] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 290
+[18`13``03.923] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 291
+[18`13``03.940] [Physics] Collision EXIT: a = 2 b = 90
+[18`13``04.320] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 291
+[18`13``04.342] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 292
+[18`13``04.478] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 292
+[18`13``04.480] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 293
+[18`13``05.519] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 293
+[18`13``05.521] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 294
+[18`13``05.581] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 294
+[18`13``05.583] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 295
+[18`13``05.599] [Physics] Collision EXIT: a = 2 b = 118
+[18`13``05.879] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 295
+[18`13``05.881] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 296
+[18`13``06.280] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 133 reg_index= 296
+[18`13``06.282] [DrawingSequence] Registered obj= 000001D4500FB360 table_index= 133 reg_index= 297
+[18`13``09.741] [ObjManager] DestroyAll: destroying all objects ( 134 )
+[18`13``09.742] [DrawingSequence] Unregistered obj= 000001D43E200B30 table_index= 0 reg_index= 154
+[18`13``09.742] [DrawingSequence] Unregistered obj= 000001D43E200830 table_index= 120 reg_index= 276
+[18`13``09.742] [DrawingSequence] Unregistered obj= 000001D4500FB360 table_index= 131 reg_index= 297
+[18`13``09.743] [DrawingSequence] Unregistered obj= 000001D4500FBFA0 table_index= 1 reg_index= 156
+[18`13``09.743] [DrawingSequence] Unregistered obj= 000001D4501DE000 table_index= 128 reg_index= 286
+[18`13``09.743] [DrawingSequence] Unregistered obj= 000001D4500FA720 table_index= 1 reg_index= 157
+[18`13``09.743] [DrawingSequence] Unregistered obj= 000001D4500FAD40 table_index= 1 reg_index= 158
+[18`13``09.743] [DrawingSequence] Unregistered obj= 000001D44FEECA30 table_index= 120 reg_index= 280
+[18`13``09.744] [DrawingSequence] Unregistered obj= 000001D4500FB050 table_index= 1 reg_index= 159
+[18`13``09.744] [DrawingSequence] Unregistered obj= 000001D4500FB670 table_index= 1 reg_index= 160
+[18`13``09.744] [DrawingSequence] Unregistered obj= 000001D4501DD3C0 table_index= 113 reg_index= 274
+[18`13``09.745] [DrawingSequence] Unregistered obj= 000001D4500FD510 table_index= 1 reg_index= 161
+[18`13``09.745] [DrawingSequence] Unregistered obj= 000001D4500FC2B0 table_index= 1 reg_index= 162
+[18`13``09.745] [DrawingSequence] Unregistered obj= 000001D44FEECD30 table_index= 118 reg_index= 284
+[18`13``09.745] [DrawingSequence] Unregistered obj= 000001D4500FC5C0 table_index= 1 reg_index= 163
+[18`13``09.746] [DrawingSequence] Unregistered obj= 000001D4500FB980 table_index= 1 reg_index= 164
+[18`13``09.746] [DrawingSequence] Unregistered obj= 000001D4500FC8D0 table_index= 1 reg_index= 165
+[18`13``09.746] [DrawingSequence] Unregistered obj= 000001D4500FCBE0 table_index= 1 reg_index= 166
+[18`13``09.747] [DrawingSequence] Unregistered obj= 000001D4500FCEF0 table_index= 1 reg_index= 167
+[18`13``09.747] [DrawingSequence] Unregistered obj= 000001D4500FBC90 table_index= 1 reg_index= 168
+[18`13``09.747] [DrawingSequence] Unregistered obj= 000001D44FEEFD30 table_index= 110 reg_index= 282
+[18`13``09.747] [DrawingSequence] Unregistered obj= 000001D4500FD200 table_index= 1 reg_index= 169
+[18`13``09.748] [DrawingSequence] Unregistered obj= 000001D44D3B36E0 table_index= 1 reg_index= 170
+[18`13``09.748] [DrawingSequence] Unregistered obj= 000001D44D3B4630 table_index= 1 reg_index= 171
+[18`13``09.748] [DrawingSequence] Unregistered obj= 000001D44D3B1530 table_index= 1 reg_index= 172
+[18`13``09.748] [DrawingSequence] Unregistered obj= 000001D44D3B2790 table_index= 1 reg_index= 173
+[18`13``09.749] [DrawingSequence] Unregistered obj= 000001D44D3B2170 table_index= 1 reg_index= 174
+[18`13``09.749] [DrawingSequence] Unregistered obj= 000001D44D3B39F0 table_index= 1 reg_index= 175
+[18`13``09.749] [DrawingSequence] Unregistered obj= 000001D44D3B1840 table_index= 1 reg_index= 176
+[18`13``09.749] [DrawingSequence] Unregistered obj= 000001D44D3B3D00 table_index= 1 reg_index= 177
+[18`13``09.750] [DrawingSequence] Unregistered obj= 000001D44D3B1B50 table_index= 1 reg_index= 178
+[18`13``09.750] [DrawingSequence] Unregistered obj= 000001D44D3B1E60 table_index= 1 reg_index= 179
+[18`13``09.750] [DrawingSequence] Unregistered obj= 000001D44D3B2480 table_index= 1 reg_index= 180
+[18`13``09.750] [DrawingSequence] Unregistered obj= 000001D44D3B30C0 table_index= 1 reg_index= 181
+[18`13``09.751] [DrawingSequence] Unregistered obj= 000001D43E2D4310 table_index= 1 reg_index= 182
+[18`13``09.751] [DrawingSequence] Unregistered obj= 000001D43E2D4620 table_index= 1 reg_index= 183
+[18`13``09.751] [DrawingSequence] Unregistered obj= 000001D43E2D36D0 table_index= 1 reg_index= 184
+[18`13``09.752] [DrawingSequence] Unregistered obj= 000001D43E2D5B90 table_index= 1 reg_index= 185
+[18`13``09.752] [DrawingSequence] Unregistered obj= 000001D43E2D4C40 table_index= 1 reg_index= 186
+[18`13``09.752] [DrawingSequence] Unregistered obj= 000001D43E2D4F50 table_index= 1 reg_index= 187
+[18`13``09.753] [DrawingSequence] Unregistered obj= 000001D43E2D2DA0 table_index= 1 reg_index= 188
+[18`13``09.753] [DrawingSequence] Unregistered obj= 000001D43E2D30B0 table_index= 1 reg_index= 189
+[18`13``09.754] [DrawingSequence] Unregistered obj= 000001D43E2D2160 table_index= 1 reg_index= 190
+[18`13``09.754] [DrawingSequence] Unregistered obj= 000001D450137470 table_index= 1 reg_index= 191
+[18`13``09.754] [DrawingSequence] Unregistered obj= 000001D450135F00 table_index= 1 reg_index= 192
+[18`13``09.755] [DrawingSequence] Unregistered obj= 000001D4501358E0 table_index= 1 reg_index= 193
+[18`13``09.755] [DrawingSequence] Unregistered obj= 000001D450137780 table_index= 1 reg_index= 194
+[18`13``09.756] [DrawingSequence] Unregistered obj= 000001D450136E50 table_index= 1 reg_index= 195
+[18`13``09.756] [DrawingSequence] Unregistered obj= 000001D450136210 table_index= 1 reg_index= 196
+[18`13``09.756] [DrawingSequence] Unregistered obj= 000001D450137A90 table_index= 1 reg_index= 197
+[18`13``09.756] [DrawingSequence] Unregistered obj= 000001D450137DA0 table_index= 1 reg_index= 198
+[18`13``09.757] [DrawingSequence] Unregistered obj= 000001D450136830 table_index= 1 reg_index= 199
+[18`13``09.757] [DrawingSequence] Unregistered obj= 000001D450136B40 table_index= 1 reg_index= 200
+[18`13``09.757] [DrawingSequence] Unregistered obj= 000001D450137160 table_index= 1 reg_index= 201
+[18`13``09.757] [DrawingSequence] Unregistered obj= 000001D4501355D0 table_index= 1 reg_index= 202
+[18`13``09.757] [DrawingSequence] Unregistered obj= 000001D4501380B0 table_index= 1 reg_index= 203
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D4501383C0 table_index= 1 reg_index= 204
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D4501386D0 table_index= 1 reg_index= 205
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D4501389E0 table_index= 1 reg_index= 206
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D450135BF0 table_index= 1 reg_index= 207
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D450138CF0 table_index= 1 reg_index= 208
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D450139000 table_index= 1 reg_index= 209
+[18`13``09.758] [DrawingSequence] Unregistered obj= 000001D450136520 table_index= 1 reg_index= 210
+[18`13``09.759] [DrawingSequence] Unregistered obj= 000001D44E248820 table_index= 1 reg_index= 211
+[18`13``09.759] [DrawingSequence] Unregistered obj= 000001D44E248200 table_index= 1 reg_index= 212
+[18`13``09.759] [DrawingSequence] Unregistered obj= 000001D44E249460 table_index= 1 reg_index= 213
+[18`13``09.759] [DrawingSequence] Unregistered obj= 000001D44E249D90 table_index= 1 reg_index= 214
+[18`13``09.759] [DrawingSequence] Unregistered obj= 000001D44E247EF0 table_index= 1 reg_index= 215
+[18`13``09.760] [DrawingSequence] Unregistered obj= 000001D44E249770 table_index= 1 reg_index= 216
+[18`13``09.760] [DrawingSequence] Unregistered obj= 000001D44E24A0A0 table_index= 1 reg_index= 217
+[18`13``09.760] [DrawingSequence] Unregistered obj= 000001D44E249A80 table_index= 1 reg_index= 218
+[18`13``09.760] [DrawingSequence] Unregistered obj= 000001D44E24A3B0 table_index= 1 reg_index= 219
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E24A6C0 table_index= 1 reg_index= 220
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E2478D0 table_index= 1 reg_index= 221
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E246C90 table_index= 1 reg_index= 222
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E246FA0 table_index= 1 reg_index= 223
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E2472B0 table_index= 1 reg_index= 224
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E2475C0 table_index= 1 reg_index= 225
+[18`13``09.761] [DrawingSequence] Unregistered obj= 000001D44E247BE0 table_index= 1 reg_index= 226
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D44E249150 table_index= 1 reg_index= 227
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D44E248B30 table_index= 1 reg_index= 228
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D44E248510 table_index= 1 reg_index= 229
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D44E248E40 table_index= 1 reg_index= 230
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D450293600 table_index= 1 reg_index= 231
+[18`13``09.762] [DrawingSequence] Unregistered obj= 000001D450294550 table_index= 1 reg_index= 232
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450294860 table_index= 1 reg_index= 233
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450293910 table_index= 1 reg_index= 234
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450294B70 table_index= 1 reg_index= 235
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450294E80 table_index= 1 reg_index= 236
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450293F30 table_index= 1 reg_index= 237
+[18`13``09.763] [DrawingSequence] Unregistered obj= 000001D450293C20 table_index= 1 reg_index= 238
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D450295190 table_index= 1 reg_index= 239
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D450294240 table_index= 1 reg_index= 240
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D44E18B580 table_index= 1 reg_index= 241
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D44E18C1C0 table_index= 1 reg_index= 242
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D44E18A320 table_index= 1 reg_index= 243
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D44E1896E0 table_index= 1 reg_index= 244
+[18`13``09.764] [DrawingSequence] Unregistered obj= 000001D44E189D00 table_index= 1 reg_index= 245
+[18`13``09.765] [DrawingSequence] Unregistered obj= 000001D44E18C7E0 table_index= 1 reg_index= 246
+[18`13``09.765] [DrawingSequence] Unregistered obj= 000001D44E1899F0 table_index= 1 reg_index= 247
+[18`13``09.765] [DrawingSequence] Unregistered obj= 000001D44E18B890 table_index= 1 reg_index= 248
+[18`13``09.765] [DrawingSequence] Unregistered obj= 000001D44E18C4D0 table_index= 1 reg_index= 249
+[18`13``09.765] [DrawingSequence] Unregistered obj= 000001D44E18B270 table_index= 1 reg_index= 250
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E1893D0 table_index= 1 reg_index= 251
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E18A010 table_index= 1 reg_index= 252
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E18A630 table_index= 1 reg_index= 253
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E18A940 table_index= 1 reg_index= 254
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E188DB0 table_index= 1 reg_index= 255
+[18`13``09.766] [DrawingSequence] Unregistered obj= 000001D44E18AC50 table_index= 1 reg_index= 256
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D44E1890C0 table_index= 1 reg_index= 257
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D44E18AF60 table_index= 1 reg_index= 258
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D44E18BBA0 table_index= 1 reg_index= 259
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D44E18BEB0 table_index= 1 reg_index= 260
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D4501DA5D0 table_index= 1 reg_index= 261
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D4501DC160 table_index= 1 reg_index= 262
+[18`13``09.767] [DrawingSequence] Unregistered obj= 000001D4501DB520 table_index= 1 reg_index= 263
+[18`13``09.768] [DrawingSequence] Unregistered obj= 000001D43E6C1FD0 table_index= 0 reg_index= 264
+[18`13``09.768] [DrawingSequence] Unregistered obj= 000001D4501D9FB0 table_index= 0 reg_index= 265
+[18`13``09.768] [DrawingSequence] Unregistered obj= 000001D4501DB830 table_index= 0 reg_index= 266
+[18`13``09.768] [DrawingSequence] Unregistered obj= 000001D4501DCDA0 table_index= 0 reg_index= 267
+[18`13``09.769] [DrawingSequence] Unregistered obj= 000001D4501DB210 table_index= 0 reg_index= 268
+[18`13``09.769] [DrawingSequence] Unregistered obj= 000001D4501DD0B0 table_index= 0 reg_index= 269
+[18`13``09.769] [DrawingSequence] Unregistered obj= 000001D4501DBB40 table_index= 0 reg_index= 270
+[18`13``09.769] [DrawingSequence] Unregistered obj= 000001D43E201130 table_index= 0 reg_index= 271
+[18`13``09.769] [DrawingSequence] Unregistered obj= 000001D43E200E30 table_index= 0 reg_index= 272
+[18`13``09.770] [DrawingSequence] Unregistered obj= 000001D4501DD6D0 table_index= 0 reg_index= 273
+[18`13``09.770] [DrawingSequence] Unregistered obj= 000001D4501DD9E0 table_index= 0 reg_index= 275
+[18`13``09.770] [DrawingSequence] Unregistered obj= 000001D4501DBE50 table_index= 0 reg_index= 277
+[18`13``09.770] [DrawingSequence] Unregistered obj= 000001D44FEEC730 table_index= 0 reg_index= 278
+[18`13``09.770] [DrawingSequence] Unregistered obj= 000001D4501DC470 table_index= 0 reg_index= 279
+[18`13``09.771] [DrawingSequence] Unregistered obj= 000001D4501DC780 table_index= 0 reg_index= 281
+[18`13``09.771] [DrawingSequence] Unregistered obj= 000001D4501DCA90 table_index= 0 reg_index= 283
+[18`13``09.771] [DrawingSequence] Unregistered obj= 000001D4501DDCF0 table_index= 0 reg_index= 285
+[18`13``09.771] [DrawingSequence] Unregistered obj= 000001D44FEEF430 table_index= 0 reg_index= 287
+[18`13``11.303] [Main] ----------Program End----------

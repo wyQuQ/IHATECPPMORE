@@ -5,6 +5,7 @@
 #include <functional>
 #include <mutex>
 #include <cstdint>
+#include <cstddef>
 
 #include <cute.h> // CF_Canvas
 
@@ -20,6 +21,8 @@ public:
     void Unregister(BaseObject* obj) noexcept;
 
     void DrawAll();
+
+    size_t GetEstimatedMemoryUsageBytes() const noexcept;
 
 private:
     struct Entry {

@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
+#include <cstddef>
 
 #include "object_token.h"
 
@@ -98,6 +99,8 @@ public:
     APPLIANCE void UpdateAll() noexcept;
 
     size_t Count() const noexcept { return alive_count_; }
+
+    size_t GetEstimatedMemoryUsageBytes() const noexcept;
 
     // 标签查询方法
     // 返回所有已合并并带有指定 tag 的 ObjToken（registered tokens）

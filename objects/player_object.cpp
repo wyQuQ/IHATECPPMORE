@@ -191,6 +191,13 @@ void Tester::Update()
         angle -= 0.03f;
     }
     Rotate(angle);
+
+    if (Input::IsKeyInState(CF_KEY_M, KeyState::Hold) &&
+        Input::IsKeyInState(CF_KEY_N, KeyState::Hold) &&
+        Input::IsKeyInState(CF_KEY_B, KeyState::Down)) {
+        OUTPUT({ "Tester" }, "Test: DestroyAll");
+        objs.DestroyAll();
+    }
 }
 //-----------------------------测试用-----------------------------
 #endif

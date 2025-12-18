@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include <cstdint>
 #include <stdexcept>
+#include <cstddef>
 
 #include "debug_config.h"
 
@@ -483,4 +484,18 @@ ObjManager::ObjToken ObjManager::FindTokensByTag(const std::string& tag) const n
         }
     }
     return out;
+}
+
+size_t ObjManager::GetEstimatedMemoryUsageBytes() const noexcept
+{
+    size_t total = 0;
+    total += objects_.capacity() * sizeof(Entry);
+    total += free_indices_.capacity() * sizeof(uint32_t);
+    total += pending_destroys_.capacity() * sizeof(ObjToken);
+    total += pending_destroy_set_.bucket_count() * sizeof(decltype(pending_destroy_set_)::value_type);
+    total += pending_creates_.bucket_count() * sizeof(decltype(pending_creates_)::value_type);
+    total += pending_ptr_to_id_.bucket_count() * sizeof(decltype(pending_ptr_to_id_)::value_type);
+    total += pending_to_real_map_.bucket_count() * sizeof(decltype(pending_to_real_map_)::value_type);
+    total += object_index_map_.bucket_count() * sizeof(decltype(object_index_map_)::value_type);
+    return total;
 }

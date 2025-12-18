@@ -1,0 +1,8 @@
+[16`38``58.631] [RoomLoader::RegisterRoom] Registered initial room: FirstRoom
+[16`38``58.741] [Main] ----------Program Start----------
+[16`38``58.742] [Main] MCG_DEBUG = 1  MCG_DEBUG_LEVEL = 2
+[16`39``02.866] [VFS] Mounting content directory: D:/Schoolworks/C++/out/build/x64-debug/content -> virtual root ""
+[16`39``03.153] [LOOP] app_update OK, current frame rate: 50
+[16`39``04.812] [Main] R Pressed, start respawn process
+[16`39``08.950] [Main] R Pressed, start respawn process
+[16`39``13.328] [Main] R Pressed, start respawn process

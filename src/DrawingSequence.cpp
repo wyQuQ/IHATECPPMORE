@@ -1,8 +1,11 @@
 #include "drawing_sequence.h"
 #include "base_object.h"
+#include "debug_config.h"
 #include <algorithm>
 #include <iostream>
 #include <internal/cute_draw_internal.h>
+#include <cstddef>
+#include <unordered_set>
 
 extern std::atomic<int> g_frame_count;
 
@@ -89,29 +92,51 @@ void DrawingSequence::Register(BaseObject* obj) noexcept
 {
     if (!obj) return;
     std::lock_guard<std::mutex> lock(m_mutex);
-    for (const auto& entry : m_entries) {
-        if (entry->owner == obj) return;
+    for (size_t i = 0; i < m_entries.size(); ++i) {
+        if (m_entries[i]->owner == obj) {
+            OUTPUT(Header{ "DrawingSequence" },
+                "Register skipped (already registered)", "obj=", obj,
+                "table_index=", i, "reg_index=", m_entries[i]->reg_index);
+            return;
+        }
     }
     auto new_entry = std::make_unique<Entry>();
     new_entry->owner = obj;
     new_entry->reg_index = m_next_reg_index++;
+    size_t table_index = m_entries.size();
     m_entries.push_back(std::move(new_entry));
+    OUTPUT(Header{ "DrawingSequence" },
+        "Registered obj=", obj,
+        "table_index=", table_index,
+        "reg_index=", m_entries.back()->reg_index);
 }
 
 void DrawingSequence::Unregister(BaseObject* obj) noexcept
 {
     if (!obj) return;
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
+    auto it = std::find_if(m_entries.begin(), m_entries.end(),
         [obj](const std::unique_ptr<Entry>& entry) {
             return entry->owner == obj;
-        }), m_entries.end());
+        });
+    if (it == m_entries.end()) {
+        OUTPUT(Header{ "DrawingSequence" },
+            "Unregister failed (not found)", "obj=", obj);
+        return;
+    }
+    size_t table_index = std::distance(m_entries.begin(), it);
+    int reg_index = (*it)->reg_index;
+    m_entries.erase(it);
+    OUTPUT(Header{ "DrawingSequence" },
+        "Unregistered obj=", obj,
+        "table_index=", table_index,
+        "reg_index=", reg_index);
 }
 
 void DrawingSequence::DrawAll()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-	last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
+    last_image_id = CF_PREMADE_ID_RANGE_LO - 1;
     // Sort by depth, then by registration order
     std::sort(m_entries.begin(), m_entries.end(), [](const auto& a, const auto& b) {
         int depth_a = a->owner->GetDepth();
@@ -150,4 +175,12 @@ void DrawingSequence::DrawAll()
             }
         }
     }
+}
+
+size_t DrawingSequence::GetEstimatedMemoryUsageBytes() const noexcept
+{
+    size_t total = 0;
+    total += m_entries.capacity() * sizeof(std::unique_ptr<Entry>);
+    total += m_entries.size() * sizeof(Entry);
+    return total;
 }

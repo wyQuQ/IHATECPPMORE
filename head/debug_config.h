@@ -22,7 +22,7 @@
 #define SHAPE_DEBUG MCG_DEBUG
 #endif
 #ifndef TESTER
-#define TESTER 0
+#define TESTER MCG_DEBUG
 #endif
 #ifndef MESSAGE_DEBUG
 #define MESSAGE_DEBUG MCG_DEBUG
@@ -39,6 +39,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <filesystem>
+#include <fstream>
+#include <mutex>
 
 namespace {
     // 1. 定义一个结构体，用于强制使用 'header' 标识符
@@ -75,23 +78,86 @@ namespace {
         return oss.str();
     }
 
+    std::string FormatSessionLabel()
+    {
+        using namespace std::chrono;
+        const auto now = system_clock::now();
+        const auto time = system_clock::to_time_t(now);
+        std::tm tm{};
+#if defined(_WIN32)
+        localtime_s(&tm, &time);
+#else
+        localtime_r(&time, &tm);
+#endif
+        std::ostringstream oss;
+        oss << std::setfill('0')
+            << std::setw(4) << (tm.tm_year + 1900)
+            << std::setw(2) << (tm.tm_mon + 1)
+            << std::setw(2) << tm.tm_mday << '_'
+            << std::setw(2) << tm.tm_hour
+            << std::setw(2) << tm.tm_min;
+        return oss.str();
+    }
+
+    const std::string& GetSessionLabel()
+    {
+        static const std::string label = FormatSessionLabel();
+        return label;
+    }
+
+    std::ofstream& GetLogFile()
+    {
+        static std::ofstream file;
+        static std::once_flag init_flag;
+        std::call_once(init_flag, []() {
+            std::error_code ec;
+            std::filesystem::path dir = std::filesystem::current_path() /".."/".."/".."/"reports";
+            std::filesystem::create_directories(dir, ec);
+            if (!ec) {
+                const std::string filename = "debug_log_" + GetSessionLabel() + ".txt";
+                std::filesystem::path path = dir / filename;
+                file.open(path, std::ios::app);
+            }
+        });
+        return file;
+    }
+
+    void AppendLogLine(const std::string& line) noexcept
+    {
+        std::ofstream& file = GetLogFile();
+        if (!file.is_open()) {
+            return;
+        }
+        static std::mutex mutex;
+        std::lock_guard<std::mutex> lg(mutex);
+        file << line << '\n';
+        file.flush();
+    }
+
+    template<Streamable... Args>
+    void OutputWithHeader(Header h, const Args&... args)
+    {
+        std::ostringstream oss;
+        oss << "[" << FormatTimestamp() << "] ";
+        oss << "[" << h.header << "]";
+        ((oss << ' ' << args), ...);
+        const std::string line = oss.str();
+        AppendLogLine(line);
+        std::cerr << line << std::endl;
+    }
+
     // 2. 修改 Output 函数，使其第一个参数为 Header 结构体
-    template<Streamable... Args> // 使用 concept 直接约束模板参数包
+    template<Streamable... Args>
     void Output(Header h, const Args&... args)
     {
-        std::cerr << "[" << FormatTimestamp() << "] ";
-        std::cerr << "[" << h.header << "]";
-        // 将所有参数依次输出到 std::cerr
-        ((std::cerr << ' ' << args), ...);
-        std::cerr << std::endl;
+        OutputWithHeader(h, args...);
     }
 
     // 3. 为不带 Header 的调用提供一个重载
     template<Streamable... Args>
     void Output(const Args&... args)
     {
-        // 调用带 Header 的版本，并提供默认值
-        Output({.header = "Debug Message"}, args...);
+        OutputWithHeader({.header = "Debug Message"}, args...);
     }
 } // namespace
 

@@ -23,9 +23,22 @@ Delegate<> main_thread_on_update;
 // 全局帧率（每秒帧数）
 int g_frame_rate = 50;
 
+extern Delegate<> main_thread_on_update;
+
+namespace {
+	void LogContainerMemorySnapshot(const char* phase)
+	{
+		OUTPUT({ "Memory" }, phase,
+			"DrawingSequence bytes=", DrawingSequence::Instance().GetEstimatedMemoryUsageBytes(),
+			"ObjManager bytes=", ObjManager::Instance().GetEstimatedMemoryUsageBytes(),
+			"RoomLoader bytes=", RoomLoader::Instance().GetEstimatedMemoryUsageBytes());
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	//--------------------------初始化应用程序--------------------------
+	OUTPUT({"Main"}, "----------Program Start----------");
 	using namespace Cute;
 	// 打印 debug 配置
 	OUTPUT({"Main"}, "MCG_DEBUG =", MCG_DEBUG, " MCG_DEBUG_LEVEL =", MCG_DEBUG_LEVEL);
@@ -113,7 +126,10 @@ int main(int argc, char* argv[])
 
 		// 按 R 键重生
 		if (Input::IsKeyInState(CF_KEY_R, KeyState::Down)) {
+			OUTPUT({ "Main" }, "R Pressed, start respawn process");
+			LogContainerMemorySnapshot("BeforeRespawn");
 			RoomLoader::Instance().Load(*GlobalPlayer::Instance().GetRespawnRoom());
+			LogContainerMemorySnapshot("AfterRespawn");
 		}
 
 		//--------------------绘制阶段--------------------
@@ -139,7 +155,7 @@ int main(int argc, char* argv[])
 	// 清理主线程更新委托
 	main_thread_on_update.clear();
 	// 销毁应用程序
-	destroy_app();
-
+	Cute::destroy_app();
+	OUTPUT({ "Main" }, "----------Program End----------");
 	return 0;
 }
