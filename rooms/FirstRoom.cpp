@@ -21,7 +21,7 @@ public:
 	FirstRoom() noexcept {}
 	~FirstRoom() noexcept override {}
 
-	// ÔÚÕâÀïÌí¼Ó·¿¼ä¼ÓÔØÂß¼­
+	// åœ¨è¿™é‡Œæ·»åŠ æˆ¿é—´åŠ è½½é€»è¾‘
 	void RoomLoad() override {
 		OUTPUT({ "FirstRoom" }, "RoomLoad called.");
 
@@ -29,7 +29,7 @@ public:
 		float hw = DrawUI::half_w;
 		float hh = DrawUI::half_h;
 
-		// ´´½¨±³¾°¶ÔÏó
+		// åˆ›å»ºèƒŒæ™¯å¯¹è±¡
 		auto background_token = objs.Create<Backgroud>();
 
 		if (!g.HasRespawnRecord())g.SetRespawnPoint(cf_v2(-hw + 36 * 2, -hh + 36 * 2));
@@ -48,7 +48,7 @@ public:
 			objs.Create<BlockObject>(cf_v2(x, -hh), true);
 		}
 
-		//ÊÖ´êµØÍ¼ing¡­¡­
+		//æ‰‹æ“åœ°å›¾ingâ€¦â€¦
 		auto bolck1_token = objs.Create<BlockObject>(cf_v2(-hw + 36 * 4, -hh + 36),false);
 		auto Tips1_token = objs.Create<Tips1>();
 		auto bolck2_token = objs.Create<BlockObject>(cf_v2(-hw + 36 * 8, -hh + 36), false);
@@ -83,7 +83,7 @@ public:
 #endif
 	}
 
-	// ÔÚÕâÀïÌí¼Ó·¿¼ä¸üĞÂÂß¼­
+	// åœ¨è¿™é‡Œæ·»åŠ æˆ¿é—´æ›´æ–°é€»è¾‘
 	void RoomUpdate() override {
 		auto& g = GlobalPlayer::Instance();
 		if (objs.TryGetRegisteration(g.Player()) && objs[g.Player()].GetPosition().x > DrawUI::half_w) {
@@ -92,7 +92,7 @@ public:
 		}
 	}
 
-	// ÔÚÕâÀïÌí¼Ó·¿¼äĞ¶ÔØÂß¼­
+	// åœ¨è¿™é‡Œæ·»åŠ æˆ¿é—´å¸è½½é€»è¾‘
 	void RoomUnload() override {
 		OUTPUT({ "FirstRoom" }, "RoomUnload called.");
 

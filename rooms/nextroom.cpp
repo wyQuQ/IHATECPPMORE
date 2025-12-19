@@ -218,7 +218,7 @@ public:
 		}
 		if (Input::IsKeyInState(CF_KEY_N, KeyState::Down)) {
 			GlobalPlayer::Instance().SetEmergePosition(CF_V2(-DrawUI::half_w + 36 * 1.5f, -DrawUI::half_h + 36 * 2));
-			RoomLoader::Instance().Load("EmptyRoom");
+			RoomLoader::Instance().Load("EndRoom");
 		}
 	}
 
