@@ -2,12 +2,12 @@
 #include "base_object.h"
 #include "act_seq.h"
 
-class HiddenSpike : public BaseObject
+class HiddenRotatedSpike : public BaseObject
 {
 public:
-    HiddenSpike(CF_V2 pos, int check_pos = 1, bool dir_up = true, int attack_count = 1, float move_time = 0.1f) noexcept
-        : BaseObject(), position(pos), check_count(check_pos), direction_up(dir_up), attack_count(attack_count), move_consumed_time(move_time) {}
-    ~HiddenSpike() noexcept override {}
+    HiddenRotatedSpike(CF_V2 pos, int check_pos = 1, bool dir_left = true, int attack_count = 1, float move_time = 0.1f ) noexcept
+        : BaseObject(), position(pos), check_count(check_pos), direction_left(dir_left), attack_count(attack_count), move_consumed_time(move_time) {}
+    ~HiddenRotatedSpike() noexcept override {}
 
     // 生命周期
     void Start() override;
@@ -23,7 +23,7 @@ private:
     CF_V2 position;
 
     // 指示刺的指向
-    bool direction_up;
+    bool direction_left;
 
     // 指示攻击涵盖刺指向方向的几个格子
     int attack_count;

@@ -12,6 +12,7 @@
 #include "straight_cherry.h"
 #include "hidden_block.h"
 #include "hidden_spike.h"
+#include "hidden_rotated_spike.h"
 
 class NextRoom : public BaseRoom {
 public:
@@ -35,9 +36,12 @@ public:
 		for (float y = -hh + 4 * 36.0f; y < hh; y += 36) {
 			objs.Create<BlockObject>(cf_v2(-hw, y), false);
 		}
-		for (float y = -hh; y < hh; y += 36) {
+		for (float y = -hh; y < hh - 3 * 36.0f; y += 36) {
 			objs.Create<BlockObject>(cf_v2(hw - 36.0f, y), false);
 		}
+
+		objs.Create<BlockObject>(cf_v2(hw - 36.0f, hh - 36.0f), false);
+
 		for (float x = -hw + 36; x < hw - 36; x += 36) {
 			objs.Create<BlockObject>(cf_v2(x, hh - 36.0f), false);
 		}
@@ -72,6 +76,15 @@ public:
 		objs.Create<Spike>(cf_v2(13 * w + half, -11 * w));
 		objs.Create<Spike>(cf_v2(14 * w + half, -11 * w));
 		
+		// 存档点
+        objs.Create<Checkpoint>(cf_v2(-8 * w + half, -11 * w));
+
+		// 堵头方块
+        objs.Create<HiddenBlock>(cf_v2(-11 * w, -9 * w));
+
+		// “开门红”
+		objs.Create<HiddenSpike>(cf_v2(-12 * w + half, -12 * w), 2, true);
+
 		// 初始垫脚块
 		objs.Create<BlockObject>(cf_v2(-15 * w, -9 * w), true);
 
@@ -130,7 +143,6 @@ public:
 		objs.Create<BlockObject>(cf_v2(11 * w, 2 * w), true);
 		objs.Create<BlockObject>(cf_v2(11 * w, 4 * w), true);
 		objs.Create<BlockObject>(cf_v2(11 * w, 6 * w), true);
-		objs.Create<HiddenSpike>(cf_v2(11 * w + half, 6 * w), 1, true);
 
 		// 右跳块序列
 		objs.Create<BlockObject>(cf_v2(14 * w, -1 * w), true);
@@ -155,6 +167,7 @@ public:
 		objs.Create<BlockObject>(cf_v2(12 * w, 8 * w), true);
 		objs.Create<BlockObject>(cf_v2(13 * w, 8 * w), true);
 		objs.Create<BlockObject>(cf_v2(14 * w, 8 * w), true);
+        objs.Create<HiddenRotatedSpike>(cf_v2(13 * w, 8 * w + half), 1, true, 2, 0.1f);
 
 		// 隐藏方块四连
 		objs.Create<HiddenBlock>(cf_v2(5 * w, 6 * w));
@@ -169,7 +182,6 @@ public:
 
 		// 带刺明线
 		objs.Create<BlockObject>(cf_v2(0 * w, 4 * w), true);
-		objs.Create<HiddenSpike>(cf_v2(0 * w + half, 4 * w), 2, true);
 
 		// 上方拦截隐藏块
 		objs.Create<HiddenBlock>(cf_v2(0 * w, 7 * w));
@@ -196,13 +208,12 @@ public:
 
 		// 隐藏的登神长阶
 
-		objs.Create<HiddenBlock>(cf_v2(-1 * w, 0 * w));
 		objs.Create<HiddenBlock>(cf_v2(-2 * w, 0 * w));
 		objs.Create<HiddenBlock>(cf_v2(-3 * w, 0 * w));
 
-		objs.Create<HiddenBlock>(cf_v2(-4 * w, 2 * w));
-		objs.Create<HiddenBlock>(cf_v2(-5 * w, 3 * w));
-		objs.Create<HiddenBlock>(cf_v2(-6 * w, 4 * w));
+		objs.Create<HiddenBlock>(cf_v2(-6 * w, 2 * w));
+		objs.Create<HiddenBlock>(cf_v2(-7 * w, 3 * w));
+		objs.Create<HiddenBlock>(cf_v2(-8 * w, 4 * w));
 
 #if TESTER
 		auto test_token = objs.Create<Tester>();
@@ -215,6 +226,10 @@ public:
 		if (objs.TryGetRegisteration(g.Player()) && objs[g.Player()].GetPosition().x < -DrawUI::half_w) {
 			g.SetEmergePosition(CF_V2(DrawUI::half_w - 36 * 0.3f, objs[g.Player()].GetPosition().y));
 			RoomLoader::Instance().Load("FirstRoom");
+		}
+		if (objs.TryGetRegisteration(g.Player()) && objs[g.Player()].GetPosition().x > DrawUI::half_w) {
+			g.SetEmergePosition(CF_V2(-DrawUI::half_w + 36 * 0.3f, objs[g.Player()].GetPosition().y));
+			RoomLoader::Instance().Load("EmptyRoom");
 		}
 		if (Input::IsKeyInState(CF_KEY_N, KeyState::Down)) {
 			GlobalPlayer::Instance().SetEmergePosition(CF_V2(-DrawUI::half_w + 36 * 1.5f, -DrawUI::half_h + 36 * 2));

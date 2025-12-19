@@ -41,7 +41,7 @@ void RotateSpike::Update() {
 
 }
 
-void RotateSpike::OnCollisionEnter(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept {
+void RotateSpike::OnCollisionStay(const ObjManager::ObjToken& other, const CF_Manifold& manifold) noexcept {
 	auto& g = GlobalPlayer::Instance();
 	//当刺碰到玩家时销毁玩家对象
 	if (other == g.Player()) {

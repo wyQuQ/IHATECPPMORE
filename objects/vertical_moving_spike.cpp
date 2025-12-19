@@ -99,7 +99,7 @@ void VerticalMovingSpike::Update() {
     // Additional update logic can be added here
 }
 
-void VerticalMovingSpike::OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
+void VerticalMovingSpike::OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept {
     auto& g = GlobalPlayer::Instance();
     // Hurt player when collided
     if (other_token == g.Player()) {

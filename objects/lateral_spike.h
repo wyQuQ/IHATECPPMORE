@@ -10,7 +10,7 @@ public:
 
     // 生命周期
     void Start() override;
-    void OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override;
+    void OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override;
 
 private:
     CF_V2 position;
@@ -24,7 +24,7 @@ public:
 
     // 生命周期
     void Start() override;
-    void OnCollisionEnter(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override;
+    void OnCollisionStay(const ObjManager::ObjToken& other_token, const CF_Manifold& manifold) noexcept override;
 
 private:
     CF_V2 position;

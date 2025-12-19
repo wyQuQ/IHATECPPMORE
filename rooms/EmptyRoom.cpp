@@ -357,6 +357,10 @@ public:
 			g.SetEmergePosition(CF_V2(DrawUI::half_w - 36 * 0.3f, objs[g.Player()].GetPosition().y));
 			RoomLoader::Instance().Load("FirstRoom");
 		}
+		if (Input::IsKeyInState(CF_KEY_N, KeyState::Down)) {
+			GlobalPlayer::Instance().SetEmergePosition(CF_V2(-DrawUI::half_w + 36 * 1.5f, -DrawUI::half_h + 36 * 2));
+			RoomLoader::Instance().Load("NextRoom");
+		}
 	}
 	void RoomUnload() override {
 		OUTPUT({ "TestRoom" }, "RoomUnload called.");

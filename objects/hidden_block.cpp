@@ -27,5 +27,6 @@ void HiddenBlock::OnCollisionEnter(const ObjManager::ObjToken& other, const CF_M
         SpriteSetSource("/sprites/block1.png", 1);
         SetPivot(-1.0f, -1.0f);
 		once = false;
+        OUTPUT("Hit");
     }
 }

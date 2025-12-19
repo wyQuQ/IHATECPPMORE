@@ -3,7 +3,7 @@
 
 class HiddenBlock : public BaseObject {
 public:
-    HiddenBlock(CF_V2 pos) noexcept : BaseObject(), position(pos) {}
+    HiddenBlock(CF_V2 pos, bool once = true) noexcept : BaseObject(), position(pos), once(once) {}
     ~HiddenBlock() noexcept {}
 
     void Start() override;
