@@ -16,14 +16,12 @@ void RightMoveBlock::Start() {
     float hw = SpriteWidth() / 2.0f;
     float hh = SpriteHeight() / 2.0f;
 
- 
     SetCenteredAabb(hw, hh);
     SetColliderType(ColliderType::SOLID);
 
-   
-    float move_distance = 250.0f; 
-    float move_speed = 1.4f;      
-    float wait_time = 1.1f;
+    float move_distance = 260.0f;
+    float move_speed = 1.7f;
+    float wait_time = 1.3f;
 
     m_act_seq.clear();
 
